@@ -1,0 +1,188 @@
+site_name: aipostex Lab
+site_description: 6-VM lab environment for testing aipostex against realistic shadow AI infrastructure
+site_url: https://professor-moody.github.io/aipostex-lab/
+repo_url: https://github.com/professor-moody/aipostex-lab
+repo_name: professor-moody/aipostex-lab
+
+theme:
+  name: material
+  palette:
+    - scheme: slate
+      primary: deep purple
+      accent: amber
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+    - scheme: default
+      primary: deep purple
+      accent: amber
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - navigation.instant
+    - navigation.instant.progress
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - content.tabs.link
+    - toc.integrate
+  icon:
+    repo: fontawesome/brands/github
+
+plugins:
+  - search
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - tables
+  - attr_list
+  - md_in_html
+  - def_list
+  - footnotes
+  - toc:
+      permalink: true
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/professor-moody/aipostex-lab
+
+nav:
+  - Home: index.md
+  - Start Here (RTV): start.md
+  - Table Card (RTV): table-card.md
+  - Getting Started:
+    - Quick Start: getting-started/quickstart.md
+    - Prerequisites: getting-started/prerequisites.md
+    - VM Map & Credentials: getting-started/vm-map.md
+    - Learning Path: getting-started/learning-path.md
+  - Architecture:
+    - Lab Design: architecture/design.md
+    - Enterprise Lab Architecture: architecture/enterprise.md
+    - Network Topology: architecture/network.md
+    - Why Native (No Docker): architecture/native-vs-docker.md
+  - Deployment:
+    - Deployment Options (Matrix): deployment/deployment-matrix.md
+    - Proxmox Setup: deployment/proxmox-setup.md
+    - Multi-Estate Standup: deployment/multi-estate.md
+    - Enterprise Proxmox Deployment: deployment/enterprise-proxmox.md
+    - Enterprise Readiness Checklist: deployment/enterprise-readiness.md
+    - Base OS Setup: deployment/base-setup.md
+    - Automated Deployment: deployment/automated.md
+    - AWS Deployment (Cloud): deployment/aws.md
+    - AWS Cost & Sizing: deployment/aws-cost.md
+    - Manual Deployment: deployment/manual.md
+    - Deployment Evolution: deployment/evolution.md
+    - Snapshots & Teardown: deployment/snapshots.md
+    - Hot-Patch (Live Updates): deployment/hot-patch-single-mock.md
+    - Ludus Deployment: deployment/ludus.md
+    - Opt-in Segmentation: deployment/segmentation.md
+    - GPU Components (Full-Real): deployment/gpu-components.md
+    - Attendee Connectivity: deployment/connectivity.md
+  - Services:
+    - Overview: services/index.md
+    - ailab-dev (Developer Workstation):
+      - Ollama: services/dev/ollama.md
+      - Jupyter: services/dev/jupyter.md
+      - MCP Server: services/dev/mcp-server.md
+      - Gradio: services/dev/gradio.md
+      - MCP Inspector: services/dev/mcp-inspector.md
+    - ailab-ml (ML Platform):
+      - ChromaDB: services/ml/chromadb.md
+      - HF TGI Mock: services/ml/hf-tgi.md
+      - HF TEI Mock: services/ml/hf-tei.md
+      - MLflow: services/ml/mlflow.md
+      - LiteLLM: services/ml/litellm.md
+      - Ray: services/ml/ray.md
+      - vLLM Mock: services/ml/vllm.md
+      - BentoML: services/ml/bentoml.md
+      - TorchServe: services/ml/torchserve.md
+      - Triton: services/ml/triton.md
+      - W&B: services/ml/wandb.md
+      - Kubeflow Mock: services/ml/kubeflow.md
+      - TF Serving Mock: services/ml/tfserving.md
+    - ailab-ds (Data Science):
+      - Ollama: services/ds/ollama.md
+      - Jupyter: services/ds/jupyter.md
+      - Weaviate: services/ds/weaviate.md
+      - Qdrant: services/ds/qdrant.md
+    - ailab-app (Shared AI Apps):
+      - LangServe: services/app/langserve.md
+      - Streamlit: services/app/streamlit.md
+      - HF TGI Gateway: services/app/tgi-gateway.md
+    - ailab-k8s (Kubernetes Node):
+      - Cluster (vuln + secure k3s): services/k8s/cluster.md
+  - Attack Box:
+    - Setup: attack-box/setup.md
+    - MCP Config Fixtures: attack-box/mcp-fixtures.md
+    - Tailscale & Remote Access: attack-box/remote-access.md
+  - Seeded Data:
+    - Overview: seeding/index.md
+    - Filesystem Artifacts: seeding/filesystem.md
+    - Ollama System Prompts: seeding/ollama-prompts.md
+    - Vector Databases: seeding/vector-dbs.md
+    - MLflow Experiments: seeding/mlflow.md
+    - Ray Jobs: seeding/ray.md
+    - Noise Collections: seeding/noise.md
+  - Scoring & Verification:
+    - verify-lab.sh: scoring/verify-lab.md
+    - verify-aipostex.sh: scoring/verify-aipostex.md
+    - Scoring System: scoring/scoring.md
+    - Manifest Schema: scoring/manifest.md
+    - RRR Honesty Matrix: scoring/rrr.md
+  - Demo Walkthrough: demo/walkthrough.md
+  - Tactic (Guided Chain): demo/tactic-chain.md
+  - Manual Post-Exploitation:
+    - Overview: post-exploitation/index.md
+    - Operator Guide: post-exploitation/manual.md
+  - Attack Scenarios:
+    - Overview: attack-scenarios/index.md
+    - "01: Reachability Survey": attack-scenarios/scenario-01.md
+    - "02: LLM Gateway Extraction": attack-scenarios/scenario-02.md
+    - "03: Inference Fingerprinting": attack-scenarios/scenario-03.md
+    - "04: Vector DB PII Extraction": attack-scenarios/scenario-04.md
+    - "05: Jupyter RCE": attack-scenarios/scenario-05.md
+    - "06: ML Credential Harvest": attack-scenarios/scenario-06.md
+    - "07: RAG Pipeline Poisoning": attack-scenarios/scenario-07.md
+    - "08: Credential Chain": attack-scenarios/scenario-08.md
+    - "09: Pipeline Run Injection": attack-scenarios/scenario-09.md
+    - "10: Model Tampering": attack-scenarios/scenario-10.md
+    - "11: MCP Tool Infection": attack-scenarios/scenario-11.md
+    - "12: Multi-Vector Campaign": attack-scenarios/scenario-12.md
+    - "13: Privesc → Model-Weight Theft": attack-scenarios/scenario-13.md
+  - Single-Service Sandbox: sandbox.md
+  - Reference:
+    - Lab Field Guide: reference/field-manual.md
+    - Component Explainer: reference/component-explainer.md
+    - Port & Service Matrix: reference/ports.md
+    - Mock & Fixture Fidelity: reference/mock-fidelity.md
+    - Script Inventory: reference/scripts.md
+    - Sensitive Data Inventory: reference/data-inventory.md
+    - Pinned Versions: reference/versions.md
+    - Troubleshooting: reference/troubleshooting.md
+  - Contributing:
+    - Adding a Service or Mock: contributing/adding-a-service.md
+  - Appendices:
+    - Offline / Air-Gapped Setup: appendices/offline.md
+    - Resource Tuning: appendices/resource-tuning.md
+    - Ludus Migration: appendices/ludus.md

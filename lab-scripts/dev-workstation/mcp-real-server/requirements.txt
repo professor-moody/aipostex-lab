@@ -1,0 +1,4 @@
+# Real MCP server — official Model Context Protocol Python SDK (FastMCP + Streamable HTTP).
+# Pinned for reproducibility; bump deliberately and re-prove against aipostex.
+mcp==1.28.1
+uvicorn==0.49.0

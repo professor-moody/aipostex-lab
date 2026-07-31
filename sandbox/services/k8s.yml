@@ -1,0 +1,40 @@
+# Two real single-node k3s clusters in one compose project (one network):
+#   k8s-vuln   - anonymous-auth enabled + a ClusterRole bound to system:anonymous
+#                (read on workloads/secrets + create on pods/exec). The k8s verbs MUST
+#                report weak here: anonymous enum, secret exfil, and in-pod RCE.
+#   k8s-secure - default-secure k3s (anonymous-auth off, no anon binding). The same
+#                verbs MUST report NOT weak (401 enforced) — the honesty control.
+# Both auto-deploy their seed manifests from /var/lib/rancher/k3s/server/manifests.
+# The deliberately-weak anon RBAC binding (10-anon-rbac.yaml) is present in the vuln
+# manifest set only. Image pinned to the version validated for the module.
+services:
+  k8s-vuln:
+    image: rancher/k3s:v1.31.5-k3s1
+    command:
+      - server
+      - --kube-apiserver-arg=anonymous-auth=true
+      - --disable=traefik
+      - --disable=metrics-server
+      - --disable=servicelb
+      - --node-name=ml-prod-node
+    privileged: true
+    ports:
+      - "6443:6443"
+    volumes:
+      - ./k8s-manifests/vuln:/var/lib/rancher/k3s/server/manifests/seed:ro
+    restart: unless-stopped
+
+  k8s-secure:
+    image: rancher/k3s:v1.31.5-k3s1
+    command:
+      - server
+      - --disable=traefik
+      - --disable=metrics-server
+      - --disable=servicelb
+      - --node-name=ml-prod-node
+    privileged: true
+    ports:
+      - "6444:6443"
+    volumes:
+      - ./k8s-manifests/secure:/var/lib/rancher/k3s/server/manifests/seed:ro
+    restart: unless-stopped

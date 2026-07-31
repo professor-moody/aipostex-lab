@@ -1,0 +1,339 @@
+---
+# aipostex Enterprise Lab — staged Ansible orchestration
+#
+# This playbook is intentionally a thin wrapper over the enterprise Bash role
+# scripts. Proxmox infrastructure, snapshots, reset, and Pro firewall policy
+# stay in Bash.
+
+- name: Enterprise base setup
+  hosts: enterprise
+  become: true
+  tags: [base]
+  tasks:
+    - name: Copy enterprise base setup
+      copy:
+        src: "{{ repo_root }}/lab-scripts/base-setup.sh"
+        dest: "{{ lab_root }}/base-setup.sh"
+        mode: "0755"
+
+    - name: Copy enterprise inventory library
+      copy:
+        src: "{{ repo_root }}/lab-scripts/lib/"
+        dest: "{{ lab_root }}/lib/"
+        mode: preserve
+
+    - name: Run enterprise base setup
+      command: "env LAB_INVENTORY_PATH={{ lab_root }}/lib/enterprise-inventory.sh bash {{ lab_root }}/base-setup.sh"
+
+- name: Enterprise provision attack box
+  hosts: enterprise_attack
+  become: true
+  tags: [provision]
+  tasks:
+    - name: Copy lab scripts to attack box
+      copy:
+        src: "{{ repo_root }}/lab-scripts/"
+        dest: "{{ lab_root }}/"
+        mode: preserve
+
+    - name: Run attack-box enterprise provisioner
+      command: "bash {{ lab_root }}/{{ lab_role_dir }}/provision.sh"
+
+    - name: Read attack-box public key
+      slurp:
+        src: "/home/{{ ansible_user }}/.ssh/id_ed25519.pub"
+      register: enterprise_attack_pubkey
+
+- name: Enterprise distribute attack-box SSH key
+  hosts: enterprise_targets
+  tags: [provision]
+  tasks:
+    - name: Ensure SSH directory exists
+      ansible.builtin.file:
+        path: "/home/{{ ansible_user }}/.ssh"
+        state: directory
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: "0700"
+
+    - name: Trust attack-box key for target access
+      ansible.builtin.lineinfile:
+        path: "/home/{{ ansible_user }}/.ssh/authorized_keys"
+        line: "{{ hostvars['ent-attack'].enterprise_attack_pubkey.content | b64decode | trim }}"
+        create: true
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: "0600"
+
+- name: Enterprise provision identity
+  hosts: ent-idp-01
+  become: true
+  tags: [provision]
+  tasks:
+    - name: Copy lab scripts
+      copy:
+        src: "{{ repo_root }}/lab-scripts/"
+        dest: "{{ lab_root }}/"
+        mode: preserve
+
+    - name: Run enterprise provisioner
+      command: "bash {{ lab_root }}/{{ lab_role_dir }}/provision.sh"
+
+- name: Enterprise provision observability
+  hosts: ent-observe-01
+  become: true
+  tags: [provision]
+  tasks:
+    - name: Copy lab scripts
+      copy:
+        src: "{{ repo_root }}/lab-scripts/"
+        dest: "{{ lab_root }}/"
+        mode: preserve
+
+    - name: Run enterprise provisioner
+      command: "bash {{ lab_root }}/{{ lab_role_dir }}/provision.sh"
+
+- name: Enterprise provision data platform
+  hosts: ent-data-01
+  become: true
+  tags: [provision]
+  tasks:
+    - name: Copy lab scripts
+      copy:
+        src: "{{ repo_root }}/lab-scripts/"
+        dest: "{{ lab_root }}/"
+        mode: preserve
+
+    - name: Run enterprise provisioner
+      command: "bash {{ lab_root }}/{{ lab_role_dir }}/provision.sh"
+
+- name: Enterprise provision inference platform
+  hosts: ent-inference-01
+  become: true
+  tags: [provision]
+  tasks:
+    - name: Copy lab scripts
+      copy:
+        src: "{{ repo_root }}/lab-scripts/"
+        dest: "{{ lab_root }}/"
+        mode: preserve
+
+    - name: Run enterprise provisioner
+      command: "bash {{ lab_root }}/{{ lab_role_dir }}/provision.sh"
+
+- name: Enterprise provision MLOps platform
+  hosts: ent-mlops-01
+  become: true
+  tags: [provision]
+  tasks:
+    - name: Copy lab scripts
+      copy:
+        src: "{{ repo_root }}/lab-scripts/"
+        dest: "{{ lab_root }}/"
+        mode: preserve
+
+    - name: Run enterprise provisioner
+      command: "bash {{ lab_root }}/{{ lab_role_dir }}/provision.sh"
+
+- name: Enterprise provision developer workstation
+  hosts: ent-dev-01
+  become: true
+  tags: [provision]
+  tasks:
+    - name: Copy lab scripts
+      copy:
+        src: "{{ repo_root }}/lab-scripts/"
+        dest: "{{ lab_root }}/"
+        mode: preserve
+
+    - name: Run enterprise provisioner
+      command: "bash {{ lab_root }}/{{ lab_role_dir }}/provision.sh"
+
+- name: Enterprise provision app platform
+  hosts: ent-app-01
+  become: true
+  tags: [provision]
+  tasks:
+    - name: Copy lab scripts
+      copy:
+        src: "{{ repo_root }}/lab-scripts/"
+        dest: "{{ lab_root }}/"
+        mode: preserve
+
+    - name: Run enterprise provisioner
+      command: "bash {{ lab_root }}/{{ lab_role_dir }}/provision.sh"
+
+- name: Enterprise seed identity
+  hosts: ent-idp-01
+  become: true
+  tags: [seed]
+  tasks:
+    - name: Copy lab scripts
+      copy:
+        src: "{{ repo_root }}/lab-scripts/"
+        dest: "{{ lab_root }}/"
+        mode: preserve
+
+    - name: Check for enterprise seed script
+      stat:
+        path: "{{ lab_root }}/{{ lab_role_dir }}/seed.sh"
+      register: enterprise_seed_script
+
+    - name: Run enterprise seed script
+      command: "bash {{ lab_root }}/{{ lab_role_dir }}/seed.sh"
+      when: enterprise_seed_script.stat.exists
+
+- name: Enterprise seed observability
+  hosts: ent-observe-01
+  become: true
+  tags: [seed]
+  tasks:
+    - name: Copy lab scripts
+      copy:
+        src: "{{ repo_root }}/lab-scripts/"
+        dest: "{{ lab_root }}/"
+        mode: preserve
+
+    - name: Check for enterprise seed script
+      stat:
+        path: "{{ lab_root }}/{{ lab_role_dir }}/seed.sh"
+      register: enterprise_seed_script
+
+    - name: Run enterprise seed script
+      command: "bash {{ lab_root }}/{{ lab_role_dir }}/seed.sh"
+      when: enterprise_seed_script.stat.exists
+
+- name: Enterprise seed data platform
+  hosts: ent-data-01
+  become: true
+  tags: [seed]
+  tasks:
+    - name: Copy lab scripts
+      copy:
+        src: "{{ repo_root }}/lab-scripts/"
+        dest: "{{ lab_root }}/"
+        mode: preserve
+
+    - name: Check for enterprise seed script
+      stat:
+        path: "{{ lab_root }}/{{ lab_role_dir }}/seed.sh"
+      register: enterprise_seed_script
+
+    - name: Run enterprise seed script
+      command: "bash {{ lab_root }}/{{ lab_role_dir }}/seed.sh"
+      when: enterprise_seed_script.stat.exists
+
+- name: Enterprise seed inference platform
+  hosts: ent-inference-01
+  become: true
+  tags: [seed]
+  tasks:
+    - name: Copy lab scripts
+      copy:
+        src: "{{ repo_root }}/lab-scripts/"
+        dest: "{{ lab_root }}/"
+        mode: preserve
+
+    - name: Check for enterprise seed script
+      stat:
+        path: "{{ lab_root }}/{{ lab_role_dir }}/seed.sh"
+      register: enterprise_seed_script
+
+    - name: Run enterprise seed script
+      command: "bash {{ lab_root }}/{{ lab_role_dir }}/seed.sh"
+      when: enterprise_seed_script.stat.exists
+
+- name: Enterprise seed MLOps platform
+  hosts: ent-mlops-01
+  become: true
+  tags: [seed]
+  tasks:
+    - name: Copy lab scripts
+      copy:
+        src: "{{ repo_root }}/lab-scripts/"
+        dest: "{{ lab_root }}/"
+        mode: preserve
+
+    - name: Check for enterprise seed script
+      stat:
+        path: "{{ lab_root }}/{{ lab_role_dir }}/seed.sh"
+      register: enterprise_seed_script
+
+    - name: Run enterprise seed script
+      command: "bash {{ lab_root }}/{{ lab_role_dir }}/seed.sh"
+      when: enterprise_seed_script.stat.exists
+
+- name: Enterprise seed developer workstation
+  hosts: ent-dev-01
+  become: true
+  tags: [seed]
+  tasks:
+    - name: Copy lab scripts
+      copy:
+        src: "{{ repo_root }}/lab-scripts/"
+        dest: "{{ lab_root }}/"
+        mode: preserve
+
+    - name: Check for enterprise seed script
+      stat:
+        path: "{{ lab_root }}/{{ lab_role_dir }}/seed.sh"
+      register: enterprise_seed_script
+
+    - name: Run enterprise seed script
+      command: "bash {{ lab_root }}/{{ lab_role_dir }}/seed.sh"
+      when: enterprise_seed_script.stat.exists
+
+- name: Enterprise seed app platform
+  hosts: ent-app-01
+  become: true
+  tags: [seed]
+  tasks:
+    - name: Copy lab scripts
+      copy:
+        src: "{{ repo_root }}/lab-scripts/"
+        dest: "{{ lab_root }}/"
+        mode: preserve
+
+    - name: Check for enterprise seed script
+      stat:
+        path: "{{ lab_root }}/{{ lab_role_dir }}/seed.sh"
+      register: enterprise_seed_script
+
+    - name: Run enterprise seed script
+      command: "bash {{ lab_root }}/{{ lab_role_dir }}/seed.sh"
+      when: enterprise_seed_script.stat.exists
+
+- name: Enterprise seed attack box
+  hosts: ent-attack
+  become: true
+  tags: [seed]
+  tasks:
+    - name: Copy lab scripts
+      copy:
+        src: "{{ repo_root }}/lab-scripts/"
+        dest: "{{ lab_root }}/"
+        mode: preserve
+
+    - name: Check for enterprise seed script
+      stat:
+        path: "{{ lab_root }}/{{ lab_role_dir }}/seed.sh"
+      register: enterprise_seed_script
+
+    - name: Run enterprise seed script
+      command: "bash {{ lab_root }}/{{ lab_role_dir }}/seed.sh"
+      when: enterprise_seed_script.stat.exists
+
+- name: Enterprise verify from controller
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  tags: [verify]
+  tasks:
+    - name: Run enterprise verifier
+      command: "{{ repo_root }}/lab-scripts/enterprise-verify.sh --layer all --profile {{ enterprise_profile }}"
+      register: enterprise_verify
+      changed_when: false
+
+    - name: Show enterprise verification output
+      debug:
+        var: enterprise_verify.stdout_lines

@@ -1,0 +1,25 @@
+model_list:
+  - model_name: local-smollm
+    litellm_params:
+      model: ollama/smollm2:135m
+      api_base: http://172.16.50.10:11434
+
+  - model_name: gpt-4
+    litellm_params:
+      model: openai/gpt-4
+      api_key: sk-proj-FAKE-litellm-openai-key-1234567890
+      api_base: https://api.openai.com/v1
+
+  - model_name: claude-sonnet
+    litellm_params:
+      model: anthropic/claude-sonnet-4-20250514
+      api_key: sk-ant-FAKE-litellm-anthropic-key-abcdef1234567890
+
+general_settings:
+  master_key: sk-litellm-lab-auth-key-FAKE123
+  drop_params: true
+
+litellm_settings:
+  num_retries: 3
+  request_timeout: 120
+  set_verbose: false

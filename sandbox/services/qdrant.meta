@@ -1,0 +1,6 @@
+DESC="Qdrant vector store (real product)"
+PORT=6333
+URL="http://localhost:6333"
+HEALTH="http://localhost:6333/healthz"
+PROVE='"$AIPOSTEX" vectordb --type qdrant --target localhost:6333 enum'
+SEED=""

@@ -1,0 +1,4 @@
+---
+aipostex_lab_user: labadmin
+aipostex_lab_root: "/home/{{ aipostex_lab_user }}/lab"
+aipostex_role_dir: app-platform

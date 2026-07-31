@@ -1,0 +1,17 @@
+---
+galaxy_info:
+  author: professor-moody
+  description: "Attack box role for aipostex lab (Go, Tailscale, SSH config, MCP fixtures)"
+  license: MIT
+  min_ansible_version: "2.14"
+  platforms:
+    - name: Debian
+      versions:
+        - bookworm
+  galaxy_tags:
+    - aipostex
+    - lab
+    - attack
+    - pentest
+
+dependencies: []

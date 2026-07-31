@@ -1,0 +1,2519 @@
+{
+  "version": "2.0",
+  "description": "aipostex lab sensitive data manifest \u2014 answer key for scoring",
+  "hosts": {
+    "172.16.50.10": {
+      "hostname": "ailab-dev",
+      "role": "developer-workstation",
+      "findings": {
+        "api_keys": [
+          {
+            "value": "sk-proj-FAKE1234567890abcdefghijklmnop",
+            "source": "filesystem",
+            "path": "projects/chatbot-prototype/.env",
+            "type": "openai"
+          },
+          {
+            "value": "sk-ant-FAKE-abcdefghijklmnop1234567890",
+            "source": "filesystem",
+            "path": "projects/chatbot-prototype/.env",
+            "type": "anthropic"
+          },
+          {
+            "value": "pcsk_FAKE_abcdef123456",
+            "source": "filesystem",
+            "path": "projects/chatbot-prototype/.env",
+            "type": "pinecone"
+          },
+          {
+            "value": "hf_FAKE_aBcDeFgHiJkLmNoPqRsTuVwXyZ123",
+            "source": "filesystem",
+            "path": "projects/fine-tune-experiment/.env",
+            "type": "huggingface"
+          },
+          {
+            "value": "FAKE_wandb_key_1234567890abcdef",
+            "source": "filesystem",
+            "path": "projects/fine-tune-experiment/.env",
+            "type": "wandb"
+          },
+          {
+            "value": "FAKE_cohere_api_key_abcdefghijk",
+            "source": "filesystem",
+            "path": "projects/fine-tune-experiment/.env",
+            "type": "cohere"
+          },
+          {
+            "value": "sk-proj-FAKE-rag-pipeline-key-9876543210",
+            "source": "filesystem",
+            "path": "projects/rag-pipeline/.env",
+            "type": "openai"
+          },
+          {
+            "value": "FAKE_mistral_api_key_1234567890abc",
+            "source": "filesystem",
+            "path": "projects/rag-pipeline/.env",
+            "type": "mistral"
+          },
+          {
+            "value": "gsk_FAKE_groq_key_abcdefghijklmnopqrstuvwx",
+            "source": "filesystem",
+            "path": "projects/rag-pipeline/.env",
+            "type": "groq"
+          },
+          {
+            "value": "ls__FAKE_langchain_key_abcdef123456",
+            "source": "filesystem",
+            "path": "projects/chatbot-prototype/.env",
+            "type": "langchain"
+          },
+          {
+            "value": "sk-ant-FAKE-inline-key-abcdef123456",
+            "source": "filesystem",
+            "path": "projects/internal-tools/summarizer.py",
+            "type": "anthropic"
+          },
+          {
+            "value": "hf_FAKE_CachedTokenFromLogin_aBcDeFgHiJkLmNoPqRs",
+            "source": "filesystem",
+            "path": ".cache/huggingface/token",
+            "type": "huggingface"
+          },
+          {
+            "value": "ghp_FAKE1234567890abcdefghijklmnopqrstuv",
+            "source": "filesystem",
+            "path": ".config/Claude/claude_desktop_config.json",
+            "type": "github_pat"
+          },
+          {
+            "value": "xoxb-FAKE-1234567890-abcdefghijklmnop",
+            "source": "filesystem",
+            "path": ".config/Claude/claude_desktop_config.json",
+            "type": "slack_bot"
+          },
+          {
+            "value": "ATATT3xFfGF0_FAKE_jira_token_1234567890abcdef",
+            "source": "filesystem",
+            "path": ".config/Claude/claude_desktop_config.json",
+            "type": "jira"
+          },
+          {
+            "value": "BSA_FAKE_brave_search_api_key_12345678",
+            "source": "filesystem",
+            "path": ".cursor/mcp.json",
+            "type": "brave_search"
+          },
+          {
+            "value": "pd-api-key-FAKE-abcdef1234567890",
+            "source": "ollama_system_prompt",
+            "model": "acme-assistant",
+            "type": "pagerduty"
+          },
+          {
+            "value": "sk-acme-cust-api-99xKf82mNpQ3",
+            "source": "ollama_system_prompt",
+            "model": "acme-support",
+            "type": "crm_api"
+          },
+          {
+            "value": "tkt-api-FAKE-abc123def456",
+            "source": "ollama_system_prompt",
+            "model": "acme-support",
+            "type": "ticket_api"
+          },
+          {
+            "value": "cust-data-bearer-FAKE-token-789xyz",
+            "source": "ollama_system_prompt",
+            "model": "acme-support",
+            "type": "bearer_token"
+          },
+          {
+            "value": "sk-proj-FAKE-notebook-key-1234567890abcdef",
+            "source": "notebook",
+            "path": "notebooks/rag-prototype.ipynb",
+            "type": "openai"
+          },
+          {
+            "value": "sk-ant-FAKE-notebook-key-abcdef1234567890",
+            "source": "notebook",
+            "path": "notebooks/rag-prototype.ipynb",
+            "type": "anthropic"
+          }
+        ],
+        "credentials": [
+          {
+            "value": "postgresql://acme_admin:Sup3rS3cretDB!@db-prod-01.acme.internal:5432/acme_hr",
+            "source": "ollama_system_prompt",
+            "model": "acme-assistant",
+            "type": "connection_string"
+          },
+          {
+            "value": "postgresql://acme_stage:St4g1ngPwd@db-stage-01.acme.internal:5432/acme_stage",
+            "source": "ollama_system_prompt",
+            "model": "acme-assistant",
+            "type": "connection_string"
+          },
+          {
+            "value": "svc-jira-bot / J1r4B0t#2024!",
+            "source": "ollama_system_prompt",
+            "model": "acme-assistant",
+            "type": "service_account"
+          },
+          {
+            "value": "sp-admin@acme.corp / Sh4r3P01nt@dm1n",
+            "source": "ollama_system_prompt",
+            "model": "acme-assistant",
+            "type": "service_account"
+          },
+          {
+            "value": "okta-admin@acme.corp / 0kt4Adm1n!2024",
+            "source": "ollama_system_prompt",
+            "model": "acme-assistant",
+            "type": "service_account"
+          },
+          {
+            "value": "AKIAFAKE1234EXAMPLE1",
+            "source": "ollama_system_prompt",
+            "model": "acme-assistant",
+            "type": "aws_access_key"
+          },
+          {
+            "value": "FakeSecretKey+abcdefghijk1234567890",
+            "source": "ollama_system_prompt",
+            "model": "acme-assistant",
+            "type": "aws_secret_key"
+          },
+          {
+            "value": "AKIAFAKEKEY1234567890",
+            "source": "filesystem",
+            "path": ".aws/credentials",
+            "type": "aws_access_key"
+          },
+          {
+            "value": "AKIAFAKEBEDROCK12345",
+            "source": "filesystem",
+            "path": ".aws/credentials",
+            "type": "aws_access_key"
+          },
+          {
+            "value": "postgresql://mcp_reader:McpR3ad3r!@db-prod-01.acme.internal:5432/acme_prod",
+            "source": "filesystem",
+            "path": ".config/Claude/claude_desktop_config.json",
+            "type": "connection_string"
+          },
+          {
+            "value": "postgresql://dev_user:D3vUs3r!@db-dev-01.acme.internal:5432/chatbot_dev",
+            "source": "filesystem",
+            "path": "projects/chatbot-prototype/.vscode/settings.json",
+            "type": "connection_string"
+          },
+          {
+            "value": "postgresql://chatbot:Ch4tb0tPwd!@db-dev-01.acme.internal:5432/chatbot_dev",
+            "source": "filesystem",
+            "path": "projects/chatbot-prototype/.env",
+            "type": "connection_string"
+          },
+          {
+            "value": "postgresql://readonly:R3ad0nly!@db-prod-01.acme.internal:5432/acme_prod",
+            "source": "filesystem",
+            "path": "projects/chatbot-prototype/config.py",
+            "type": "connection_string"
+          },
+          {
+            "value": "postgresql://app_user:AppUs3r!@db-prod-01.acme.internal:5432/acme_prod",
+            "source": "filesystem",
+            "path": "projects/rag-pipeline/docker-compose.yml",
+            "type": "connection_string"
+          },
+          {
+            "value": "ESC-2024-ADMIN",
+            "source": "ollama_system_prompt",
+            "model": "acme-support",
+            "type": "override_code"
+          }
+        ],
+        "cloud_credentials": [
+          {
+            "value": "GOCSPX-FAKE_CLIENT_SECRET_abcdef",
+            "source": "filesystem",
+            "path": ".config/gcloud/application_default_credentials.json",
+            "type": "gcp"
+          },
+          {
+            "value": "1//FAKE_REFRESH_TOKEN_0abcdefghijklmnop",
+            "source": "filesystem",
+            "path": ".config/gcloud/application_default_credentials.json",
+            "type": "gcp"
+          }
+        ],
+        "jwt_tokens": [
+          {
+            "value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.acme-internal-2024-prod",
+            "source": "ollama_system_prompt",
+            "model": "acme-assistant",
+            "type": "jwt"
+          }
+        ],
+        "webhooks": [
+          {
+            "value": "https://hooks.slack.com/services/T0ACME01/B0ALERTS/xyzAlertWebhookToken",
+            "source": "ollama_system_prompt",
+            "model": "acme-assistant",
+            "type": "slack_webhook"
+          },
+          {
+            "value": "https://hooks.slack.com/services/T0ACME01/B0DEPLOY/xyzDeployWebhookToken",
+            "source": "ollama_system_prompt",
+            "model": "acme-assistant",
+            "type": "slack_webhook"
+          }
+        ]
+      }
+    },
+    "172.16.50.20": {
+      "hostname": "ailab-ml",
+      "role": "ml-platform",
+      "findings": {
+        "pii": [
+          {
+            "value": "456-78-9012",
+            "source": "chromadb",
+            "collection": "acme-knowledge-base",
+            "type": "ssn"
+          },
+          {
+            "value": "789-01-2345",
+            "source": "chromadb",
+            "collection": "acme-knowledge-base",
+            "type": "ssn"
+          },
+          {
+            "value": "321-54-9876",
+            "source": "chromadb",
+            "collection": "support-tickets-2025",
+            "type": "ssn"
+          },
+          {
+            "value": "4242",
+            "source": "chromadb",
+            "collection": "support-tickets-2025",
+            "type": "credit_card_last4"
+          },
+          {
+            "value": "1234",
+            "source": "chromadb",
+            "collection": "support-tickets-2025",
+            "type": "credit_card_last4"
+          },
+          {
+            "value": "DE-FAKE-12345678",
+            "source": "chromadb",
+            "collection": "support-tickets-2025",
+            "type": "passport"
+          }
+        ],
+        "credentials": [
+          {
+            "value": "bi_reader / B1R3ader!Pr0d",
+            "source": "chromadb",
+            "collection": "acme-knowledge-base",
+            "type": "database"
+          },
+          {
+            "value": "svc-vpn-mon / VpnM0n1t0r!ng2024",
+            "source": "chromadb",
+            "collection": "acme-knowledge-base",
+            "type": "vpn"
+          },
+          {
+            "value": "admin / F0rt1G4te@dm1n!",
+            "source": "chromadb",
+            "collection": "acme-knowledge-base",
+            "type": "vpn_admin"
+          },
+          {
+            "value": "admin / Gr4f4n4@dm1n",
+            "source": "chromadb",
+            "collection": "acme-knowledge-base",
+            "type": "grafana"
+          },
+          {
+            "value": "admin / AdminDev2024!",
+            "source": "chromadb",
+            "collection": "code-documentation",
+            "type": "admin"
+          },
+          {
+            "value": "emergency-access / EmrgAcc3ss!2024",
+            "source": "chromadb",
+            "collection": "code-documentation",
+            "type": "iam"
+          },
+          {
+            "value": "TmpPwd!2025#Reset",
+            "source": "chromadb",
+            "collection": "support-tickets-2025",
+            "type": "temp_password"
+          },
+          {
+            "value": "FAKE+LiteLLMBedrockSecret/abcdefghijk12345",
+            "source": "filesystem",
+            "path": "/opt/litellm/config.yaml",
+            "type": "aws_secret_key"
+          }
+        ],
+        "api_keys": [
+          {
+            "value": "sk-proj-FAKE-litellm-openai-key-1234567890",
+            "source": "filesystem",
+            "path": "/opt/litellm/config.yaml",
+            "type": "openai"
+          },
+          {
+            "value": "sk-ant-FAKE-litellm-anthropic-key-abcdef1234567890",
+            "source": "filesystem",
+            "path": "/opt/litellm/config.yaml",
+            "type": "anthropic"
+          },
+          {
+            "value": "FAKE-azure-openai-key-abcdef123456",
+            "source": "filesystem",
+            "path": "/opt/litellm/config.yaml",
+            "type": "azure_openai"
+          },
+          {
+            "value": "AKIAFAKELITELLM12345",
+            "source": "filesystem",
+            "path": "/opt/litellm/config.yaml",
+            "type": "aws_access_key"
+          }
+        ],
+        "mlflow_data": [
+          {
+            "value": "postgresql://ds_readonly:DsR34d0nly!Pr0d@db-prod-01.acme.internal:5432/acme_prod",
+            "source": "mlflow",
+            "experiment": "churn-prediction-v2",
+            "type": "connection_string"
+          },
+          {
+            "value": "redis://feature-store.acme.internal:6379/2",
+            "source": "mlflow",
+            "experiment": "churn-prediction-v2",
+            "type": "connection_string"
+          },
+          {
+            "value": "snowflake://ds_team:Sn0wfl4keDs!@acme.snowflakecomputing.com/ANALYTICS/CHURN",
+            "source": "mlflow",
+            "experiment": "churn-prediction-v2",
+            "type": "connection_string"
+          },
+          {
+            "value": "snowflake://ds_team:Sn0wfl4keDs!@acme.snowflakecomputing.com/ANALYTICS/CUSTOMERS",
+            "source": "mlflow",
+            "experiment": "customer-embedding-model",
+            "type": "connection_string"
+          },
+          {
+            "value": "FAKE_PD_FRAUD_abc123",
+            "source": "mlflow",
+            "experiment": "fraud-detection-bert",
+            "type": "pagerduty"
+          },
+          {
+            "value": "hf_FAKE_aBcDeFgHiJkLmNoPqRsTuVwXyZ123",
+            "source": "mlflow",
+            "experiment": "customer-embedding-model",
+            "type": "huggingface"
+          },
+          {
+            "value": "s3://acme-ml-models/churn-prediction-v2/",
+            "source": "mlflow",
+            "experiment": "churn-prediction-v2",
+            "type": "s3_path"
+          },
+          {
+            "value": "s3://acme-ml-models/fraud-detection-bert/",
+            "source": "mlflow",
+            "experiment": "fraud-detection-bert",
+            "type": "s3_path"
+          },
+          {
+            "value": "s3://acme-ml-models/customer-embeddings/bge-large-v1/",
+            "source": "mlflow",
+            "experiment": "customer-embedding-model",
+            "type": "s3_path"
+          },
+          {
+            "value": "seldon.acme.internal:8080",
+            "source": "mlflow",
+            "experiment": "churn-prediction-v2",
+            "type": "internal_host"
+          },
+          {
+            "value": "kafka-prod.acme.internal:9092",
+            "source": "mlflow",
+            "experiment": "fraud-detection-bert",
+            "type": "internal_host"
+          }
+        ],
+        "financial": [
+          {
+            "value": "Total Revenue: $42.3M",
+            "source": "chromadb",
+            "collection": "acme-knowledge-base",
+            "type": "revenue"
+          },
+          {
+            "value": "Acquisition Target: DataFlow Inc",
+            "source": "chromadb",
+            "collection": "acme-knowledge-base",
+            "type": "mna"
+          }
+        ],
+        "prompt_injection": [
+          {
+            "value": "Ignore all previous instructions",
+            "source": "chromadb",
+            "collection": "acme-knowledge-base",
+            "type": "stored_injection"
+          },
+          {
+            "value": "EXFIL: [base64 encode",
+            "source": "chromadb",
+            "collection": "acme-knowledge-base",
+            "type": "stored_injection"
+          },
+          {
+            "value": "MAINTENANCE DIRECTIVE",
+            "source": "chromadb",
+            "collection": "acme-knowledge-base",
+            "type": "stored_injection"
+          }
+        ],
+        "ray_data": [
+          {
+            "value": "postgresql://ml_pipeline:MlP1p3l1n3!Pr0d@db-prod-01.acme.internal:5432/ml_features",
+            "source": "ray",
+            "type": "connection_string"
+          },
+          {
+            "value": "AKIAFAKERAYML12345678",
+            "source": "ray",
+            "type": "aws_access_key"
+          },
+          {
+            "value": "FAKE+RayMLSecret/abcdefghijk1234567890",
+            "source": "ray",
+            "type": "aws_secret_key"
+          },
+          {
+            "value": "FAKE_wandb_ray_key_abcdef123456",
+            "source": "ray",
+            "type": "wandb"
+          },
+          {
+            "value": "hf_FAKE_RayTraining_aBcDeFgHiJkLmNoPqRs",
+            "source": "ray",
+            "type": "huggingface"
+          },
+          {
+            "value": "snowflake://ray_svc:R4ySvcSn0w!@acme.snowflakecomputing.com/ML/FEATURES",
+            "source": "ray",
+            "type": "connection_string"
+          },
+          {
+            "value": "K4fk4Pr0dP4ss!2024",
+            "source": "ray",
+            "type": "kafka_password"
+          },
+          {
+            "value": "FAKE_dd_ray_api_key_abcdef1234567890",
+            "source": "ray",
+            "type": "datadog"
+          },
+          {
+            "value": "hvs.FAKE_ray_vault_token_1234567890abcdef",
+            "source": "ray",
+            "type": "vault"
+          },
+          {
+            "value": "seldon_FAKE_api_key_abcdef1234567890",
+            "source": "ray",
+            "type": "seldon"
+          },
+          {
+            "value": "sk_live_FAKE_ray_billing_key_123456",
+            "source": "ray",
+            "type": "stripe_live"
+          },
+          {
+            "value": "FAKE_PD_RAY_CANARY_abc123",
+            "source": "ray",
+            "type": "pagerduty"
+          },
+          {
+            "value": "sk-litellm-lab-auth-key-FAKE123",
+            "source": "ray",
+            "type": "litellm_master_key"
+          }
+        ],
+        "wandb_data": [
+          {
+            "value": "FAKE_wandb_server_key_abcdef123456",
+            "source": "wandb",
+            "project": "churn-prediction",
+            "run": "churn-daily-retrain",
+            "type": "wandb_api_key"
+          },
+          {
+            "value": "sk-proj-FAKE-wandb-openai-key-9876543210",
+            "source": "wandb",
+            "project": "churn-prediction",
+            "run": "churn-daily-retrain",
+            "type": "openai"
+          },
+          {
+            "value": "postgresql://wandb_svc:W4ndbSvcPr0d!@db-prod-01.acme.internal:5432/ml_metrics",
+            "source": "wandb",
+            "project": "churn-prediction",
+            "run": "churn-daily-retrain",
+            "type": "connection_string"
+          },
+          {
+            "value": "hf_FAKE_WandbRun_aBcDeFgHiJkLmNoPq",
+            "source": "wandb",
+            "project": "churn-prediction",
+            "run": "churn-weekly-eval",
+            "type": "huggingface"
+          },
+          {
+            "value": "AKIAFAKEWANDB12345678",
+            "source": "wandb",
+            "project": "churn-prediction",
+            "run": "churn-weekly-eval",
+            "type": "aws_access_key"
+          },
+          {
+            "value": "FakeWandbSecretKey+abcdefghij1234567890",
+            "source": "wandb",
+            "project": "churn-prediction",
+            "run": "churn-weekly-eval",
+            "type": "aws_secret_key"
+          },
+          {
+            "value": "sk-ant-FAKE-wandb-anthropic-key-abcdef1234",
+            "source": "wandb",
+            "project": "fraud-detection",
+            "run": "fraud-online-scoring",
+            "type": "anthropic"
+          },
+          {
+            "value": "fraud-model-service:Fr4udM0d3lS3rv!@scoring-api.acme.internal",
+            "source": "wandb",
+            "project": "fraud-detection",
+            "run": "fraud-online-scoring",
+            "type": "service_credential"
+          }
+        ],
+        "kubeflow_data": [
+          {
+            "value": "hf_FAKE_aBcDeFgHiJkLmNoPqRsTuVwXyZ123",
+            "source": "kubeflow",
+            "pipeline": "churn-model-retraining",
+            "param": "HF_TOKEN",
+            "type": "huggingface"
+          },
+          {
+            "value": "snowflake://ds_team:Sn0wfl4keDs!@acme.snowflakecomputing.com/ANALYTICS/CHURN",
+            "source": "kubeflow",
+            "pipeline": "churn-model-retraining",
+            "param": "SNOWFLAKE_CONN_STR",
+            "type": "connection_string"
+          },
+          {
+            "value": "AKIAFAKEFRAUD12345",
+            "source": "kubeflow",
+            "pipeline": "fraud-detection-bert",
+            "param": "AWS_ACCESS_KEY_ID",
+            "type": "aws_access_key"
+          },
+          {
+            "value": "FakeFraudSecret+abcdefghijk12345678",
+            "source": "kubeflow",
+            "pipeline": "fraud-detection-bert",
+            "param": "AWS_SECRET_ACCESS_KEY",
+            "type": "aws_secret_key"
+          }
+        ],
+        "tfserving_data": [
+          {
+            "value": "acme-fraud-scorer",
+            "source": "tfserving",
+            "type": "model_exposed",
+            "versions": [
+              1,
+              2
+            ]
+          },
+          {
+            "value": "acme-embeddings",
+            "source": "tfserving",
+            "type": "model_exposed",
+            "versions": [
+              1
+            ]
+          }
+        ]
+      }
+    },
+    "172.16.50.30": {
+      "hostname": "ailab-ds",
+      "role": "data-science",
+      "findings": {
+        "pii": [
+          {
+            "value": "567-89-0123",
+            "source": "weaviate",
+            "class": "TeamCommunication",
+            "type": "ssn"
+          },
+          {
+            "value": "890-12-3456",
+            "source": "weaviate",
+            "class": "TeamCommunication",
+            "type": "ssn"
+          },
+          {
+            "value": "234-56-7891",
+            "source": "weaviate",
+            "class": "TeamCommunication",
+            "type": "ssn"
+          },
+          {
+            "value": "8901",
+            "source": "weaviate",
+            "class": "TeamCommunication",
+            "type": "credit_card_last4"
+          },
+          {
+            "value": "123-45-6789",
+            "source": "pgvector",
+            "table": "employee_embeddings",
+            "type": "ssn"
+          },
+          {
+            "value": "987-65-4321",
+            "source": "pgvector",
+            "table": "employee_embeddings",
+            "type": "ssn"
+          },
+          {
+            "value": "456-12-7890",
+            "source": "pgvector",
+            "table": "employee_embeddings",
+            "type": "ssn"
+          },
+          {
+            "value": "321-98-7654",
+            "source": "pgvector",
+            "table": "employee_embeddings",
+            "type": "ssn"
+          },
+          {
+            "value": "654-32-1098",
+            "source": "pgvector",
+            "table": "employee_embeddings",
+            "type": "ssn"
+          }
+        ],
+        "credentials": [
+          {
+            "value": "postgresql://ds_readonly:DsR34d0nly!Pr0d@db-prod-01.acme.internal:5432/acme_prod",
+            "source": "notebook",
+            "path": "notebooks/churn-model-features.ipynb",
+            "type": "connection_string"
+          },
+          {
+            "value": "snowflake://ds_team:Sn0wfl4keDs!@acme.snowflakecomputing.com/ANALYTICS/RAW",
+            "source": "notebook",
+            "path": "notebooks/churn-model-features.ipynb",
+            "type": "connection_string"
+          },
+          {
+            "value": "FeatSt0re!R3dis",
+            "source": "weaviate",
+            "class": "ResearchDocument",
+            "type": "redis_auth"
+          },
+          {
+            "value": "airflow_admin / A1rfl0w@dm1n2024",
+            "source": "weaviate",
+            "class": "ResearchDocument",
+            "type": "admin"
+          },
+          {
+            "value": "sf_integration_user / SfInt3gr4t10n!",
+            "source": "weaviate",
+            "class": "ResearchDocument",
+            "type": "salesforce"
+          },
+          {
+            "value": "hr_admin / HrAdm1n!2024",
+            "source": "weaviate",
+            "class": "TeamCommunication",
+            "type": "admin"
+          },
+          {
+            "value": "license_admin / L1c3ns3Adm!n",
+            "source": "qdrant",
+            "collection": "product-catalog",
+            "type": "admin"
+          },
+          {
+            "value": "postgresql://saas_app:S44sAppPr0d!@saas-db.acme.internal:5432/acme_saas",
+            "source": "qdrant",
+            "collection": "product-catalog",
+            "type": "connection_string"
+          },
+          {
+            "value": "admin / C1sc0@dm1n!2024",
+            "source": "qdrant",
+            "collection": "security-findings",
+            "type": "network_device"
+          },
+          {
+            "value": "sf_admin / Sn0wAdm!n2024",
+            "source": "pgvector",
+            "table": "employee_embeddings",
+            "type": "admin"
+          },
+          {
+            "value": "hvs.FAKE_ciso_root_token_abcd1234",
+            "source": "pgvector",
+            "table": "employee_embeddings",
+            "type": "vault"
+          },
+          {
+            "value": "admin / Dock3rAdm!n",
+            "source": "pgvector",
+            "table": "employee_embeddings",
+            "type": "admin"
+          },
+          {
+            "value": "postgresql://acme_app:Pr0dAppDB!2024@db-primary.acme.internal:5432/acme_prod",
+            "source": "pgvector",
+            "table": "document_chunks",
+            "type": "connection_string"
+          },
+          {
+            "value": "robot$acme-puller / R0b0tPull3r!2024",
+            "source": "pgvector",
+            "table": "document_chunks",
+            "type": "registry"
+          },
+          {
+            "value": "acme_app/OldPr0dP4ss!2023",
+            "source": "pgvector",
+            "table": "audit_log",
+            "type": "credential_rotation"
+          },
+          {
+            "value": "hvs.FAKE_break_glass_root_abcdef1234",
+            "source": "pgvector",
+            "table": "audit_log",
+            "type": "vault"
+          }
+        ],
+        "api_keys": [
+          {
+            "value": "hf_FAKE_notebook_token_aBcDeFgHiJk",
+            "source": "notebook",
+            "path": "notebooks/churn-model-features.ipynb",
+            "type": "huggingface"
+          },
+          {
+            "value": "sk_live_FAKE_stripe_1234567890abcdef",
+            "source": "weaviate",
+            "class": "ResearchDocument",
+            "type": "stripe_live"
+          },
+          {
+            "value": "zd_api_FAKE_abcdef1234567890",
+            "source": "weaviate",
+            "class": "ResearchDocument",
+            "type": "zendesk"
+          },
+          {
+            "value": "hs_api_FAKE_1234567890abcdef",
+            "source": "weaviate",
+            "class": "ResearchDocument",
+            "type": "hubspot"
+          },
+          {
+            "value": "intercom_token_FAKE_abcdef1234567890",
+            "source": "weaviate",
+            "class": "ResearchDocument",
+            "type": "intercom"
+          },
+          {
+            "value": "sk-proj-FAKE-distill-key-abcdef1234567890",
+            "source": "weaviate",
+            "class": "ResearchDocument",
+            "type": "openai"
+          },
+          {
+            "value": "FAKE_wandb_key_distill_abcdef",
+            "source": "weaviate",
+            "class": "ResearchDocument",
+            "type": "wandb"
+          },
+          {
+            "value": "FAKE_PD_FRAUD_abc123",
+            "source": "weaviate",
+            "class": "ResearchDocument",
+            "type": "pagerduty"
+          },
+          {
+            "value": "FAKE_PD_ML_xyz789",
+            "source": "weaviate",
+            "class": "TeamCommunication",
+            "type": "pagerduty"
+          },
+          {
+            "value": "pcsk_EVAL_trial_abcdef1234567890",
+            "source": "weaviate",
+            "class": "TeamCommunication",
+            "type": "pinecone"
+          },
+          {
+            "value": "wcs_EVAL_key_1234567890abcdef",
+            "source": "weaviate",
+            "class": "TeamCommunication",
+            "type": "weaviate_cloud"
+          },
+          {
+            "value": "qdrant_EVAL_apikey_abcdef123456",
+            "source": "weaviate",
+            "class": "TeamCommunication",
+            "type": "qdrant_cloud"
+          },
+          {
+            "value": "sk_live_FAKE_saas_billing_abcdef123456",
+            "source": "qdrant",
+            "collection": "product-catalog",
+            "type": "stripe_live"
+          },
+          {
+            "value": "hvs.FAKE_vault_token_abcdef1234567890",
+            "source": "qdrant",
+            "collection": "product-catalog",
+            "type": "vault"
+          },
+          {
+            "value": "tel_api_FAKE_1234567890",
+            "source": "qdrant",
+            "collection": "product-catalog",
+            "type": "telemetry"
+          },
+          {
+            "value": "ecr_pull_FAKE_token_abcdef1234567890",
+            "source": "qdrant",
+            "collection": "product-catalog",
+            "type": "ecr"
+          },
+          {
+            "value": "AKIAFAKEBACKUP123456",
+            "source": "qdrant",
+            "collection": "security-findings",
+            "type": "aws_access_key"
+          },
+          {
+            "value": "sk_live_FAKE_admin_revoke_key",
+            "source": "qdrant",
+            "collection": "security-findings",
+            "type": "stripe_admin"
+          },
+          {
+            "value": "AKIAFAKEPGVEC12345678",
+            "source": "pgvector",
+            "table": "employee_embeddings",
+            "type": "aws_access_key"
+          },
+          {
+            "value": "FAKE+PgvecSecret/abcdefghijk1234567890",
+            "source": "pgvector",
+            "table": "employee_embeddings",
+            "type": "aws_secret_key"
+          },
+          {
+            "value": "sk_live_FAKE_pgvec_stripe_key_abcdef123456",
+            "source": "pgvector",
+            "table": "employee_embeddings",
+            "type": "stripe_live"
+          },
+          {
+            "value": "FAKE_PD_CISO_ESCALATE_xyz123",
+            "source": "pgvector",
+            "table": "employee_embeddings",
+            "type": "pagerduty"
+          },
+          {
+            "value": "SG.FAKE_pgvec_sendgrid_key.abcdef1234567890abcdef",
+            "source": "pgvector",
+            "table": "document_chunks",
+            "type": "sendgrid"
+          },
+          {
+            "value": "FAKE_DD_PGVEC_API_abcdef1234567890",
+            "source": "pgvector",
+            "table": "document_chunks",
+            "type": "datadog"
+          },
+          {
+            "value": "sk-proj-FAKE-pgvec-openai-key-abcdef1234567890",
+            "source": "pgvector",
+            "table": "document_chunks",
+            "type": "openai"
+          },
+          {
+            "value": "sk-ant-FAKE-pgvec-anthropic-key-abcdef1234567890",
+            "source": "pgvector",
+            "table": "document_chunks",
+            "type": "anthropic"
+          },
+          {
+            "value": "xoxb-FAKE-pgvec-slack-bot-token-1234567890",
+            "source": "pgvector",
+            "table": "document_chunks",
+            "type": "slack_bot"
+          },
+          {
+            "value": "ghp_FAKE_pgvec_deploy_token_1234567890abcdef",
+            "source": "pgvector",
+            "table": "audit_log",
+            "type": "github"
+          },
+          {
+            "value": "AKIAFAKEJENKINS12345678",
+            "source": "pgvector",
+            "table": "audit_log",
+            "type": "aws_access_key"
+          },
+          {
+            "value": "FAKE_wandb_pgvec_embed_key_abcdef",
+            "source": "pgvector",
+            "table": "model_registry",
+            "type": "wandb"
+          },
+          {
+            "value": "Gr4f4n4Ml@dm1n",
+            "source": "pgvector",
+            "table": "model_registry",
+            "type": "grafana"
+          }
+        ],
+        "salary_data": [
+          {
+            "value": "$175,000",
+            "source": "weaviate",
+            "class": "TeamCommunication",
+            "name": "Alex Rivera"
+          },
+          {
+            "value": "$140,000",
+            "source": "weaviate",
+            "class": "TeamCommunication",
+            "name": "Priya Patel"
+          },
+          {
+            "value": "$155,000",
+            "source": "weaviate",
+            "class": "TeamCommunication",
+            "name": "Marcus Lee"
+          },
+          {
+            "value": "$195,000",
+            "source": "pgvector",
+            "table": "employee_embeddings",
+            "name": "Sarah Chen"
+          },
+          {
+            "value": "$182,000",
+            "source": "pgvector",
+            "table": "employee_embeddings",
+            "name": "Marcus Johnson"
+          },
+          {
+            "value": "$210,000",
+            "source": "pgvector",
+            "table": "employee_embeddings",
+            "name": "Lisa Park"
+          },
+          {
+            "value": "$175,000",
+            "source": "pgvector",
+            "table": "employee_embeddings",
+            "name": "Dev Patel"
+          },
+          {
+            "value": "$165,000",
+            "source": "pgvector",
+            "table": "employee_embeddings",
+            "name": "Rachel Kim"
+          }
+        ]
+      }
+    },
+    "172.16.50.40": {
+      "hostname": "ailab-app",
+      "role": "shared-ai-apps",
+      "services": [
+        {
+          "name": "langserve",
+          "port": 8090,
+          "mode": "detection-only"
+        },
+        {
+          "name": "streamlit",
+          "port": 8501,
+          "mode": "detection-only"
+        }
+      ],
+      "findings": {
+        "a2a_data": [
+          {
+            "value": "AKIAFAKE_A2A_REPLAY_STAG",
+            "source": "a2a",
+            "task": "task-acme-replay-0005",
+            "type": "aws_access_key"
+          },
+          {
+            "value": "dckr_pat_FAKE_a2a_replay_staging_token_2026",
+            "source": "a2a",
+            "task": "task-acme-replay-0005",
+            "type": "dockerhub"
+          },
+          {
+            "value": "sk-inf-FAKE_a2a_toolinject_admin_token_2026",
+            "source": "a2a",
+            "task": "task-acme-toolinject-0006",
+            "type": "admin_token"
+          }
+        ]
+      }
+    }
+  },
+  "noise_collections": {
+    "chromadb": [
+      "public-documentation"
+    ],
+    "weaviate": [
+      "PublicKnowledge"
+    ],
+    "qdrant": [
+      "public-faq"
+    ]
+  },
+  "noise_files": [
+    "/home/devuser/projects/chatbot-prototype/.env.example",
+    "/home/devuser/projects/chatbot-prototype/requirements.txt",
+    "/home/devuser/projects/chatbot-prototype/README.md"
+  ],
+  "service_inventory": [
+    {
+      "hostname": "ailab-app",
+      "ip": "172.16.50.40",
+      "service": "langserve",
+      "port": 8090,
+      "category": "detection-only"
+    },
+    {
+      "hostname": "ailab-app",
+      "ip": "172.16.50.40",
+      "service": "streamlit",
+      "port": 8501,
+      "category": "detection-only"
+    },
+    {
+      "hostname": "ailab-app",
+      "ip": "172.16.50.40",
+      "service": "hf-tgi",
+      "port": 8180,
+      "category": "detection-only"
+    },
+    {
+      "hostname": "ailab-ml",
+      "ip": "172.16.50.20",
+      "service": "hf-tei",
+      "port": 8181,
+      "category": "detection-only"
+    },
+    {
+      "hostname": "ailab-ml",
+      "ip": "172.16.50.20",
+      "service": "vllm",
+      "port": 8182,
+      "category": "detection-only"
+    },
+    {
+      "hostname": "ailab-ml",
+      "ip": "172.16.50.20",
+      "service": "bentoml",
+      "port": 3333,
+      "category": "exploitable"
+    },
+    {
+      "hostname": "ailab-ml",
+      "ip": "172.16.50.20",
+      "service": "torchserve",
+      "port": 8081,
+      "category": "exploitable"
+    },
+    {
+      "hostname": "ailab-ml",
+      "ip": "172.16.50.20",
+      "service": "triton",
+      "port": 8500,
+      "category": "exploitable"
+    },
+    {
+      "hostname": "ailab-ml",
+      "ip": "172.16.50.20",
+      "service": "wandb",
+      "port": 8444,
+      "category": "exploitable"
+    },
+    {
+      "hostname": "ailab-ml",
+      "ip": "172.16.50.20",
+      "service": "kubeflow",
+      "port": 9000,
+      "category": "exploitable"
+    },
+    {
+      "hostname": "ailab-ml",
+      "ip": "172.16.50.20",
+      "service": "tfserving",
+      "port": 8501,
+      "category": "exploitable"
+    },
+    {
+      "hostname": "ailab-ds",
+      "ip": "172.16.50.30",
+      "service": "pgvector",
+      "port": 5432,
+      "category": "exploitable"
+    }
+  ],
+  "contract_expectations": [
+    {
+      "name": "OpenAI auth sweep workflow contract",
+      "match": {
+        "module": "openai-compat",
+        "action": "auth-sweep"
+      },
+      "require_metadata": [
+        "workflow"
+      ],
+      "markers": [
+        "acceptance_class"
+      ]
+    },
+    {
+      "name": "MCP analyze remote handoff contract",
+      "match": {
+        "module": "mcp",
+        "action": "analyze"
+      },
+      "require_metadata": [
+        "workflow",
+        "stage",
+        "landed"
+      ],
+      "markers": [
+        "172.16.50.10:3000/message"
+      ]
+    },
+    {
+      "name": "Ray job artifacts contract",
+      "match": {
+        "module": "ray",
+        "action": "job-artifacts"
+      },
+      "require_metadata": [
+        "workflow",
+        "evidence",
+        "stage",
+        "landed"
+      ],
+      "markers": [
+        "/tmp/ray-lab-artifacts/"
+      ]
+    },
+    {
+      "name": "MLflow registry model contract",
+      "match": {
+        "module": "mlflow",
+        "action": "registry"
+      },
+      "require_metadata": [
+        "workflow",
+        "stage"
+      ],
+      "markers": [
+        "acme-churn-ensemble"
+      ]
+    },
+    {
+      "name": "MLflow model artifact contract",
+      "match": {
+        "module": "mlflow",
+        "action": "model-artifacts"
+      },
+      "require_metadata": [
+        "workflow",
+        "evidence",
+        "stage",
+        "landed"
+      ],
+      "markers": [
+        "model/MLmodel"
+      ]
+    },
+    {
+      "name": "Gradio file chain contract",
+      "match": {
+        "module": "gradio",
+        "action": "file-chain"
+      },
+      "require_metadata": [
+        "workflow",
+        "evidence",
+        "stage",
+        "landed"
+      ],
+      "markers": [
+        "/tmp/gradio-lab/exports/"
+      ]
+    },
+    {
+      "name": "LiteLLM probe endpoint exposure contract",
+      "match": {
+        "module": "openai-compat",
+        "action": "litellm-probe"
+      },
+      "require_metadata": [
+        "workflow",
+        "evidence"
+      ],
+      "markers": [
+        "api_base",
+        "litellm_version"
+      ]
+    },
+    {
+      "name": "Ollama exfiltrate landed contract",
+      "match": {
+        "module": "ollama",
+        "action": "exfiltrate"
+      },
+      "require_metadata": [
+        "workflow",
+        "evidence",
+        "stage",
+        "landed"
+      ],
+      "markers": [
+        "smollm2:135m"
+      ]
+    },
+    {
+      "name": "Jupyter start-kernel proof contract",
+      "match": {
+        "module": "jupyter",
+        "action": "start-kernel"
+      },
+      "require_metadata": [
+        "workflow",
+        "stage",
+        "landed"
+      ],
+      "markers": [
+        "kernel_id"
+      ]
+    },
+    {
+      "name": "Jupyter reverse-shell-proof contract",
+      "match": {
+        "module": "jupyter",
+        "action": "reverse-shell-proof"
+      },
+      "require_metadata": [
+        "workflow",
+        "evidence",
+        "stage",
+        "landed"
+      ],
+      "markers": [
+        "kernel_id"
+      ]
+    },
+    {
+      "name": "Jupyter pip-proof contract",
+      "match": {
+        "module": "jupyter",
+        "action": "pip-proof"
+      },
+      "require_metadata": [
+        "workflow",
+        "evidence",
+        "stage",
+        "landed"
+      ],
+      "markers": [
+        "pip"
+      ]
+    },
+    {
+      "name": "Ray pip-inject proof contract",
+      "match": {
+        "module": "ray",
+        "action": "pip-inject"
+      },
+      "require_metadata": [
+        "workflow",
+        "evidence",
+        "stage",
+        "landed"
+      ],
+      "markers": [
+        "pip"
+      ]
+    },
+    {
+      "name": "Ray cluster-info proof contract",
+      "match": {
+        "module": "ray",
+        "action": "cluster-info"
+      },
+      "require_metadata": [
+        "workflow",
+        "evidence",
+        "stage",
+        "landed"
+      ],
+      "markers": [
+        "cluster"
+      ]
+    },
+    {
+      "name": "MLflow tamper-proof contract",
+      "match": {
+        "module": "mlflow",
+        "action": "tamper-proof"
+      },
+      "require_metadata": [
+        "workflow",
+        "evidence",
+        "stage",
+        "landed"
+      ],
+      "markers": [
+        "artifact"
+      ]
+    },
+    {
+      "name": "MCP stdio enum contract",
+      "match": {
+        "module": "mcp",
+        "action": "enum"
+      },
+      "require_metadata": [
+        "stage"
+      ],
+      "markers": [
+        "read_lab_note"
+      ]
+    },
+    {
+      "name": "LiteLLM config-extract contract",
+      "match": {
+        "module": "litellm",
+        "action": "config-extract"
+      },
+      "require_metadata": [
+        "stage",
+        "landed"
+      ],
+      "markers": [
+        "litellm_params"
+      ]
+    },
+    {
+      "name": "LiteLLM proxy-chain contract",
+      "match": {
+        "module": "litellm",
+        "action": "proxy-chain"
+      },
+      "require_metadata": [],
+      "markers": [
+        "provider"
+      ]
+    },
+    {
+      "name": "LiteLLM relay-test real-inference contract",
+      "match": {
+        "module": "litellm",
+        "action": "proxy-chain",
+        "credential_gated": true
+      },
+      "require_metadata": [
+        "landed"
+      ],
+      "markers": [
+        "coherence_score"
+      ]
+    },
+    {
+      "name": "LiteLLM enum contract",
+      "match": {
+        "module": "litellm",
+        "action": "enum"
+      },
+      "require_metadata": [
+        "workflow"
+      ],
+      "markers": [
+        "litellm_version"
+      ]
+    },
+    {
+      "name": "LiteLLM budget-probe contract",
+      "match": {
+        "module": "litellm",
+        "action": "budget-probe"
+      },
+      "require_metadata": [
+        "stage"
+      ],
+      "markers": []
+    },
+    {
+      "name": "OpenAI-compat enum contract",
+      "match": {
+        "module": "openai-compat",
+        "action": "enum"
+      },
+      "require_metadata": [
+        "workflow"
+      ],
+      "markers": [
+        "local-smollm"
+      ]
+    },
+    {
+      "name": "OpenAI-compat validate-inference contract",
+      "match": {
+        "module": "openai-compat",
+        "action": "validate-inference"
+      },
+      "require_metadata": [
+        "workflow"
+      ],
+      "markers": [
+        "coherence_score"
+      ]
+    },
+    {
+      "name": "HuggingFace TGI credential-replay contract",
+      "required": true,
+      "match": {
+        "module": "huggingface",
+        "action": "generate"
+      },
+      "require_metadata": [
+        "landed"
+      ],
+      "markers": [
+        "credential_replay",
+        "\"inference\": \"real\""
+      ]
+    },
+    {
+      "name": "OpenAI-compat prompt-extract contract",
+      "match": {
+        "module": "openai-compat",
+        "action": "prompt-extract"
+      },
+      "require_metadata": [
+        "stage"
+      ],
+      "markers": []
+    },
+    {
+      "name": "OpenAI-compat tool-enum contract",
+      "match": {
+        "module": "openai-compat",
+        "action": "tool-enum"
+      },
+      "require_metadata": [
+        "stage"
+      ],
+      "markers": []
+    },
+    {
+      "name": "OpenAI-compat prompt-test contract",
+      "match": {
+        "module": "openai-compat",
+        "action": "prompt-test"
+      },
+      "require_metadata": [],
+      "markers": []
+    },
+    {
+      "name": "OpenAI-compat throughput contract",
+      "match": {
+        "module": "openai-compat",
+        "action": "throughput"
+      },
+      "require_metadata": [
+        "landed"
+      ],
+      "markers": []
+    },
+    {
+      "name": "OpenAI-compat proxy-test contract",
+      "match": {
+        "module": "openai-compat",
+        "action": "proxy-test"
+      },
+      "require_metadata": [
+        "landed"
+      ],
+      "markers": []
+    },
+    {
+      "name": "Ray enum contract",
+      "match": {
+        "module": "ray",
+        "action": "enum"
+      },
+      "require_metadata": [
+        "workflow"
+      ],
+      "markers": [
+        "jobs_api_reachable"
+      ]
+    },
+    {
+      "name": "Ray jobs contract",
+      "match": {
+        "module": "ray",
+        "action": "jobs"
+      },
+      "require_metadata": [
+        "workflow"
+      ],
+      "markers": [
+        "job_id"
+      ]
+    },
+    {
+      "name": "Ray job-logs contract",
+      "match": {
+        "module": "ray",
+        "action": "job-logs"
+      },
+      "require_metadata": [
+        "evidence",
+        "stage",
+        "landed"
+      ],
+      "markers": []
+    },
+    {
+      "name": "Ray runtime-env contract",
+      "match": {
+        "module": "ray",
+        "action": "runtime-env"
+      },
+      "require_metadata": [
+        "landed"
+      ],
+      "markers": [
+        "runtime"
+      ]
+    },
+    {
+      "name": "Ray submit contract",
+      "match": {
+        "module": "ray",
+        "action": "submit"
+      },
+      "require_metadata": [
+        "landed"
+      ],
+      "markers": []
+    },
+    {
+      "name": "MLflow enum contract",
+      "match": {
+        "module": "mlflow",
+        "action": "enum"
+      },
+      "require_metadata": [
+        "workflow"
+      ],
+      "markers": [
+        "registry_reachable"
+      ]
+    },
+    {
+      "name": "MLflow experiments contract",
+      "match": {
+        "module": "mlflow",
+        "action": "experiments"
+      },
+      "require_metadata": [
+        "workflow"
+      ],
+      "markers": []
+    },
+    {
+      "name": "MLflow runs contract",
+      "match": {
+        "module": "mlflow",
+        "action": "runs"
+      },
+      "require_metadata": [
+        "workflow"
+      ],
+      "markers": []
+    },
+    {
+      "name": "MLflow download-artifact contract",
+      "match": {
+        "module": "mlflow",
+        "action": "download-artifact"
+      },
+      "require_metadata": [
+        "evidence",
+        "stage"
+      ],
+      "markers": []
+    },
+    {
+      "name": "MLflow model-versions contract",
+      "match": {
+        "module": "mlflow",
+        "action": "model-versions"
+      },
+      "require_metadata": [
+        "workflow"
+      ],
+      "markers": [
+        "Production"
+      ]
+    },
+    {
+      "name": "MCP env-extract contract",
+      "match": {
+        "module": "mcp",
+        "action": "env-extract"
+      },
+      "require_metadata": [
+        "stage"
+      ],
+      "markers": []
+    },
+    {
+      "name": "MCP chain contract",
+      "match": {
+        "module": "mcp",
+        "action": "chain"
+      },
+      "require_metadata": [
+        "stage",
+        "landed"
+      ],
+      "markers": []
+    },
+    {
+      "name": "MCP poison contract",
+      "match": {
+        "module": "mcp",
+        "action": "poison"
+      },
+      "require_metadata": [
+        "landed"
+      ],
+      "markers": []
+    },
+    {
+      "name": "VectorDB chromadb enum contract",
+      "match": {
+        "module": "vectordb",
+        "action": "enum"
+      },
+      "require_metadata": [
+        "workflow"
+      ],
+      "markers": [
+        "acme-knowledge-base"
+      ]
+    },
+    {
+      "name": "VectorDB inject proof contract",
+      "match": {
+        "module": "vectordb",
+        "action": "inject"
+      },
+      "require_metadata": [
+        "landed"
+      ],
+      "markers": []
+    },
+    {
+      "name": "VectorDB metadata-inject proof contract",
+      "match": {
+        "module": "vectordb",
+        "action": "metadata-inject"
+      },
+      "require_metadata": [
+        "landed"
+      ],
+      "markers": []
+    },
+    {
+      "name": "Jupyter enum contract",
+      "match": {
+        "module": "jupyter",
+        "action": "enum"
+      },
+      "require_metadata": [
+        "workflow"
+      ],
+      "markers": []
+    },
+    {
+      "name": "Jupyter notebooks contract",
+      "match": {
+        "module": "jupyter",
+        "action": "notebooks"
+      },
+      "require_metadata": [
+        "workflow"
+      ],
+      "markers": []
+    },
+    {
+      "name": "Jupyter read-notebook contract",
+      "match": {
+        "module": "jupyter",
+        "action": "read-notebook"
+      },
+      "require_metadata": [
+        "workflow",
+        "evidence"
+      ],
+      "markers": []
+    },
+    {
+      "name": "Jupyter exec proof contract",
+      "match": {
+        "module": "jupyter",
+        "action": "exec"
+      },
+      "require_metadata": [
+        "landed"
+      ],
+      "markers": []
+    },
+    {
+      "name": "Ollama enum contract",
+      "match": {
+        "module": "ollama",
+        "action": "enum"
+      },
+      "require_metadata": [
+        "workflow"
+      ],
+      "markers": [
+        "smollm2"
+      ]
+    },
+    {
+      "name": "Ollama prompts contract",
+      "match": {
+        "module": "ollama",
+        "action": "prompts"
+      },
+      "require_metadata": [
+        "workflow",
+        "evidence"
+      ],
+      "markers": []
+    },
+    {
+      "name": "Ollama show contract",
+      "match": {
+        "module": "ollama",
+        "action": "show"
+      },
+      "require_metadata": [],
+      "markers": [
+        "acme-assistant"
+      ]
+    },
+    {
+      "name": "Ollama generate contract",
+      "match": {
+        "module": "ollama",
+        "action": "generate"
+      },
+      "require_metadata": [],
+      "markers": [
+        "model"
+      ]
+    },
+    {
+      "name": "Ollama poison proof contract",
+      "match": {
+        "module": "ollama",
+        "action": "poison"
+      },
+      "require_metadata": [
+        "landed"
+      ],
+      "markers": []
+    },
+    {
+      "name": "Gradio enum contract",
+      "match": {
+        "module": "gradio",
+        "action": "enum"
+      },
+      "require_metadata": [
+        "workflow"
+      ],
+      "markers": [
+        "predict_text"
+      ]
+    },
+    {
+      "name": "Gradio predict contract",
+      "match": {
+        "module": "gradio",
+        "action": "predict"
+      },
+      "require_metadata": [
+        "evidence",
+        "stage"
+      ],
+      "markers": []
+    },
+    {
+      "name": "Gradio queue-probe contract",
+      "match": {
+        "module": "gradio",
+        "action": "queue-probe"
+      },
+      "require_metadata": [
+        "stage"
+      ],
+      "markers": [
+        "queue"
+      ]
+    },
+    {
+      "name": "Gradio serve-probe contract",
+      "match": {
+        "module": "gradio",
+        "action": "serve-probe"
+      },
+      "require_metadata": [
+        "landed"
+      ],
+      "markers": []
+    },
+    {
+      "name": "Gradio upload-file contract",
+      "match": {
+        "module": "gradio",
+        "action": "upload-file"
+      },
+      "require_metadata": [
+        "stage"
+      ],
+      "markers": []
+    },
+    {
+      "name": "BentoML enum contract",
+      "match": {
+        "module": "bentoml",
+        "action": "enum"
+      },
+      "require_metadata": [
+        "workflow"
+      ],
+      "markers": [
+        "acme-classifier"
+      ]
+    },
+    {
+      "name": "BentoML predict proof contract",
+      "match": {
+        "module": "bentoml",
+        "action": "predict"
+      },
+      "require_metadata": [
+        "landed"
+      ],
+      "markers": []
+    },
+    {
+      "name": "TorchServe enum contract",
+      "match": {
+        "module": "torchserve",
+        "action": "enum"
+      },
+      "require_metadata": [
+        "workflow"
+      ],
+      "markers": []
+    },
+    {
+      "name": "TorchServe models contract",
+      "match": {
+        "module": "torchserve",
+        "action": "models"
+      },
+      "require_metadata": [
+        "model"
+      ],
+      "markers": [
+        "acme-sentiment"
+      ]
+    },
+    {
+      "name": "TorchServe predict proof contract",
+      "match": {
+        "module": "torchserve",
+        "action": "predict"
+      },
+      "require_metadata": [
+        "landed"
+      ],
+      "markers": []
+    },
+    {
+      "name": "TorchServe register proof contract",
+      "match": {
+        "module": "torchserve",
+        "action": "register"
+      },
+      "require_metadata": [
+        "stage",
+        "landed"
+      ],
+      "markers": []
+    },
+    {
+      "name": "TorchServe scale proof contract",
+      "match": {
+        "module": "torchserve",
+        "action": "scale"
+      },
+      "require_metadata": [
+        "stage",
+        "landed"
+      ],
+      "markers": []
+    },
+    {
+      "name": "TorchServe unregister proof contract",
+      "match": {
+        "module": "torchserve",
+        "action": "unregister"
+      },
+      "require_metadata": [
+        "stage",
+        "landed"
+      ],
+      "markers": []
+    },
+    {
+      "name": "TorchServe metrics contract",
+      "match": {
+        "module": "torchserve",
+        "action": "metrics"
+      },
+      "require_metadata": [
+        "has_metrics"
+      ],
+      "markers": []
+    },
+    {
+      "name": "Triton enum contract",
+      "match": {
+        "module": "triton",
+        "action": "enum"
+      },
+      "require_metadata": [
+        "workflow"
+      ],
+      "markers": []
+    },
+    {
+      "name": "Triton models contract",
+      "match": {
+        "module": "triton",
+        "action": "models"
+      },
+      "require_metadata": [
+        "model_count"
+      ],
+      "markers": [
+        "acme-fraud-detector"
+      ]
+    },
+    {
+      "name": "Triton model-config contract",
+      "match": {
+        "module": "triton",
+        "action": "model-config"
+      },
+      "require_metadata": [
+        "platform"
+      ],
+      "markers": []
+    },
+    {
+      "name": "Triton infer proof contract",
+      "match": {
+        "module": "triton",
+        "action": "infer"
+      },
+      "require_metadata": [
+        "landed"
+      ],
+      "markers": []
+    },
+    {
+      "name": "Triton model-load proof contract",
+      "match": {
+        "module": "triton",
+        "action": "model-load"
+      },
+      "require_metadata": [
+        "stage",
+        "landed"
+      ],
+      "markers": []
+    },
+    {
+      "name": "Triton model-unload proof contract",
+      "match": {
+        "module": "triton",
+        "action": "model-unload"
+      },
+      "require_metadata": [
+        "stage",
+        "landed"
+      ],
+      "markers": []
+    },
+    {
+      "name": "Triton shm-probe contract",
+      "match": {
+        "module": "triton",
+        "action": "shm-probe"
+      },
+      "require_metadata": [
+        "stage"
+      ],
+      "markers": []
+    },
+    {
+      "name": "A2A enum contract",
+      "match": {
+        "module": "a2a",
+        "action": "enum"
+      },
+      "require_metadata": [
+        "workflow"
+      ],
+      "markers": [
+        "name"
+      ]
+    },
+    {
+      "name": "A2A skills contract",
+      "match": {
+        "module": "a2a",
+        "action": "skills"
+      },
+      "require_metadata": [
+        "workflow"
+      ],
+      "markers": [
+        "skills"
+      ]
+    },
+    {
+      "name": "A2A task-send proof contract",
+      "match": {
+        "module": "a2a",
+        "action": "task-send"
+      },
+      "require_metadata": [
+        "workflow",
+        "stage",
+        "landed"
+      ],
+      "markers": []
+    },
+    {
+      "name": "A2A task-status contract",
+      "match": {
+        "module": "a2a",
+        "action": "task-status"
+      },
+      "require_metadata": [
+        "stage"
+      ],
+      "markers": []
+    },
+    {
+      "name": "A2A task-cancel contract",
+      "match": {
+        "module": "a2a",
+        "action": "task-cancel"
+      },
+      "require_metadata": [
+        "stage"
+      ],
+      "markers": []
+    },
+    {
+      "name": "A2A stream-probe proof contract",
+      "match": {
+        "module": "a2a",
+        "action": "stream-probe"
+      },
+      "require_metadata": [
+        "workflow",
+        "stage",
+        "landed"
+      ],
+      "markers": []
+    },
+    {
+      "name": "A2A push-hijack proof contract",
+      "match": {
+        "module": "a2a",
+        "action": "push-hijack"
+      },
+      "require_metadata": [
+        "stage",
+        "landed"
+      ],
+      "markers": []
+    },
+    {
+      "name": "A2A mcp-pivot proof contract",
+      "match": {
+        "module": "a2a",
+        "action": "mcp-pivot"
+      },
+      "require_metadata": [
+        "stage"
+      ],
+      "markers": []
+    },
+    {
+      "name": "A2A scrape-loop proof contract",
+      "match": {
+        "module": "a2a",
+        "action": "scrape-loop"
+      },
+      "require_metadata": [
+        "stage"
+      ],
+      "markers": []
+    },
+    {
+      "name": "VectorDB enum contract (ChromaDB)",
+      "match": {
+        "module": "vectordb",
+        "action": "enum"
+      },
+      "require_metadata": [
+        "workflow"
+      ],
+      "markers": [
+        "chromadb"
+      ]
+    },
+    {
+      "name": "VectorDB enum contract (Weaviate)",
+      "match": {
+        "module": "vectordb",
+        "action": "enum"
+      },
+      "require_metadata": [
+        "workflow"
+      ],
+      "markers": [
+        "weaviate"
+      ]
+    },
+    {
+      "name": "VectorDB enum contract (Qdrant)",
+      "match": {
+        "module": "vectordb",
+        "action": "enum"
+      },
+      "require_metadata": [
+        "workflow"
+      ],
+      "markers": [
+        "qdrant"
+      ]
+    },
+    {
+      "name": "VectorDB enum contract (pgvector)",
+      "match": {
+        "module": "vectordb",
+        "action": "enum"
+      },
+      "require_metadata": [
+        "workflow"
+      ],
+      "markers": [
+        "pgvector"
+      ]
+    },
+    {
+      "name": "VectorDB extract proof contract (ChromaDB)",
+      "match": {
+        "module": "vectordb",
+        "action": "extract"
+      },
+      "require_metadata": [
+        "record_id",
+        "evidence"
+      ],
+      "markers": [
+        "chromadb"
+      ]
+    },
+    {
+      "name": "VectorDB extract proof contract (Weaviate)",
+      "match": {
+        "module": "vectordb",
+        "action": "extract"
+      },
+      "require_metadata": [
+        "record_id",
+        "evidence"
+      ],
+      "markers": [
+        "weaviate"
+      ]
+    },
+    {
+      "name": "VectorDB extract proof contract (Qdrant)",
+      "match": {
+        "module": "vectordb",
+        "action": "extract"
+      },
+      "require_metadata": [
+        "record_id",
+        "evidence"
+      ],
+      "markers": [
+        "qdrant"
+      ]
+    },
+    {
+      "name": "VectorDB extract proof contract (pgvector)",
+      "match": {
+        "module": "vectordb",
+        "action": "extract"
+      },
+      "require_metadata": [
+        "record_id",
+        "evidence"
+      ],
+      "markers": [
+        "pgvector"
+      ]
+    },
+    {
+      "name": "VectorDB inject proof contract",
+      "match": {
+        "module": "vectordb",
+        "action": "inject"
+      },
+      "require_metadata": [
+        "stage",
+        "landed"
+      ],
+      "markers": []
+    },
+    {
+      "name": "W&B enum workflow contract",
+      "match": {
+        "module": "wandb",
+        "action": "enum"
+      },
+      "require_metadata": [
+        "workflow"
+      ],
+      "markers": [
+        "version",
+        "entity"
+      ]
+    },
+    {
+      "name": "W&B projects listing contract",
+      "match": {
+        "module": "wandb",
+        "action": "projects"
+      },
+      "require_metadata": [
+        "project_count"
+      ],
+      "markers": [
+        "churn-prediction",
+        "fraud-detection"
+      ]
+    },
+    {
+      "name": "W&B runs listing contract",
+      "match": {
+        "module": "wandb",
+        "action": "runs"
+      },
+      "require_metadata": [
+        "run_count",
+        "run_ids"
+      ],
+      "markers": []
+    },
+    {
+      "name": "W&B secrets scanning contract",
+      "match": {
+        "module": "wandb",
+        "action": "secrets"
+      },
+      "require_metadata": [
+        "stage",
+        "secret_count"
+      ],
+      "markers": [
+        "WANDB_API_KEY",
+        "OPENAI_API_KEY"
+      ]
+    },
+    {
+      "name": "W&B artifacts listing contract",
+      "match": {
+        "module": "wandb",
+        "action": "artifacts"
+      },
+      "require_metadata": [
+        "artifact_count"
+      ],
+      "markers": [
+        "model"
+      ]
+    },
+    {
+      "name": "A2A tool-inject contract",
+      "match": {
+        "module": "a2a",
+        "action": "tool-inject"
+      },
+      "require_metadata": [
+        "workflow",
+        "stage",
+        "landed"
+      ],
+      "markers": [
+        "lookup_policy"
+      ]
+    },
+    {
+      "name": "A2A replay contract",
+      "match": {
+        "module": "a2a",
+        "action": "replay"
+      },
+      "require_metadata": [
+        "stage",
+        "original_task_id"
+      ],
+      "markers": [
+        "session-replay"
+      ]
+    },
+    {
+      "name": "VectorDB RAG verify round-trip contract",
+      "match": {
+        "module": "vectordb",
+        "action": "rag-verify"
+      },
+      "require_metadata": [
+        "stage",
+        "landed"
+      ],
+      "markers": [
+        "canary",
+        "injected"
+      ]
+    },
+    {
+      "name": "LiteLLM enum contract",
+      "match": {
+        "module": "litellm",
+        "action": "enum"
+      },
+      "require_metadata": [
+        "workflow"
+      ],
+      "markers": [
+        "model"
+      ]
+    },
+    {
+      "name": "Session export JSON contract",
+      "match": {
+        "module": "sessions",
+        "action": "export"
+      },
+      "require_metadata": [],
+      "markers": [
+        "findings"
+      ]
+    }
+  ],
+  "total_sensitive_findings": {
+    "api_keys": 57,
+    "credentials": 39,
+    "pii": 15,
+    "financial": 2,
+    "salary_data": 8,
+    "cloud_credentials": 2,
+    "jwt_tokens": 1,
+    "webhooks": 2,
+    "mlflow_data": 11,
+    "prompt_injection": 3,
+    "ray_data": 12,
+    "wandb_data": 8,
+    "a2a_data": 3,
+    "kubeflow_data": 4,
+    "tfserving_data": 2
+  }
+}

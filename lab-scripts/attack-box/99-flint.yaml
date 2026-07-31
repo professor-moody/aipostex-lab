@@ -1,0 +1,17 @@
+# 99-flint.yaml — attack box net1 (venue Flint LAN leg). RECOVERY ARTIFACT.
+#
+# Copy to /etc/netplan/99-flint.yaml on the attack box (VM 240) so it gets a stable
+# 192.168.8.99 on the Flint LAN — the `ssh pNN@` target on the slide. Matched by the
+# net1 vNIC's MAC (the kernel names it ens19). NO gateway on this leg: the estate/default
+# route stays on eth0 (net0, 172.16.50.99). After placing it: `sudo netplan apply`.
+#
+# This is already baked into the lab-ready snapshot; it lives here so a lost netplan
+# (or a fresh box) can be rebuilt to the exact venue config.
+network:
+  version: 2
+  ethernets:
+    flintlan:
+      match:
+        macaddress: bc:24:11:fd:86:88
+      addresses:
+        - 192.168.8.99/24

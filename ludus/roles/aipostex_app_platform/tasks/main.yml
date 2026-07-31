@@ -1,0 +1,46 @@
+---
+# aipostex_app_platform — wraps lab-scripts/app-platform/
+# Provisions LangServe and Streamlit services.
+# No seed step for this role.
+
+- name: Create role directory on target
+  ansible.builtin.file:
+    path: "{{ aipostex_lab_root }}/{{ aipostex_role_dir }}"
+    state: directory
+    owner: "{{ aipostex_lab_user }}"
+    group: "{{ aipostex_lab_user }}"
+    mode: "0755"
+
+- name: Copy app-platform scripts and files to target
+  ansible.builtin.copy:
+    src: "{{ item }}"
+    dest: "{{ aipostex_lab_root }}/{{ aipostex_role_dir }}/"
+    owner: "{{ aipostex_lab_user }}"
+    group: "{{ aipostex_lab_user }}"
+    mode: preserve
+  loop:
+    - provision.sh
+    - langserve-app/
+    - streamlit-app/
+
+- name: Copy lib/ directory to target
+  ansible.builtin.copy:
+    src: lib/
+    dest: "{{ aipostex_lab_root }}/lib/"
+    owner: "{{ aipostex_lab_user }}"
+    group: "{{ aipostex_lab_user }}"
+    mode: "0755"
+
+- name: Run provision.sh
+  ansible.builtin.shell: |
+    bash "{{ aipostex_lab_root }}/{{ aipostex_role_dir }}/provision.sh"
+  args:
+    executable: /bin/bash
+  become: true
+  register: provision_result
+  changed_when: true
+
+- name: Show provision output
+  ansible.builtin.debug:
+    var: provision_result.stdout_lines
+  when: provision_result.stdout_lines | length > 0

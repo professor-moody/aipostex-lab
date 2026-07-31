@@ -1,0 +1,66 @@
+---
+# aipostex_dev_workstation — wraps lab-scripts/dev-workstation/
+# Provisions Ollama, Jupyter, vulnerable MCP server, Gradio, MCP Inspector mock.
+# Optionally seeds models, filesystem artifacts, and notebooks.
+
+- name: Create role directory on target
+  ansible.builtin.file:
+    path: "{{ aipostex_lab_root }}/{{ aipostex_role_dir }}"
+    state: directory
+    owner: "{{ aipostex_lab_user }}"
+    group: "{{ aipostex_lab_user }}"
+    mode: "0755"
+
+- name: Copy dev-workstation scripts and files to target
+  ansible.builtin.copy:
+    src: "{{ item }}"
+    dest: "{{ aipostex_lab_root }}/{{ aipostex_role_dir }}/"
+    owner: "{{ aipostex_lab_user }}"
+    group: "{{ aipostex_lab_user }}"
+    mode: preserve
+  loop:
+    - provision.sh
+    - seed.sh
+    - seed-ollama.sh
+    - seed-filesystem.sh
+    - gradio-chat/
+    - vulnerable-mcp-server/
+    - mcp-inspector-mock/
+    - notebooks/
+
+- name: Copy lib/ directory to target
+  ansible.builtin.copy:
+    src: lib/
+    dest: "{{ aipostex_lab_root }}/lib/"
+    owner: "{{ aipostex_lab_user }}"
+    group: "{{ aipostex_lab_user }}"
+    mode: "0755"
+
+- name: Run provision.sh
+  ansible.builtin.shell: |
+    bash "{{ aipostex_lab_root }}/{{ aipostex_role_dir }}/provision.sh"
+  args:
+    executable: /bin/bash
+  become: true
+  register: provision_result
+  changed_when: true
+
+- name: Show provision output
+  ansible.builtin.debug:
+    var: provision_result.stdout_lines
+  when: provision_result.stdout_lines | length > 0
+
+- name: Run seed.sh
+  ansible.builtin.shell: |
+    bash "{{ aipostex_lab_root }}/{{ aipostex_role_dir }}/seed.sh"
+  args:
+    executable: /bin/bash
+  become: true
+  register: seed_result
+  changed_when: true
+  when: aipostex_run_seed | bool
+
+- name: Show seed output
+  ansible.builtin.debug:
+    var: seed_result.stdout_lines
+  when: aipostex_run_seed | bool and seed_result.stdout_lines | default([]) | length > 0

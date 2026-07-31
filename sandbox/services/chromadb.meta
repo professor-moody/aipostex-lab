@@ -1,0 +1,6 @@
+DESC="ChromaDB vector store (real product)"
+PORT=8000
+URL="http://localhost:8000"
+HEALTH="http://localhost:8000/api/v1/heartbeat"
+PROVE='"$AIPOSTEX" vectordb --type chromadb --target localhost:8000 enum'
+SEED=""

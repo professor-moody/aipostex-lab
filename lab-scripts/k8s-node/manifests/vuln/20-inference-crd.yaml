@@ -1,0 +1,41 @@
+# Minimal KServe-style InferenceService CRD + CR for CRD-enumeration realism.
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: inferenceservices.serving.kserve.io
+spec:
+  group: serving.kserve.io
+  scope: Namespaced
+  names:
+    plural: inferenceservices
+    singular: inferenceservice
+    kind: InferenceService
+    shortNames: ["isvc"]
+  versions:
+    - name: v1beta1
+      served: true
+      storage: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              x-kubernetes-preserve-unknown-fields: true
+            status:
+              type: object
+              x-kubernetes-preserve-unknown-fields: true
+---
+apiVersion: serving.kserve.io/v1beta1
+kind: InferenceService
+metadata:
+  name: llama-8b
+  namespace: ml-prod
+  labels:
+    component: model-server
+spec:
+  predictor:
+    model:
+      modelFormat:
+        name: vllm
+      storageUri: "s3://acme-ml-model-registry-prod/llama-3.1-8b/"

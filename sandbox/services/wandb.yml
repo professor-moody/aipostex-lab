@@ -1,0 +1,8 @@
+# Real Weights & Biases local server (the actual product, not the lab's GraphQL mock).
+# This is the service that closes the long-pending "real W&B" proof for the wandb module.
+services:
+  wandb:
+    image: wandb/local:latest
+    ports:
+      - "8080:8080"
+    restart: unless-stopped

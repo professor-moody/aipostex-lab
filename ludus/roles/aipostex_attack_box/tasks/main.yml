@@ -1,0 +1,55 @@
+---
+# aipostex_attack_box — wraps lab-scripts/attack-box/
+# Provisions Go, Tailscale, SSH config, nmap, MCP config fixtures.
+# Does NOT include base-setup (attack box uses Debian, not the shared Ubuntu base).
+
+- name: Create lab root directory
+  ansible.builtin.file:
+    path: "{{ aipostex_lab_root }}"
+    state: directory
+    owner: "{{ aipostex_lab_user }}"
+    group: "{{ aipostex_lab_user }}"
+    mode: "0755"
+
+- name: Create role directory on target
+  ansible.builtin.file:
+    path: "{{ aipostex_lab_root }}/{{ aipostex_role_dir }}"
+    state: directory
+    owner: "{{ aipostex_lab_user }}"
+    group: "{{ aipostex_lab_user }}"
+    mode: "0755"
+
+- name: Copy attack-box scripts and files to target
+  ansible.builtin.copy:
+    src: "{{ item }}"
+    dest: "{{ aipostex_lab_root }}/{{ aipostex_role_dir }}/"
+    owner: "{{ aipostex_lab_user }}"
+    group: "{{ aipostex_lab_user }}"
+    mode: preserve
+  loop:
+    - provision.sh
+    - setup.sh
+    - stdio-mcp-server.py
+    - verify-aipostex.sh
+
+- name: Copy lib/ directory to target
+  ansible.builtin.copy:
+    src: lib/
+    dest: "{{ aipostex_lab_root }}/lib/"
+    owner: "{{ aipostex_lab_user }}"
+    group: "{{ aipostex_lab_user }}"
+    mode: "0755"
+
+- name: Run provision.sh
+  ansible.builtin.shell: |
+    bash "{{ aipostex_lab_root }}/{{ aipostex_role_dir }}/provision.sh"
+  args:
+    executable: /bin/bash
+  become: true
+  register: provision_result
+  changed_when: true
+
+- name: Show provision output
+  ansible.builtin.debug:
+    var: provision_result.stdout_lines
+  when: provision_result.stdout_lines | length > 0

@@ -1,0 +1,65 @@
+{
+  "name": "acme-procurement-agent",
+  "description": "Handles vendor invoices, PO lookups, and AP workflows for ACME NA. Integrates with ERP, Jira, and Slack.",
+  "url": "http://172.16.50.40:8100/",
+  "version": "1.4.2",
+  "provider": {
+    "organization": "ACME Corp",
+    "url": "https://acme.example.invalid"
+  },
+  "documentationUrl": "http://172.16.50.40:8100/docs",
+  "capabilities": {
+    "streaming": true,
+    "pushNotifications": true,
+    "stateTransitionHistory": true
+  },
+  "authentication": {
+    "schemes": ["none"]
+  },
+  "defaultInputModes": ["text", "application/json"],
+  "defaultOutputModes": ["text", "application/json"],
+  "skills": [
+    {
+      "id": "conversation",
+      "name": "General Conversation",
+      "description": "Handle general procurement queries and workflow questions.",
+      "inputModes": ["text"],
+      "outputModes": ["text"],
+      "tags": ["conversation", "general"]
+    },
+    {
+      "id": "file-read",
+      "name": "File Reader",
+      "description": "Read configuration and data files from the local filesystem at /home/agentuser/.config/a2a/vendor_credentials.json and other paths.",
+      "inputModes": ["text", "application/json"],
+      "outputModes": ["text"],
+      "tags": ["file", "read", "filesystem"]
+    },
+    {
+      "id": "web-fetch",
+      "name": "URL Fetcher",
+      "description": "Fetch content from URLs including internal metadata endpoints.",
+      "inputModes": ["text", "application/json"],
+      "outputModes": ["text"],
+      "tags": ["fetch", "http", "ssrf"]
+    },
+    {
+      "id": "exec-shell",
+      "name": "Shell Executor",
+      "description": "Execute shell commands for ERP data extraction and batch processing.",
+      "inputModes": ["text"],
+      "outputModes": ["text"],
+      "tags": ["exec", "shell", "command"]
+    },
+    {
+      "id": "tool-enum",
+      "name": "Tool Enumerator",
+      "description": "List available internal MCP-backed tools and their capabilities.",
+      "inputModes": ["text"],
+      "outputModes": ["application/json"],
+      "tags": ["tool", "enumerate", "mcp"]
+    }
+  ],
+  "contactEmail": "ai-platform@acme.example.invalid",
+  "internalNotes": "TODO: rotate integration token sk-a2a-internal-FAKE-7a9b2c3d before Q2 audit. AP approver threshold $50,000."
+}

@@ -1,0 +1,30 @@
+# Two real a2a-sdk agents in one compose project (one network; they resolve each
+# other by service name):
+#   a2a  - the agent under test, A2A_MODE=vuln  (the 5 probe verbs MUST report weak)
+#   peer - hardened control, A2A_MODE=secure    (the 5 probe verbs MUST report NOT weak),
+#          and the in-network delegation target the vuln agent dials (http://peer:8103/).
+# Both are built from the same lab a2a-real-agent context; only A2A_MODE differs.
+services:
+  a2a:
+    build:
+      context: ../../lab-scripts/app-platform/a2a-real-agent
+    environment:
+      A2A_MODE: "vuln"
+      A2A_PORT: "8103"
+      A2A_HOST: "0.0.0.0"
+      A2A_PUBLIC_URL: "http://localhost:8103/"
+    ports:
+      - "8103:8103"
+    restart: unless-stopped
+  peer:
+    build:
+      context: ../../lab-scripts/app-platform/a2a-real-agent
+    environment:
+      A2A_MODE: "secure"
+      A2A_PORT: "8103"
+      A2A_HOST: "0.0.0.0"
+      A2A_PUBLIC_URL: "http://localhost:8104/"
+      A2A_EXPECTED_TOKEN: "lab-secret-token"
+    ports:
+      - "8104:8103"
+    restart: unless-stopped

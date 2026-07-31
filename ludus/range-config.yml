@@ -1,0 +1,114 @@
+# yaml-language-server: $schema=https://docs.ludus.cloud/schemas/range-config.json
+#
+# aipostex Lab — Ludus Range Configuration
+#
+# This is an alternative deployment path. The canonical bash scripts in
+# lab-scripts/ remain fully functional and unchanged.
+#
+# Usage:
+#   bash ludus/setup.sh          # sync files, register roles, set config
+#   ludus range deploy            # deploy the range
+#   ludus range logs -f           # watch progress
+#   ludus range status            # check result
+#
+# Prerequisites:
+#   - Ludus server with ubuntu-24.04-x64-server-template and
+#     debian-12-x64-server-template already built
+#   - ludus CLI authenticated
+
+ludus:
+  # ── ailab-dev: Developer Workstation ──────────────────────
+  - vm_name: "{{ range_id }}-ailab-dev"
+    hostname: "{{ range_id }}-ailab-dev"
+    template: ubuntu-24.04-x64-server-template
+    vlan: 10
+    ip_last_octet: 10
+    ram_gb: 4
+    cpus: 2
+    linux: true
+    testing:
+      snapshot: true
+      block_internet: false
+    roles:
+      - aipostex_base
+      - aipostex_dev_workstation
+    role_vars:
+      aipostex_lab_user: labadmin
+      aipostex_run_seed: true
+
+  # ── ailab-ml: ML Platform ─────────────────────────────────
+  - vm_name: "{{ range_id }}-ailab-ml"
+    hostname: "{{ range_id }}-ailab-ml"
+    template: ubuntu-24.04-x64-server-template
+    vlan: 10
+    ip_last_octet: 20
+    ram_gb: 4
+    cpus: 2
+    linux: true
+    testing:
+      snapshot: true
+      block_internet: false
+    roles:
+      - aipostex_base
+      - aipostex_ml_platform
+    role_vars:
+      aipostex_lab_user: labadmin
+      aipostex_run_seed: true
+
+  # ── ailab-ds: Data Science ────────────────────────────────
+  - vm_name: "{{ range_id }}-ailab-ds"
+    hostname: "{{ range_id }}-ailab-ds"
+    template: ubuntu-24.04-x64-server-template
+    vlan: 10
+    ip_last_octet: 30
+    ram_gb: 4
+    cpus: 2
+    linux: true
+    testing:
+      snapshot: true
+      block_internet: false
+    roles:
+      - aipostex_base
+      - aipostex_data_sci
+    role_vars:
+      aipostex_lab_user: labadmin
+      aipostex_run_seed: true
+
+  # ── ailab-app: Shared AI Apps ─────────────────────────────
+  - vm_name: "{{ range_id }}-ailab-app"
+    hostname: "{{ range_id }}-ailab-app"
+    template: ubuntu-24.04-x64-server-template
+    vlan: 10
+    ip_last_octet: 40
+    ram_gb: 4
+    cpus: 2
+    linux: true
+    testing:
+      snapshot: true
+      block_internet: false
+    roles:
+      - aipostex_base
+      - aipostex_app_platform
+    role_vars:
+      aipostex_lab_user: labadmin
+
+  # ── ailab-attack: Attack Box ──────────────────────────────
+  - vm_name: "{{ range_id }}-ailab-attack"
+    hostname: "{{ range_id }}-ailab-attack"
+    template: debian-12-x64-server-template
+    vlan: 99
+    ip_last_octet: 1
+    ram_gb: 4
+    cpus: 2
+    linux: true
+    testing:
+      snapshot: true
+      block_internet: false
+    roles:
+      - aipostex_attack_box
+    role_vars:
+      aipostex_lab_user: labadmin
+
+network:
+  inter_vlan_default: ACCEPT
+  external_default: ACCEPT

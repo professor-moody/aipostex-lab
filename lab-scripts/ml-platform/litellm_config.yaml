@@ -1,0 +1,45 @@
+model_list:
+  - model_name: local-smollm
+    litellm_params:
+      model: ollama/smollm2:135m
+      api_base: http://172.16.50.10:11434
+
+  - model_name: gpt-4
+    litellm_params:
+      model: openai/gpt-4
+      api_key: sk-proj-FAKE-litellm-openai-key-1234567890
+      api_base: https://api.openai.com/v1
+
+  - model_name: gpt-4o
+    litellm_params:
+      model: openai/gpt-4o
+      api_key: sk-proj-FAKE-litellm-openai-key-1234567890
+      api_base: https://api.openai.com/v1
+
+  - model_name: claude-sonnet
+    litellm_params:
+      model: anthropic/claude-sonnet-4-20250514
+      api_key: sk-ant-FAKE-litellm-anthropic-key-abcdef1234567890
+
+  - model_name: azure-gpt4
+    litellm_params:
+      model: azure/gpt-4-deployment
+      api_key: FAKE-azure-openai-key-abcdef123456
+      api_base: https://acme-openai.openai.azure.com/
+      api_version: "2024-02-15-preview"
+
+  - model_name: bedrock-claude
+    litellm_params:
+      model: bedrock/anthropic.claude-3-sonnet-20240229-v1:0
+      aws_access_key_id: AKIAFAKELITELLM12345
+      aws_secret_access_key: FAKE+LiteLLMBedrockSecret/abcdefghijk12345
+      aws_region_name: us-east-1
+
+general_settings:
+  master_key: null
+  drop_params: true
+
+litellm_settings:
+  num_retries: 3
+  request_timeout: 120
+  set_verbose: false

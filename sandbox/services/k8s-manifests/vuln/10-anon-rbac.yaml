@@ -1,0 +1,41 @@
+# DELIBERATELY WEAK: an over-permissioned ClusterRole bound to system:anonymous.
+# Intended as read-only ML observability, it was mis-scoped to also include
+# pods/exec (a common copy-paste from a debug role) and cluster-wide secret read.
+# Present in the VULN variant only; the SECURE variant omits this file entirely.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: anon-ml-reader
+rules:
+  - apiGroups: [""]
+    resources: ["namespaces", "pods", "secrets", "configmaps", "services"]
+    verbs: ["get", "list"]
+  - apiGroups: ["apps"]
+    resources: ["deployments", "replicasets"]
+    verbs: ["get", "list"]
+  - apiGroups: ["serving.kserve.io"]
+    resources: ["inferenceservices"]
+    verbs: ["get", "list"]
+  - apiGroups: ["apiextensions.k8s.io"]
+    resources: ["customresourcedefinitions"]
+    verbs: ["get", "list"]
+  # Mis-scoped: lets anonymous open an exec stream into running pods.
+  - apiGroups: [""]
+    resources: ["pods/exec"]
+    verbs: ["create", "get"]
+  # Non-resource discovery endpoints (/api, /apis, /version).
+  - nonResourceURLs: ["/api", "/api/*", "/apis", "/apis/*", "/version", "/openapi/*"]
+    verbs: ["get"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: anon-ml-reader-binding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: anon-ml-reader
+subjects:
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    name: system:anonymous

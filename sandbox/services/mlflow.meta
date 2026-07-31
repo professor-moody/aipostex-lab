@@ -1,0 +1,6 @@
+DESC="MLflow tracking server (real product)"
+PORT=5000
+URL="http://localhost:5000"
+HEALTH="http://localhost:5000/health"
+PROVE='"$AIPOSTEX" mlflow --target http://localhost:5000 enum'
+SEED=""

@@ -1,0 +1,10 @@
+DESC="Real A2A agent (official a2a-sdk): vuln target :8103 + hardened/secure peer :8104"
+PORT=8103
+URL="http://localhost:8103"
+HEALTH="http://localhost:8103/.well-known/agent-card.json"
+# Runs enum + all 5 probe verbs against the deliberately-weak target (:8103). Each verb
+# MUST report weak here; run the same verbs against the hardened peer (:8104) for the
+# not-weak control (see sandbox/README.md). delegate-probe points at the in-network peer
+# name (http://peer:8103/) since the TARGET container, not the host, dials it.
+PROVE='"$AIPOSTEX" a2a --target http://localhost:8103 enum; "$AIPOSTEX" a2a --target http://localhost:8103 auth-probe; "$AIPOSTEX" a2a --target http://localhost:8103 msg-integrity --mode bad-sig --force-exploit; "$AIPOSTEX" a2a --target http://localhost:8103 sender-spoof --spoof-id acme-admin --force-exploit; "$AIPOSTEX" a2a --target http://localhost:8103 delegate-probe --peer-url http://peer:8103/ --force-exploit; "$AIPOSTEX" a2a --target http://localhost:8103 card-spoof --card-url http://peer:8103/.well-known/agent-card.json --force-exploit'
+SEED=""

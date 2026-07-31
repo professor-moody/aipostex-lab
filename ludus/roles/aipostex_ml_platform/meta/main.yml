@@ -1,0 +1,19 @@
+---
+galaxy_info:
+  author: professor-moody
+  description: "ML platform role for aipostex lab (ChromaDB, MLflow, LiteLLM, Ray, inference mocks)"
+  license: MIT
+  min_ansible_version: "2.14"
+  platforms:
+    - name: Ubuntu
+      versions:
+        - noble
+  galaxy_tags:
+    - aipostex
+    - lab
+    - mlflow
+    - chromadb
+    - litellm
+    - ray
+
+dependencies: []

@@ -1,0 +1,13 @@
+{
+  "Code": "Success",
+  "LastUpdated": "2026-04-05T00:00:00Z",
+  "Type": "AWS-HMAC",
+  "AccessKeyId": "AKIAFAKE_SSRF_METADATA_1",
+  "SecretAccessKey": "fAKEsecretKeyForSSRFProbeMetadataEndpoint+ACME",
+  "Token": "FakeSessionToken//////////ACME-A2A-SSRF-PROBE-SESSION-TOKEN-FAKE1234567890",
+  "Expiration": "2026-04-06T00:00:00Z",
+  "InstanceId": "i-0fakeacmea2alab99",
+  "Region": "us-east-1",
+  "InstanceType": "m5.xlarge",
+  "IAMRole": "acme-ml-platform-instance-role"
+}

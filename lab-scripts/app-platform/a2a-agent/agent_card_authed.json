@@ -1,0 +1,67 @@
+{
+  "name": "acme-finance-agent",
+  "description": "Authenticated finance assistant for ACME Corp. Handles budget approvals, financial reporting, and payroll queries. Bearer token required.",
+  "url": "http://172.16.50.40:8102/",
+  "version": "3.0.1",
+  "provider": {
+    "organization": "ACME Corp Finance",
+    "url": "https://acme.example.invalid"
+  },
+  "documentationUrl": "http://172.16.50.40:8102/docs",
+  "capabilities": {
+    "streaming": true,
+    "pushNotifications": true,
+    "stateTransitionHistory": false
+  },
+  "authentication": {
+    "schemes": ["bearer"],
+    "bearerTokenHeader": "Authorization"
+  },
+  "defaultInputModes": ["text", "application/json"],
+  "defaultOutputModes": ["text", "application/json"],
+  "skills": [
+    {
+      "id": "conversation",
+      "name": "Finance Conversation",
+      "description": "Handle finance and budget workflow queries.",
+      "inputModes": ["text"],
+      "outputModes": ["text"],
+      "tags": ["conversation", "finance"]
+    },
+    {
+      "id": "file-read",
+      "name": "File Reader",
+      "description": "Read financial reports and configuration from the filesystem.",
+      "inputModes": ["text"],
+      "outputModes": ["text"],
+      "tags": ["file", "read"]
+    },
+    {
+      "id": "web-fetch",
+      "name": "URL Fetcher",
+      "description": "Fetch internal financial system endpoints.",
+      "inputModes": ["text"],
+      "outputModes": ["text"],
+      "tags": ["fetch", "http"]
+    },
+    {
+      "id": "exec-shell",
+      "name": "Shell Executor",
+      "description": "Run financial data extraction scripts.",
+      "inputModes": ["text"],
+      "outputModes": ["text"],
+      "tags": ["exec", "shell"]
+    },
+    {
+      "id": "tool-enum",
+      "name": "Tool Enumerator",
+      "description": "List available finance-domain MCP tools.",
+      "inputModes": ["text"],
+      "outputModes": ["application/json"],
+      "tags": ["tool", "enumerate"]
+    }
+  ],
+  "contactEmail": "ai-finance@acme.example.invalid",
+  "securityContact": "security@acme.example.invalid",
+  "internalNotes": "Requires Bearer token sk-a2a-lab-agent-token-FAKE456. Payroll integration via ACME-HR-API v2."
+}

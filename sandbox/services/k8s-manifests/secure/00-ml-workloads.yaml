@@ -1,0 +1,63 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ml-prod
+  labels:
+    team: ml-platform
+    environment: production
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: model-registry-creds
+  namespace: ml-prod
+  labels:
+    app: model-registry
+type: Opaque
+stringData:
+  HF_TOKEN: "hf_FAKEsbXqProdRegistry0000aBcDeFgHiJkLmN"
+  AWS_ACCESS_KEY_ID: "AKIAFAKE7PROD3REGISTRY"
+  AWS_SECRET_ACCESS_KEY: "wJalrFAKE/EXAMPLEKEY/bPxRfiCYprodRegistryK7"
+  S3_MODEL_BUCKET: "s3://acme-ml-model-registry-prod"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: llama-inference
+  namespace: ml-prod
+  labels:
+    component: model-server
+    framework: vllm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: model-server
+  template:
+    metadata:
+      labels:
+        component: model-server
+        framework: vllm
+    spec:
+      containers:
+        - name: model-server
+          image: busybox:1.36
+          command: ["sh", "-c", "echo 'meta-llama/Llama-3.1-8B-Instruct' > /opt/model-card.txt; sleep infinity"]
+          env:
+            - name: HF_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: model-registry-creds
+                  key: HF_TOKEN
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: inference-config
+  namespace: ml-prod
+  labels:
+    component: model-server
+data:
+  MODEL_NAME: "meta-llama/Llama-3.1-8B-Instruct"
+  MAX_BATCH_SIZE: "32"
+  REGISTRY_ENDPOINT: "https://mlflow.ml-prod.svc.cluster.local:5000"

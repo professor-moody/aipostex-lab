@@ -1,0 +1,23 @@
+---
+# Shared variables for all lab hosts
+lab_dns_servers:
+  - 1.1.1.1
+  - 8.8.8.8
+
+lab_hosts_entries:
+  - { ip: "172.16.50.10", name: "ailab-dev" }
+  - { ip: "172.16.50.20", name: "ailab-ml" }
+  - { ip: "172.16.50.30", name: "ailab-ds" }
+  - { ip: "172.16.50.40", name: "ailab-app" }
+  - { ip: "172.16.50.99", name: "ailab-attack" }
+
+lab_base_packages:
+  - curl
+  - jq
+  - python3
+  - python3-pip
+  - python3-venv
+  - git
+  - net-tools
+  - htop
+  - unzip

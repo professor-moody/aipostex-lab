@@ -1,0 +1,48 @@
+# ailab-k8s estate node — two real single-node k3s clusters on ONE VM (172.16.50.50).
+#
+# Why Docker on an estate VM (the rest of the estate is native systemd services):
+#   the k8s module's honesty story needs a weak cluster AND a secured control on the
+#   SAME target host, and two native k3s servers collide on flannel VXLAN / kubelet /
+#   CNI CIDR. Containers give each k3s its own network namespace — the only sane way to
+#   run the pair on one host. This is the exact config `sandbox prove k8s` validates,
+#   promoted onto a real estate node so demo Act 6 records against .50, not a laptop.
+#
+#   k8s-vuln   :6443  anonymous-auth ON + ClusterRole bound to system:anonymous
+#                     (read workloads/secrets + create pods/exec) → k8s verbs report WEAK.
+#   k8s-secure :6444  default-secure k3s (anon-auth off, no anon binding) → verbs report
+#                     NOT weak (401). The honesty control Act 6 shows last.
+# Both auto-apply their seed manifests; the anon-rbac binding ships in the vuln set only.
+# Image pinned to the version the module is validated against.
+services:
+  k8s-vuln:
+    image: rancher/k3s:v1.31.5-k3s1
+    container_name: k8s-vuln
+    command:
+      - server
+      - --kube-apiserver-arg=anonymous-auth=true
+      - --disable=traefik
+      - --disable=metrics-server
+      - --disable=servicelb
+      - --node-name=ml-prod-node
+    privileged: true
+    ports:
+      - "6443:6443"
+    volumes:
+      - ./manifests/vuln:/var/lib/rancher/k3s/server/manifests/seed:ro
+    restart: unless-stopped
+
+  k8s-secure:
+    image: rancher/k3s:v1.31.5-k3s1
+    container_name: k8s-secure
+    command:
+      - server
+      - --disable=traefik
+      - --disable=metrics-server
+      - --disable=servicelb
+      - --node-name=ml-prod-node
+    privileged: true
+    ports:
+      - "6444:6443"
+    volumes:
+      - ./manifests/secure:/var/lib/rancher/k3s/server/manifests/seed:ro
+    restart: unless-stopped

@@ -1,0 +1,6 @@
+DESC="Weights & Biases local server (real product)"
+PORT=8080
+URL="http://localhost:8080"
+HEALTH="http://localhost:8080/healthz"
+PROVE='"$AIPOSTEX" wandb --target http://localhost:8080 enum'
+SEED=""

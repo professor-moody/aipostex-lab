@@ -1,0 +1,42 @@
+---
+# Common role: base setup for all lab VMs
+# Equivalent to base-setup.sh but idempotent Ansible tasks
+
+- name: Set hostname
+  hostname:
+    name: "{{ inventory_hostname }}"
+
+- name: Add lab host entries
+  lineinfile:
+    path: /etc/hosts
+    line: "{{ item.ip }} {{ item.name }}"
+    regexp: ".*{{ item.name }}$"
+    state: present
+  loop: "{{ lab_hosts_entries }}"
+
+- name: Configure DNS resolvers
+  lineinfile:
+    path: /etc/resolv.conf
+    line: "nameserver {{ item }}"
+    state: present
+  loop: "{{ lab_dns_servers }}"
+
+- name: Install base packages
+  apt:
+    name: "{{ lab_base_packages }}"
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Enable password SSH authentication
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^#?PasswordAuthentication'
+    line: 'PasswordAuthentication yes'
+  notify: restart ssh
+
+- name: Ensure ssh is running
+  service:
+    name: ssh
+    state: started
+    enabled: true

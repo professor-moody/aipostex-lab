@@ -1,0 +1,57 @@
+# DELIBERATELY WEAK (vuln variant only): the model-server pod runs under a
+# ServiceAccount (pipeline-runner) that is over-granted cluster-wide WRITE access.
+# Anonymous access is read-only; an attacker who can exec into the pod (the anon
+# pods/exec grant) steals this token and escalates read-only anon access to full
+# create/update/delete on secrets, pods, and deployments cluster-wide.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ml-system
+  labels:
+    team: ml-platform
+    tier: control
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: pipeline-runner
+  namespace: ml-prod
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: ml-pipeline-writer
+rules:
+  - apiGroups: [""]
+    resources: ["secrets", "configmaps", "pods", "serviceaccounts"]
+    verbs: ["get", "list", "create", "update", "delete"]
+  - apiGroups: ["apps"]
+    resources: ["deployments", "replicasets"]
+    verbs: ["get", "list", "create", "update", "delete"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: pipeline-runner-writer
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: ml-pipeline-writer
+subjects:
+  - kind: ServiceAccount
+    name: pipeline-runner
+    namespace: ml-prod
+---
+# A second namespace's secret — so cross-namespace (--all-namespaces) reach is
+# demonstrable, and the stolen writer SA has somewhere else to tamper.
+apiVersion: v1
+kind: Secret
+metadata:
+  name: pipeline-deploy-key
+  namespace: ml-system
+  labels:
+    app: ci-pipeline
+type: Opaque
+stringData:
+  DEPLOY_TOKEN: "glpat-FAKEmlPipelineDeployKey000111222"
+  GIT_SSH_KEY: "FAKE-ssh-ed25519-pipeline-deploy-key"

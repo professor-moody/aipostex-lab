@@ -1,0 +1,92 @@
+---
+# aipostex Lab — Full Ansible Playbook
+#
+# Usage:
+#   ansible-playbook -i inventory/hosts.yml site.yml                    # Full deploy
+#   ansible-playbook -i inventory/hosts.yml site.yml --tags base        # Base only
+#   ansible-playbook -i inventory/hosts.yml site.yml --tags provision   # Provision only
+#   ansible-playbook -i inventory/hosts.yml site.yml --tags seed        # Seed only
+#   ansible-playbook -i inventory/hosts.yml site.yml --tags verify      # Verify only
+#   ansible-playbook -i inventory/hosts.yml site.yml --limit ailab-ml   # Single host
+
+- name: Base setup on all VMs
+  hosts: all
+  become: true
+  tags: [base]
+  roles:
+    - common
+
+- name: Provision ML platform
+  hosts: ailab-ml
+  become: true
+  tags: [provision]
+  roles:
+    - ml-platform
+
+- name: Provision remaining targets via bash scripts
+  hosts: target_vms:!ailab-ml
+  become: true
+  tags: [provision]
+  vars:
+    lab_root: "/home/{{ ansible_user }}/lab"
+  tasks:
+    - name: Copy lab-scripts to target
+      copy:
+        src: "{{ repo_root }}/lab-scripts/"
+        dest: "{{ lab_root }}/"
+        mode: preserve
+
+    - name: Run role provisioner
+      command: "sudo bash {{ lab_root }}/{{ lab_role_dir }}/provision.sh"
+      args:
+        creates: "/etc/systemd/system/{{ lab_role_dir | regex_replace('-', '') }}-done.marker"
+
+- name: Provision attack box
+  hosts: attack_box
+  become: true
+  tags: [provision, attack]
+  vars:
+    lab_root: "/home/{{ ansible_user }}/lab"
+  tasks:
+    - name: Copy lab-scripts to attack box
+      copy:
+        src: "{{ repo_root }}/lab-scripts/"
+        dest: "{{ lab_root }}/"
+        mode: preserve
+
+    - name: Run attack-box provisioner
+      command: "sudo bash {{ lab_root }}/attack-box/provision.sh"
+
+- name: Seed data on targets
+  hosts: target_vms
+  become: true
+  tags: [seed]
+  vars:
+    lab_root: "/home/{{ ansible_user }}/lab"
+  tasks:
+    - name: Seed ailab-dev data
+      command: "sudo bash {{ lab_root }}/dev-workstation/seed.sh"
+      when: inventory_hostname == 'ailab-dev'
+
+    - name: Seed ailab-ml data
+      command: "sudo bash {{ lab_root }}/ml-platform/seed.sh"
+      when: inventory_hostname == 'ailab-ml'
+
+    - name: Seed ailab-ds data
+      command: "sudo bash {{ lab_root }}/data-sci/seed.sh"
+      when: inventory_hostname == 'ailab-ds'
+
+- name: Verify lab
+  hosts: attack_box
+  tags: [verify]
+  vars:
+    lab_root: "/home/{{ ansible_user }}/lab"
+  tasks:
+    - name: Run verify-lab.sh
+      command: "bash {{ lab_root }}/verify-lab.sh"
+      register: verify_result
+      changed_when: false
+
+    - name: Show verification results
+      debug:
+        var: verify_result.stdout_lines

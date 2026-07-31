@@ -1,0 +1,19 @@
+---
+galaxy_info:
+  author: professor-moody
+  description: "Developer workstation role for aipostex lab (Ollama, Jupyter, MCP, Gradio)"
+  license: MIT
+  min_ansible_version: "2.14"
+  platforms:
+    - name: Ubuntu
+      versions:
+        - noble
+  galaxy_tags:
+    - aipostex
+    - lab
+    - ollama
+    - jupyter
+    - mcp
+    - gradio
+
+dependencies: []

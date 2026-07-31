@@ -1,0 +1,40 @@
+---
+# ML platform specific variables
+ml_user: mluser
+ml_venv_path: /opt/ml-venv
+ml_runtime_root: /opt/ailab-ml
+
+# Service versions
+hf_tgi_mock_version: "1.0-lab"
+hf_tei_mock_version: "1.0-lab"
+vllm_mock_version: "1.0-lab"
+
+# Ports
+chromadb_port: 8000
+mlflow_port: 5000
+litellm_port: 4000
+litellm_authed_port: 4001
+ray_port: 8265
+hf_tgi_port: 8180
+hf_tei_port: 8181
+vllm_port: 8182
+bentoml_port: 3333
+torchserve_inference_port: 8080
+torchserve_management_port: 8081
+torchserve_metrics_port: 8082
+triton_port: 8500
+wandb_port: 8444
+kubeflow_port: 9000
+tfserving_port: 8501
+
+# Mock service definitions (name, port, health_path, unit_name, src_dir)
+ml_mock_services:
+  - { name: "HF TGI",     port: "{{ hf_tgi_port }}",   health: "/health",           unit: "hf-tgi-mock",    src: "hf-tgi-mock",      runtime: "/usr/bin/python3" }
+  - { name: "HF TEI",     port: "{{ hf_tei_port }}",   health: "/info",             unit: "hf-tei-mock",    src: "hf-tei-mock",      runtime: "/usr/bin/python3" }
+  - { name: "vLLM",       port: "{{ vllm_port }}",     health: "/health",           unit: "vllm-mock",      src: "vllm-mock",        runtime: "/usr/bin/python3" }
+  - { name: "BentoML",    port: "{{ bentoml_port }}",   health: "/healthz",          unit: "bentoml-mock",   src: "bentoml-mock",     runtime: "/usr/bin/python3" }
+  - { name: "TorchServe",  port: "{{ torchserve_management_port }}", health: "/models", unit: "torchserve-mock", src: "torchserve-mock", runtime: "/usr/bin/python3" }
+  - { name: "Triton",     port: "{{ triton_port }}",    health: "/v2/health/ready",  unit: "triton-mock",    src: "triton-mock",      runtime: "/usr/bin/python3" }
+  - { name: "W&B",        port: "{{ wandb_port }}",     health: "/healthz",          unit: "wandb-mock",     src: "wandb-mock",       runtime: "/opt/ml-venv/bin/python3" }
+  - { name: "Kubeflow",   port: "{{ kubeflow_port }}",  health: "/pipeline/",        unit: "kubeflow-mock",  src: "kubeflow-mock",    runtime: "/usr/bin/python3" }
+  - { name: "TF Serving", port: "{{ tfserving_port }}", health: "/v1/models/acme-fraud-scorer", unit: "tfserving-mock", src: "tfserving-mock", runtime: "/usr/bin/python3" }

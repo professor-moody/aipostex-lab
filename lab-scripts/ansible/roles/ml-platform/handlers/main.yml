@@ -1,0 +1,7 @@
+---
+- name: restart mock services
+  systemd:
+    name: "{{ item.unit }}"
+    state: restarted
+    daemon_reload: true
+  loop: "{{ ml_mock_services }}"

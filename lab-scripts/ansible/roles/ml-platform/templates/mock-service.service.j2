@@ -1,0 +1,13 @@
+[Unit]
+Description={{ item.name }} Mock
+After=network.target
+
+[Service]
+User={{ ml_user }}
+WorkingDirectory=/home/{{ ml_user }}/projects/{{ item.src }}
+ExecStart={{ item.runtime }} server.py
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

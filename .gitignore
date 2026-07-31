@@ -1,0 +1,11 @@
+.DS_Store
+*.tar.gz
+__pycache__/
+*.pyc
+.env
+site/
+.cache/
+
+# AWS IAM access-key exports — never commit
+*accessKeys*.csv
+review-for-recording/

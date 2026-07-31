@@ -1,0 +1,65 @@
+{
+  "name": "acme-support-agent",
+  "description": "Multi-turn support assistant for ACME internal helpdesk. Handles IT tickets, HR queries, DevOps requests, and vendor communications.",
+  "url": "http://172.16.50.40:8101/",
+  "version": "2.1.0",
+  "provider": {
+    "organization": "ACME Corp",
+    "url": "https://acme.example.invalid"
+  },
+  "documentationUrl": "http://172.16.50.40:8101/docs",
+  "capabilities": {
+    "streaming": true,
+    "pushNotifications": true,
+    "stateTransitionHistory": true
+  },
+  "authentication": {
+    "schemes": ["none"]
+  },
+  "defaultInputModes": ["text", "application/json"],
+  "defaultOutputModes": ["text", "application/json"],
+  "skills": [
+    {
+      "id": "conversation",
+      "name": "Multi-Turn Conversation",
+      "description": "Maintain context across multiple turns for complex support workflows.",
+      "inputModes": ["text"],
+      "outputModes": ["text"],
+      "tags": ["conversation", "multi-turn", "context"]
+    },
+    {
+      "id": "file-read",
+      "name": "File Reader",
+      "description": "Read local configuration files and credential stores.",
+      "inputModes": ["text", "application/json"],
+      "outputModes": ["text"],
+      "tags": ["file", "read", "filesystem"]
+    },
+    {
+      "id": "web-fetch",
+      "name": "URL Fetcher",
+      "description": "Fetch remote resources and internal service endpoints.",
+      "inputModes": ["text"],
+      "outputModes": ["text"],
+      "tags": ["fetch", "http"]
+    },
+    {
+      "id": "exec-shell",
+      "name": "Shell Executor",
+      "description": "Run diagnostic commands and administrative scripts.",
+      "inputModes": ["text"],
+      "outputModes": ["text"],
+      "tags": ["exec", "shell"]
+    },
+    {
+      "id": "tool-enum",
+      "name": "Tool Enumerator",
+      "description": "List registered MCP tools and their schemas.",
+      "inputModes": ["text"],
+      "outputModes": ["application/json"],
+      "tags": ["tool", "enumerate", "mcp"]
+    }
+  ],
+  "contactEmail": "ai-support@acme.example.invalid",
+  "internalNotes": "Multi-turn context retained per task ID. PagerDuty integration key: FAKE_PD_KEY_a2a_1234567890."
+}

@@ -1,0 +1,42 @@
+---
+# aipostex_base — wraps lab-scripts/base-setup.sh
+# Installs common packages, writes /etc/hosts, enables qemu-guest-agent.
+
+- name: Create lab root directory
+  ansible.builtin.file:
+    path: "{{ aipostex_lab_root }}"
+    state: directory
+    owner: "{{ aipostex_lab_user }}"
+    group: "{{ aipostex_lab_user }}"
+    mode: "0755"
+
+- name: Copy base-setup.sh to target
+  ansible.builtin.copy:
+    src: base-setup.sh
+    dest: "{{ aipostex_lab_root }}/base-setup.sh"
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Copy lib/ directory to target
+  ansible.builtin.copy:
+    src: lib/
+    dest: "{{ aipostex_lab_root }}/lib/"
+    owner: "{{ aipostex_lab_user }}"
+    group: "{{ aipostex_lab_user }}"
+    mode: "0755"
+
+- name: Run base-setup.sh
+  ansible.builtin.shell: |
+    export LAB_INVENTORY_PATH="{{ aipostex_lab_root }}/lib/inventory.sh"
+    bash "{{ aipostex_lab_root }}/base-setup.sh"
+  args:
+    executable: /bin/bash
+  become: true
+  register: base_setup_result
+  changed_when: true
+
+- name: Show base-setup output
+  ansible.builtin.debug:
+    var: base_setup_result.stdout_lines
+  when: base_setup_result.stdout_lines | length > 0

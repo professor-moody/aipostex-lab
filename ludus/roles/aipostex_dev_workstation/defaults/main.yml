@@ -1,0 +1,5 @@
+---
+aipostex_lab_user: labadmin
+aipostex_lab_root: "/home/{{ aipostex_lab_user }}/lab"
+aipostex_run_seed: true
+aipostex_role_dir: dev-workstation

@@ -1,0 +1,6 @@
+DESC="Ollama model server (real product)"
+PORT=11434
+URL="http://localhost:11434"
+HEALTH="http://localhost:11434/api/version"
+PROVE='"$AIPOSTEX" ollama --target http://localhost:11434 enum'
+SEED=""

@@ -1,0 +1,8 @@
+# Real ChromaDB vector store. Bump the tag to test aipostex against newer API versions
+# (v1 → v2 heartbeat/collections changed across releases — a good source of real tool bugs).
+services:
+  chromadb:
+    image: chromadb/chroma:0.5.23
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
