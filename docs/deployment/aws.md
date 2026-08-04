@@ -14,9 +14,9 @@ cross-range isolation.
 
 | Instance | Role | Type | Private IP (range K) |
 |---|---|---|---|
-| ailab-dev | Developer Workstation (Ollama) | c6i.large | 10.0.(K+1).10 |
+| ailab-dev | Developer Workstation (Ollama) | c6i.xlarge | 10.0.(K+1).10 |
 | ailab-ml | ML Platform (13 mocks + Ray) | t3.large | 10.0.(K+1).20 |
-| ailab-ds | Data Science (Ollama) | c6i.large | 10.0.(K+1).30 |
+| ailab-ds | Data Science (Ollama) | c6i.xlarge | 10.0.(K+1).30 |
 | ailab-app | Shared AI Apps / agents | t3.small | 10.0.(K+1).40 |
 | ailab-k8s | single-node k3s "ACME cluster" | t3.medium | 10.0.(K+1).50 |
 | ailab-attack | Attack Box (deploy origin) | t3.large | 10.0.(K+1).99 |
@@ -27,17 +27,23 @@ and `aipostex-lab-r<K>-<role>`. `LAB_SUBNET=10.0.(K+1)` threads through `invento
 host IP and peer config resolves within the range with **no lab-script changes** — the same
 native `provision.sh` / `seed.sh` as on Proxmox.
 
-Only Ollama (dev + ds) is real CPU inference → non-burstable `c6i.large`; everything else is
-light. A 6-node range is **12 vCPU**; running cost ≈ **$0.34/hr** (us-east-1 on-demand).
+Only Ollama (dev + ds) is real CPU inference → non-burstable `c6i.xlarge` (4 vCPU; `c6i.large`
+timed out ~13/25 under a 25-simultaneous inference load test). A 6-node range is **16 vCPU**
+(4+4+2+2+2+2).
 
 ## Prerequisites
 
 - **AWS profile** with EC2 + VPC permissions. Configure locally (`aws configure --profile aipostex`)
   and `export AWS_PROFILE=<your-aws-profile>`.
-- **SSH keypair** whose public key becomes the operator + `labadmin` key. Default
-  `~/.ssh/<your-key>` (reused from the on-prem attack box).
+- **SSH keypair** whose public key becomes the operator + `labadmin` key. The scripts
+  (`aws-provision.sh`, `aws-verify-isolation.sh`, `aws-reset-wave.sh`) default to
+  **`~/.ssh/aipostex_rec`** — if you use a different key you must also
+  `export AWS_LAB_KEY=~/.ssh/<your-key>`, or terraform will succeed and every script will then fail.
 - **terraform** ≥ 1.5, **aws-cli** v2, **jq**.
-- A **linux/amd64 `aipostex` binary** for the attack box (cross-compile from the tool repo):
+- **`wireguard-tools`** (`wg`) and **`qrencode`** — only if you are generating attendee tunnel configs;
+  `gen-attendee-access.sh` exits immediately without them.
+- A **linux/amd64 `aipostex` binary** for the attack box, cross-compiled from the *tool* repo
+  (`professor-moody/aipostex`, a separate checkout from this one):
   ```bash
   GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build \
     -ldflags "-s -w -X github.com/professor-moody/aipostex/internal/config.Version=$(git rev-parse --short HEAD)" \
@@ -46,10 +52,10 @@ light. A 6-node range is **12 vCPU**; running cost ≈ **$0.34/hr** (us-east-1 o
 
 ### vCPU quota (the multi-range ceiling)
 
-Each 6-node range is **12 vCPU**, and every node is already the 2-vCPU floor (6 × 2). The AWS
-account's **Running On-Demand Standard** quota (`L-1216C47`, us-east-1) is what caps how many
-ranges you can run: at the default **32 vCPU** you get **N=2** (24 vCPU); N=3 needs 36. To run
-**N=5**, raise `L-1216C47` to **64** via the Service Quotas console (the lab IAM user typically
+Each 6-node range is **16 vCPU** (dev + ds are 4-vCPU `c6i.xlarge`; the other four are 2 vCPU).
+The AWS account's **Running On-Demand Standard** quota (`L-1216C47`, us-east-1) is what caps how
+many ranges you can run: at the default **32 vCPU** you get **N=2 exactly, with zero headroom**
+(2 × 16 = 32). N=3 needs **48**. To run **N=5**, raise `L-1216C47` to **80** via the Service Quotas console (the lab IAM user typically
 lacks `servicequotas:*`, so do it as an account admin). See also
 [subset ranges](#subset-tactic-ranges) — attendee ranges that drop the presenter-only k8s node
 fit more per quota.
@@ -169,8 +175,26 @@ ssh labadmin@"$BOX" 'sudo ESTATE_SCHEME=aws bash ~/lab/scripts/provision-relay.s
     --peers      ~/attendee-access/wireguard/relay-peers.conf'
 ```
 
-The client config is **`./attendee-access/wireguard/p01.conf`** (one per seat, `p01`..`p25`). Import
-it (desktop) or scan `p01.png` (mobile), turn WireGuard on, and you tunnel to only `10.0.1.0/24`.
+With `--per-group-only` the generator emits **one** config for the whole wave,
+`./attendee-access/wireguard/group0.conf` (+ `group0.png`), not one per seat — `--seats 25` only sets
+the headcount printed on the card. For per-participant configs use `--per-group N` instead, which
+names them `group0-p1.conf`, `group0-p2.conf`, …
+
+!!! info "Why WireGuard rather than opening SSH to the room"
+    At a venue you cannot predict attendee source addresses — the WiFi NATs to an address you don't
+    control, and people tether. So `allowed_ssh_cidr` (SSH/22) stays scoped to **you**, and attendees
+    come in over WireGuard instead. `wg_ingress_cidr` defaults to `0.0.0.0/0` on purpose: WireGuard is
+    the public entrance and its security is the key exchange plus each peer's `AllowedIPs`, not IP
+    filtering. A peer works from any network without you knowing its address in advance.
+
+    On AWS the relay also **NATs** the tunnel behind the box's own estate IP (`provision-relay.sh`
+    adds a `POSTROUTING MASQUERADE` when `ESTATE_SCHEME=aws`). That is required: without it the EC2
+    ENI source/dest check drops the forwarded packet, the range security group won't admit the tunnel
+    CIDR, and nothing routes the reply back. With it, traffic reaches the estate as `10.0.(K+1).99`,
+    which is already inside the SG. Per-group isolation still holds — the `FORWARD` rules scope each
+    tunnel to its own estate `/24` and drop cross-estate before NAT is applied. On Proxmox no NAT is
+    used, so the estate keeps seeing real per-seat tunnel IPs.
+
 Smoke-test the tunnel by hitting a service on the estate, e.g. `curl http://10.0.1.20:8265` (the Ray
 dashboard) or run the guided chain from `p01`. **Park again** when done:
 
@@ -219,7 +243,9 @@ follow-on — see the multi-range/profiles plan.
 
 ```bash
 cd terraform && terraform destroy \
-  -var="ssh_public_key_path=$HOME/.ssh/<your-key>.pub" -var='range_ids=[0,1]'
+  -var="ssh_public_key_path=$HOME/.ssh/aipostex_rec.pub" \
+  -var="allowed_ssh_cidr=$(curl -s https://checkip.amazonaws.com)/32" \
+  -var='range_ids=[0,1]'
 ```
 
 Deregister any transient baked AMIs + their snapshots you no longer need (keep the `r0` baseline for

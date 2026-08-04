@@ -33,14 +33,15 @@ RANGES="0 1 2 3 4" bash ../scripts/aws-reset-wave.sh   # parallel between-wave r
 
 | Instance | Role | Instance Type | Private IP (range K) |
 |----------|------|---------------|----------------------|
-| ailab-dev | Developer Workstation (Ollama) | c6i.large | 10.0.(K+1).10 |
+| ailab-dev | Developer Workstation (Ollama) | c6i.xlarge | 10.0.(K+1).10 |
 | ailab-ml | ML Platform (13 mocks + Ray) | t3.large | 10.0.(K+1).20 |
-| ailab-ds | Data Science (Ollama) | c6i.large | 10.0.(K+1).30 |
+| ailab-ds | Data Science (Ollama) | c6i.xlarge | 10.0.(K+1).30 |
 | ailab-app | Shared AI Apps / agents | t3.small | 10.0.(K+1).40 |
 | ailab-k8s | single-node k3s cluster | t3.medium | 10.0.(K+1).50 |
 | ailab-attack | Attack Box (deploy origin) | t3.large | 10.0.(K+1).99 |
 
-Only Ollama (dev + ds) is real CPU inference → non-burstable `c6i.large`. Range 0 keeps unsuffixed Name tags (`aipostex-lab-<role>`) for lab-ready AMI back-compat; range K>0 uses `aipostex-lab-r<K>-<role>`.
+Only Ollama (dev + ds) is real CPU inference → non-burstable `c6i.xlarge` (4 vCPU). A range is
+**16 vCPU**, so the default 32-vCPU `L-1216C47` quota caps you at **N=2 ranges**; N=5 needs 80. Range 0 keeps unsuffixed Name tags (`aipostex-lab-<role>`) for lab-ready AMI back-compat; range K>0 uses `aipostex-lab-r<K>-<role>`.
 
 ## Isolation
 
@@ -58,7 +59,9 @@ Every range gets its own security group that admits **only its own /24** (all po
 | `vpc_cidr` | 10.0.0.0/16 | VPC CIDR (must cover every range's /24) |
 | `range_ids` | `[0]` | Range/estate ids to deploy; con lab = `[0,1,2,3,4]` |
 | `ssh_public_key_path` | (required) | Path to SSH public key (baked as labadmin's key) |
-| `instance_type_ollama` | c6i.large | dev + ds (real Ollama inference) |
+| `instance_type_ollama` | c6i.xlarge | dev + ds (real Ollama inference, 4 vCPU) |
+| `instance_type_attack` | t3.large | attack box (~25 seat shells + the tool) |
+| `wg_ingress_cidr` | — | WireGuard UDP ingress CIDR (governs the attendee entrance) |
 | `instance_type_ml` | t3.large | ml platform |
 | `instance_type_k8s` | t3.medium | single-node k3s |
 | `instance_type_small` | t3.small | app + attack |

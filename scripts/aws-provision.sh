@@ -72,6 +72,10 @@ done
 log "staging lab-scripts + intra-VPC key + aipostex binary on the attack box..."
 rsh "$ATTACK_PUB" "mkdir -p ~/lab ~/.ssh && chmod 700 ~/.ssh"
 scp $SSH_OPTS -r "$REPO_ROOT/lab-scripts/." "labadmin@$ATTACK_PUB:~/lab/"
+# provision-relay.sh lives in scripts/, not lab-scripts/, so it is not covered by the copy above.
+# The attendee WireGuard entrance is run FROM the box, so stage it to the path the docs use.
+rsh "$ATTACK_PUB" "mkdir -p ~/lab/scripts"
+scp $SSH_OPTS "$REPO_ROOT/scripts/provision-relay.sh" "labadmin@$ATTACK_PUB:~/lab/scripts/provision-relay.sh"
 # The attack box's labadmin key IS aipostex_rec, so it can SSH labadmin@peers — the peers
 # trust aipostex_rec.pub via cloud-init. deploy-all phase 1 also re-distributes id_ed25519.pub.
 scp $SSH_OPTS "$KEY"      "labadmin@$ATTACK_PUB:~/.ssh/id_ed25519"

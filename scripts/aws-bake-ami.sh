@@ -32,4 +32,4 @@ for role in $roles; do
     "Key=Project,Value=aipostex-lab" "Key=LabReady,Value=r${RANGE}" "Key=Role,Value=${role}" >/dev/null
   echo "  [+] ${role}  ${iid} -> ${ami}"
 done
-echo "done. reset a range from these with: RANGE=${RANGE} bash scripts/aws-reset-wave.sh"
+echo "done. reset a range from these with: RANGES=${RANGE} bash scripts/aws-reset-wave.sh"

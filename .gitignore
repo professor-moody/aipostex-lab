@@ -9,3 +9,8 @@ site/
 # AWS IAM access-key exports — never commit
 *accessKeys*.csv
 review-for-recording/
+
+# Generated attendee access material — contains WireGuard PRIVATE KEYS, preshared keys and
+# Tailscale auth keys, one set per seat. Regenerated at every bring-up (the relay endpoint is
+# an ephemeral public IP). NEVER commit.
+attendee-access/

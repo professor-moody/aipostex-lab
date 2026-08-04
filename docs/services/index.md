@@ -34,6 +34,7 @@ The default verifier checks **29 service endpoints** (excludes opt-in and k8s de
 | ailab-ml | 172.16.50.20 | 8501 | TF Serving mock | `tfserving-mock.service` |
 | ailab-ds | 172.16.50.30 | 11434 | Ollama | `ollama.service` |
 | ailab-ds | 172.16.50.30 | 8889 | Jupyter Lab | `jupyter-ds.service` |
+| ailab-ds | 172.16.50.30 | 5000 | MLflow auth gateway (Basic-gated — credential-chain hop 2) | `mlflow-auth-gateway.service` |
 | ailab-ds | 172.16.50.30 | 8080 | Weaviate | `weaviate.service` |
 | ailab-ds | 172.16.50.30 | 6333 | Qdrant | `qdrant.service` |
 | ailab-ds | 172.16.50.30 | 5432 | PostgreSQL/pgvector | `postgresql.service` |

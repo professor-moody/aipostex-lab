@@ -153,7 +153,7 @@ If the room wants more after the chain lands, keep the chain as the **spine** an
 extras:
 
 - **A2A — "accepted ≠ exploited"** (the real a2a-sdk agent at `172.16.50.40:8103`, *not* the scored
-  `:8100` mock): `card-spoof --callback-url http://172.16.50.99:9000 --force-exploit`. Acceptance is
+  `:8100` mock): `card-spoof --callback-url http://172.16.50.99:18943 --force-exploit`. Acceptance is
   only `influenced`; a real nonce-correlated out-of-band callback is what upgrades it to `takeover-capable`
   — a 30-second landed-ladder coda. **Pre-record it**; a live callback can fail on stage. The
   `--callback-url` must be routable *from the agent* — the attack-box IP here (`172.16.50.99`), or

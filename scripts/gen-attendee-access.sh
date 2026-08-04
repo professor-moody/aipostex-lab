@@ -216,11 +216,37 @@ EOF
         emit_qr "$ts_cmd" "$OUT/tailscale/${name}.png"
 
         # printable per-seat card
-        cat > "$OUT/cards/${name}.md" <<EOF
-# ${name} — your range: estate ${K} (${subnet}.0/24)
+        # Seat shell account on the attack box is pNN (p01..p25), NOT the peer name.
+        seat="$(printf 'p%02d' "$i")"
+        if [ "${ESTATE_SCHEME:-proxmox}" = aws ]; then
+            cat > "$OUT/cards/${name}.md" <<EOF
+# Seat ${seat} — your range: estate ${K} (${subnet}.0/24)
 
-> **On-site (the con default):** join the **aipostex-lab** WiFi and \`ssh ${name}@<attack-box>\`
-> — no VPN. The methods below are the REMOTE / off-site fallback only.
+> **The lab is in the cloud, so the WireGuard tunnel is how you get in.** There is no lab WiFi
+> to join. Bring the tunnel up first, then SSH over it.
+
+## 1. Turn on the tunnel
+- **Mobile:** scan \`wireguard/${name}.png\` with the WireGuard app, toggle it on.
+- **Desktop:** import \`wireguard/${name}.conf\` into the WireGuard client, toggle it on.
+
+## 2. Get your shell
+\`\`\`
+ssh ${seat}@${subnet}.99      # password: aipostex
+\`\`\`
+
+## 3. Check you are in
+\`\`\`
+aipostex discover network --target ${subnet}.0/24
+\`\`\`
+
+Your tunnel reaches ONLY estate ${K} (${subnet}.0/24). Stuck? Ask a room volunteer.
+EOF
+        else
+            cat > "$OUT/cards/${name}.md" <<EOF
+# Seat ${seat} — your range: estate ${K} (${subnet}.0/24)
+
+> **On-site (the con default):** join the **aipostex-lab** WiFi and \`ssh ${seat}@<attack-box>\`
+> (password: aipostex) — no VPN. The methods below are the REMOTE / off-site fallback only.
 
 ## Remote access — Tailscale (scan, install, you're in)
 1. Install Tailscale: https://tailscale.com/download
@@ -233,6 +259,7 @@ EOF
 
 You will reach ONLY estate ${K}. Stuck? Ask a room volunteer.
 EOF
+        fi
     done
 done
 

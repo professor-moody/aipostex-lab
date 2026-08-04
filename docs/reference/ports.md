@@ -48,6 +48,7 @@ real MLflow registry for `aipostex.hook.url` model-version tags and delivers hoo
 | 22 | SSH | `sshd.service` |
 | 11434 | Ollama | `ollama.service` |
 | 8889 | Jupyter Lab | `jupyter-ds.service` |
+| 5000 | MLflow auth gateway (Basic-gated — credential-chain hop 2) | `mlflow-auth-gateway.service` |
 | 8080 | Weaviate | `weaviate.service` |
 | 6333 | Qdrant | `qdrant.service` |
 | 5432 | PostgreSQL/pgvector | `postgresql.service` |
