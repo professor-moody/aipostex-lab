@@ -347,6 +347,53 @@ systemctl daemon-reload
 systemctl enable aipostex-chain-seed.service
 echo "[+] Boot-time chain-seed self-heal installed (aipostex-chain-seed.service)"
 
+# Periodic re-seed timer. The boot service above only fires ONCE at boot, but Ray's
+# job store is in-memory, so ANY mid-uptime Ray restart — a crash (ray.service has
+# Restart=always and has been observed exiting status=1/FAILURE), a manual restart —
+# wipes the seeded jobs and nothing re-plants them until the next full reboot. This
+# timer runs the same idempotent seed-if-empty script every 2 min so the estate
+# self-heals within ~2 min of any Ray restart, no facilitator action. The companion
+# service deliberately OMITS RemainAfterExit (unlike the boot unit) so the timer can
+# actually re-trigger it — starting a RemainAfterExit=yes oneshot that is already
+# "active" is a silent no-op.
+cat > /etc/systemd/system/aipostex-chain-seed-refresh.service << 'EOF'
+[Unit]
+Description=aipostex guided-chain Ray seed refresh (seed-if-empty; covers mid-uptime Ray restarts)
+After=ray.service network-online.target
+Wants=ray.service
+
+[Service]
+Type=oneshot
+ExecStart=/home/labadmin/lab/ml-platform/chain-seed-boot.sh
+TimeoutStartSec=300
+StandardOutput=journal
+StandardError=journal
+EOF
+
+cat > /etc/systemd/system/aipostex-chain-seed-refresh.timer << 'EOF'
+[Unit]
+Description=Periodic re-seed of guided-chain Ray jobs (RAM job store evaporates on ANY Ray restart, not just reboot)
+
+[Timer]
+OnBootSec=2min
+OnUnitActiveSec=2min
+AccuracySec=15s
+
+[Install]
+WantedBy=timers.target
+EOF
+
+systemctl daemon-reload
+systemctl enable --now aipostex-chain-seed-refresh.timer
+echo "[+] Periodic chain-seed refresh timer installed (aipostex-chain-seed-refresh.timer, every 2 min)"
+
+# Stop the ROOT cause of the mid-uptime Ray restarts: the daily unattended-upgrades run
+# (apt-daily-upgrade.service) was observed exiting Ray with status=1/FAILURE every morning
+# ~06:xx UTC. On a frozen, offline, reset-from-snapshot con lab, automatic package upgrades
+# are pure downside — they crash Ray AND could mutate the estate mid-event. Disable them.
+systemctl disable --now apt-daily.timer apt-daily-upgrade.timer 2>/dev/null || true
+echo "[+] Unattended-upgrades disabled (was crashing Ray daily ~06:xx UTC)"
+
 echo "[*] Waiting for Ray dashboard..."
 for i in $(seq 1 30); do
     if curl -sf http://localhost:8265/api/version &>/dev/null; then

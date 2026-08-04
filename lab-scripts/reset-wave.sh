@@ -33,7 +33,10 @@ source "${SCRIPT_DIR}/lib/inventory.sh"
 SNAPSHOT="${SNAPSHOT:-lab-ready}"
 ESTATE_GROUPS="${ESTATE_GROUPS:-0}"                  # estate group offsets; 0 = the base estate
 SSH_USER="${SSH_USER:-labadmin}"
-SSH_OPTS="${SSH_OPTS:--o StrictHostKeyChecking=no -o ConnectTimeout=4 -o BatchMode=yes}"
+# UserKnownHostsFile=/dev/null: a VM's SSH host key changes across a rollback/reimage, so
+# checking known_hosts would make boot-wait/re-arm SSH fail on a legit estate host (hit this
+# live on ailab-ds). verify-lab.sh already does this; reset-wave must too.
+SSH_OPTS="${SSH_OPTS:--o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ConnectTimeout=4 -o BatchMode=yes}"
 BOOT_TIMEOUT="${BOOT_TIMEOUT:-180}"   # seconds to wait for a VM to answer SSH
 SLA_SECONDS="${SLA_SECONDS:-600}"     # 10-min between-wave SLA, for the report verdict
 DRY_RUN="${DRY_RUN:-0}"

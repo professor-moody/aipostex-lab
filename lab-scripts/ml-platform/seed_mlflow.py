@@ -15,6 +15,8 @@ from __future__ import annotations
 
 import json
 import os
+import random
+import struct
 import sys
 import tempfile
 import time
@@ -30,6 +32,22 @@ CHAIN_HF_TOKEN = "hf_FAKE_aBcDeFgHiJkLmNoPqRsTuVwXyZ123"
 # registry chain points at THIS estate's own TGI gateway, not the base subnet.
 ESTATE_SUBNET = os.environ.get("ESTATE_SUBNET", "172.16.50")
 CHAIN_TGI_GATEWAY = os.environ.get("CHAIN_TGI_GATEWAY", f"http://{ESTATE_SUBNET}.40:8180")
+
+
+def make_safetensors(n_bytes: int, seed: int, tensor_name: str = "classifier.weight") -> bytes:
+    """Return a VALID minimal .safetensors blob so `mlflow bulk-download` steals real
+    model bytes, not just the MLmodel card. Layout: 8-byte little-endian header length,
+    JSON header, then F32 tensor data. Deterministic per `seed` for idempotent reseeds.
+    Kept small (~1 MB) — the tool's --per-file-bytes cap (256 KB) truncates it anyway;
+    the point is that a real weights file exists in the model/ artifact subtree."""
+    n_floats = max(1, n_bytes // 4)
+    header = {
+        tensor_name: {"dtype": "F32", "shape": [n_floats], "data_offsets": [0, n_floats * 4]},
+        "__metadata__": {"format": "pt", "framework": "transformers"},
+    }
+    header_bytes = json.dumps(header).encode("utf-8")
+    return struct.pack("<Q", len(header_bytes)) + header_bytes + random.Random(seed).randbytes(n_floats * 4)
+
 
 mlflow = None
 MlflowException = Exception
@@ -166,7 +184,8 @@ EXPERIMENTS = [
                 "metrics": {"accuracy": 0.967, "precision": 0.94, "recall": 0.91, "f1": 0.925, "loss": 0.089},
                 "tags": {"engineer": "bob.wilson@acme.corp", "gpu_cost_per_run": "$524"},
                 "artifacts": {
-                    "model/MLmodel": "artifact_path: model\nframework: transformers\n",
+                    "model/MLmodel": "artifact_path: model\nframework: transformers\nflavors:\n  transformers:\n    task: text-classification\n    model_binary: model.safetensors\n",
+                    "model/model.safetensors": make_safetensors(786_432, 0xB0B0),
                     "deployment/deployment_config.json": json.dumps(
                         {
                             "model_registry": "s3://acme-ml-models/fraud-detection-bert/",
@@ -213,7 +232,8 @@ EXPERIMENTS = [
                 "metrics": {"accuracy": 0.974, "precision": 0.96, "recall": 0.93, "f1": 0.945, "loss": 0.071},
                 "tags": {"engineer": "bob.wilson@acme.corp", "gpu_cost_per_run": "$1,048", "promoted": "true"},
                 "artifacts": {
-                    "model/MLmodel": "artifact_path: model\nframework: transformers\nvariant: prod\n",
+                    "model/MLmodel": "artifact_path: model\nframework: transformers\nvariant: prod\nflavors:\n  transformers:\n    task: text-classification\n    model_binary: model.safetensors\n",
+                    "model/model.safetensors": make_safetensors(1_310_720, 0xB0B1),
                     "deployment/deployment_config.json": json.dumps(
                         {
                             "model_registry": "s3://acme-ml-models/fraud-detection-bert/",
@@ -393,14 +413,42 @@ def ensure_experiment(name: str) -> str:
     return experiment.experiment_id
 
 
-def log_artifact_tree(artifacts: dict[str, str]) -> None:
+def _write_artifact(root: Path, relative_path: str, content) -> None:
+    path = root / relative_path
+    path.parent.mkdir(parents=True, exist_ok=True)
+    if isinstance(content, (bytes, bytearray)):
+        path.write_bytes(content)          # binary artifacts (e.g. model.safetensors weights)
+    else:
+        path.write_text(content, encoding="utf-8")
+
+
+def log_artifact_tree(artifacts) -> None:
     with tempfile.TemporaryDirectory() as tmp_dir:
         root = Path(tmp_dir)
         for relative_path, content in artifacts.items():
-            path = root / relative_path
-            path.parent.mkdir(parents=True, exist_ok=True)
-            path.write_text(content, encoding="utf-8")
+            _write_artifact(root, relative_path, content)
         mlflow.log_artifacts(str(root))
+
+
+def run_has_artifact(run_id: str, artifact_path: str) -> bool:
+    try:
+        return any(e.path == artifact_path for e in client.list_artifacts(run_id, os.path.dirname(artifact_path)))
+    except Exception:
+        return False
+
+
+def backfill_missing_artifacts(run_id: str, artifacts) -> list:
+    """Log artifacts a previously-seeded run is missing (e.g. model weights added to the
+    spec after the run was first created). Idempotent — only uploads absent paths."""
+    missing = {p: c for p, c in artifacts.items() if not run_has_artifact(run_id, p)}
+    if not missing:
+        return []
+    with tempfile.TemporaryDirectory() as tmp_dir:
+        root = Path(tmp_dir)
+        for relative_path, content in missing.items():
+            _write_artifact(root, relative_path, content)
+        client.log_artifacts(run_id, str(root))
+    return sorted(missing)
 
 
 def extract_tags(entity):
@@ -450,8 +498,14 @@ def ensure_run(experiment_id: str, spec: dict[str, object]) -> str:
         tags["lab_seed_version"] = SEED_VERSION
         for k, v in tags.items():
             client.set_tag(run_id, k, v)
-        if added:
-            print(f"    [~] Updated seeded run {spec['seed_key']} ({run_id}) — added params: {', '.join(added)}")
+        backfilled = backfill_missing_artifacts(run_id, spec["artifacts"])
+        if added or backfilled:
+            notes = []
+            if added:
+                notes.append(f"params: {', '.join(added)}")
+            if backfilled:
+                notes.append(f"artifacts: {', '.join(backfilled)}")
+            print(f"    [~] Updated seeded run {spec['seed_key']} ({run_id}) — {'; '.join(notes)}")
         else:
             print(f"    [=] Reusing seeded run {spec['seed_key']} ({run_id})")
         return run_id
