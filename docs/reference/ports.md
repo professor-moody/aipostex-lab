@@ -63,6 +63,9 @@ real MLflow registry for `aipostex.hook.url` model-version tags and delivers hoo
 | 8090 | LangServe | `langserve.service` |
 | 8104 | A2A orchestrator (unauthenticated agent registry; `a2a register` target) | `a2a-orchestrator.service` |
 | 8110 | Bespoke IT-helpdesk agent (custom `/chat`; target for the `agent` module) | `helpdesk-agent.service` |
+| 8111 | Bespoke document-summarizer agent (custom `/summarize` + `/chat`; indirect injection, timestamp sessions) | `summarize-agent.service` |
+| 8112 | Bespoke code-review agent (custom `/chat`; CI-token extract, **sequential** session IDs) | `review-agent.service` |
+| 8113 | Bespoke browse agent (custom `/chat` + `/fetch`; SSRF-ish over-reach, short session IDs) | `browse-agent.service` |
 | 8501 | Streamlit | `streamlit.service` |
 | 8100 | A2A Agent (basic) | `a2a-agent-basic.service` |
 | 8101 | A2A Agent (multiturn) | `a2a-agent-multiturn.service` |

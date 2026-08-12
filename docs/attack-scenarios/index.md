@@ -38,6 +38,7 @@ scenarios are self-serve extra credit across the wider estate.
 | 19 | [Embedding Endpoint Recon](scenario-19.md) | Beginner–Intermediate | ailab-ml:8181 | ~15 min |
 | 20 | [Behavioral Model Fingerprinting — Masked vs Un-masked](scenario-20.md) | Intermediate | ailab-ml:4000 | ~15 min |
 | 21 | [Full Agent-Layer Campaign](scenario-21.md) | Advanced | ailab-app:8110, ailab-ds:8091 (obs ailab-siem) | ~40 min |
+| 22 | [Advanced Prompt-Injection Tradecraft — the Single-Agent Fleet](scenario-22.md) | Intermediate–Advanced | ailab-app:8111–8113 | ~30 min |
 
 ## Progression Tracks
 
@@ -51,7 +52,7 @@ Extract data, harvest credentials, identify misconfiguration.
 Pivot across services using discovered credentials, inject pipelines, run a full campaign, and
 escalate to root to steal the model itself.
 
-**Model & Agent Layer** → Scenarios 14–21
+**Model & Agent Layer** → Scenarios 14–22
 Attack the model/agent-conversation layer: bespoke agents, behavioral model fingerprinting,
 embedding recon, guardrail bypass, black-box RAG, multi-agent A2A, MCP privesc, detect/evade, and a
 full agent-layer campaign. See the [Techniques](../techniques/index.md) pages for the transferable

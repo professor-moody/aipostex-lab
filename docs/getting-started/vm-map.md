@@ -11,7 +11,7 @@ title: VM Map
 | `ailab-dev` | 210 | `172.16.50.10` | Ubuntu 24.04 | Developer workstation | 11434, 8888, 3000, 3002, 7860, 6274 |
 | `ailab-ml` | 220 | `172.16.50.20` | Ubuntu 24.04 | ML platform | 8000, 5000, 4000, 4001, 8265, 8181, 8182, 8081, 8082, 8500, 3333, 8444, 9000, 8501 |
 | `ailab-ds` | 230 | `172.16.50.30` | Ubuntu 24.04 | Data science | 11434, 8889, 8080, 6333, 5000, 5432, 8091 |
-| `ailab-app` | 250 | `172.16.50.40` | Ubuntu 24.04 | Shared AI apps | 8090, 8104, 8110, 8501, 8100-8103, 8180, 8765 |
+| `ailab-app` | 250 | `172.16.50.40` | Ubuntu 24.04 | Shared AI apps | 8090, 8104, 8110-8113, 8501, 8100-8103, 8180, 8765 |
 | `ailab-k8s` | 260 | `172.16.50.50` | Ubuntu 24.04 | Kubernetes node | 6443 (vuln), 6444 (secure) |
 | `ailab-attack` | 240 | `172.16.50.99` | Debian 12 | Attack box | SSH |
 | `ailab-siem` | 270 | `172.16.50.60` | Ubuntu 24.04 | Detection (Elastic) | 9200, 5601 |
@@ -63,6 +63,9 @@ title: VM Map
 - `8100`–`8102` A2A agents (scored mocks); `8103` A2A real agent (offensive target)
 - `8104` A2A orchestrator (unauthenticated agent registry — `a2a register` target)
 - `8110` Bespoke IT-helpdesk agent (custom `/chat` — target for the `agent` module)
+- `8111` Bespoke document-summarizer agent (`/summarize` + `/chat` — indirect injection; timestamp session IDs)
+- `8112` Bespoke code-review agent (`/chat` — CI-token in system prompt; **sequential** session IDs)
+- `8113` Bespoke browse agent (`/chat` + `/fetch` — SSRF-ish over-reach; short session IDs)
 - `8180` HF TGI gateway (real inference)
 - `8765` Post-Ex Oracle
 

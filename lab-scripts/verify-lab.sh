@@ -577,6 +577,28 @@ else
 fi
 
 echo ""
+echo "Bespoke single-agent apps on ailab-app (Module-3 target set):"
+for spec in "summarize-agent:8111:summarize" "review-agent:8112:chat" "browse-agent:8113:fetch"; do
+    IFS=: read -r aname aport aep <<< "$spec"
+    ahealth=$(curl -sf --max-time 5 "http://${APP_IP}:${aport}/health" 2>/dev/null || echo "")
+    aroot=$(curl -sf --max-time 5 "http://${APP_IP}:${aport}/" 2>/dev/null || echo "")
+    if echo "$ahealth" | grep -qi "healthy"; then
+        echo -e "  ${GREEN}[✓]${NC} ${aname} :${aport} health check OK"
+        PASS=$((PASS + 1))
+    else
+        echo -e "  ${YELLOW}[!]${NC} ${aname} :${aport} not responding"
+        WARN=$((WARN + 1))
+    fi
+    if echo "$aroot" | grep -qi "${aep}"; then
+        echo -e "  ${GREEN}[✓]${NC} ${aname} advertises its /${aep} surface"
+        PASS=$((PASS + 1))
+    else
+        echo -e "  ${YELLOW}[!]${NC} ${aname} root missing /${aep}"
+        WARN=$((WARN + 1))
+    fi
+done
+
+echo ""
 echo "Inference gateways and mocks:"
 tgi_info=$(curl -sf --max-time 5 "http://${APP_IP}:8180/info" 2>/dev/null || echo "")
 tei_info=$(curl -sf --max-time 5 "http://${ML_IP}:8181/info" 2>/dev/null || echo "")

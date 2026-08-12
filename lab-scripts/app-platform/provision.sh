@@ -266,6 +266,57 @@ for i in $(seq 1 20); do
     sleep 2
 done
 
+# ── Bespoke single-agent apps (Module-3 target set) ─────────────────────────
+# summarize-agent :8111 (timestamp sessions, indirect injection via the document),
+# review-agent :8112 (sequential sessions, CI-token in system prompt, weak output
+# filter), browse-agent :8113 (short sessions, SSRF-ish fetch + indirect injection).
+# Each proxies to the same LiteLLM->Ollama upstream (real generation).
+for spec in \
+    "summarize-agent:8111:SUMMARIZE_AGENT_PORT:summarize-agent.jsonl:Bespoke Document Summarizer Agent" \
+    "review-agent:8112:REVIEW_AGENT_PORT:review-agent.jsonl:Bespoke Code-Review Agent" \
+    "browse-agent:8113:BROWSE_AGENT_PORT:browse-agent.jsonl:Bespoke Browse Agent"; do
+    IFS=: read -r name port portenv logf desc <<< "$spec"
+    echo "[*] Installing ${name} (:${port})..."
+    sudo -u appuser mkdir -p "/home/appuser/projects/${name}"
+    if [ -f "$(dirname "$0")/${name}-mock/server.py" ]; then
+        cp "$(dirname "$0")/${name}-mock/server.py" "/home/appuser/projects/${name}/server.py"
+        chown appuser:appuser "/home/appuser/projects/${name}/server.py"
+    fi
+    cat > "/etc/systemd/system/${name}.service" << EOF
+[Unit]
+Description=${desc} (aipostex-lab)
+After=network.target
+
+[Service]
+User=appuser
+WorkingDirectory=/home/appuser/projects/${name}
+Environment="${portenv}=${port}"
+Environment="EVENT_LOG=${APP_EVENT_LOG_DIR}/${logf}"
+Environment="PATH=/usr/local/bin:/usr/bin:/bin"
+ExecStart=/usr/bin/python3 server.py
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
+EOF
+    systemctl daemon-reload
+    systemctl enable "${name}"
+    systemctl restart "${name}"
+    echo "[*] Waiting for ${name} on :${port}..."
+    for i in $(seq 1 20); do
+        if curl -sf "http://localhost:${port}/health" >/dev/null 2>&1; then
+            echo "[+] ${name} is ready"
+            break
+        fi
+        if [ "$i" -eq 20 ]; then
+            echo "[!] ${name} failed to start"
+            journalctl -u "${name}" --no-pager -n 20
+        fi
+        sleep 2
+    done
+done
+
 # ── A2A Agent fixtures ──────────────────────────────────────────────────────
 
 echo "[*] Installing A2A agent..."

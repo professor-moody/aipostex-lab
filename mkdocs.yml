@@ -134,6 +134,7 @@ nav:
       - HF TGI Gateway: services/app/tgi-gateway.md
       - A2A Orchestrator: services/app/a2a-orchestrator.md
       - Bespoke IT-Helpdesk Agent: services/app/helpdesk-agent.md
+      - Bespoke Single-Agent Fleet: services/app/agent-fleet.md
     - ailab-k8s (Kubernetes Node):
       - Cluster (vuln + secure k3s): services/k8s/cluster.md
     - ailab-siem (Detection):
@@ -184,6 +185,7 @@ nav:
     - "19: Embedding Endpoint Recon": attack-scenarios/scenario-19.md
     - "20: Behavioral Model Fingerprinting": attack-scenarios/scenario-20.md
     - "21: Full Agent-Layer Campaign": attack-scenarios/scenario-21.md
+    - "22: Advanced Prompt-Injection Tradecraft": attack-scenarios/scenario-22.md
   - Techniques:
     - Overview: techniques/index.md
     - Reconnaissance: techniques/reconnaissance.md
