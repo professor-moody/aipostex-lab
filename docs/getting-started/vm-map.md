@@ -71,7 +71,7 @@ title: VM Map
 - `9200` Elasticsearch (cluster `aipostex-detect`)
 - `5601` Kibana (Elastic Security — detection engine)
 - Persistent detection host (NOT rolled by reset-wave). Beats (Filebeat + Auditbeat) on the target hosts ship here.
-- Login: `elastic` / `_rw*oVdZSeBz5vksgFA-`
+- Login: `elastic` — password is set at install via `ELASTIC_PASSWORD` (see operator notes, not committed)
 
 ### ailab-k8s
 

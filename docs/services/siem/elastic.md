@@ -26,8 +26,8 @@ on boot.
 | Filebeat | each target host | Auth/syslog + application event logs (`/var/log/aipostex/*.jsonl`) |
 
 Lab posture: single-node, **security enabled** (required for the Detection Engine) but HTTP/transport
-TLS **off** (isolated subnet — auth over plain HTTP, no certs). Login: `elastic` /
-`_rw*oVdZSeBz5vksgFA-`.
+TLS **off** (isolated subnet — auth over plain HTTP, no certs). Login: `elastic` (password
+set at install via `ELASTIC_PASSWORD`; see operator notes, not committed).
 
 ## What It Detects
 
@@ -41,10 +41,11 @@ TLS **off** (isolated subnet — auth over plain HTTP, no certs). Login: `elasti
 ## Using It
 
 ```bash
-# Kibana (Elastic Security): http://172.16.50.60:5601  (elastic / _rw*oVdZSeBz5vksgFA-)
+# Kibana (Elastic Security): http://172.16.50.60:5601  (elastic / $ELASTIC_PW — see operator notes)
+ELASTIC_PW='…'   # the elastic password set at install (operator notes)
 
 # What's landing (from the attack box or proxmox):
-curl -s -u elastic:_rw*oVdZSeBz5vksgFA- \
+curl -s -u "elastic:$ELASTIC_PW" \
   'http://172.16.50.60:9200/_cat/indices/auditbeat*,filebeat*?v&h=index,docs.count'
 
 # Detect/evade loop: run a tool action, then check Elastic for the alert it raised.

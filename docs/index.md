@@ -2,28 +2,6 @@
 title: aipostex Lab Environment
 ---
 
-<div class="apx-dc" markdown="0">
-  <span class="apx-dc-txt">✦ See you at DEF&nbsp;CON&nbsp;34 · Red&nbsp;Team&nbsp;Village ✦</span>
-</div>
-<style>
-.apx-dc { text-align: center; margin: .2rem 0 1.4rem; }
-.apx-dc-txt {
-  display: inline-block;
-  font-weight: 800;
-  font-size: clamp(1rem, 3.4vw, 1.7rem);
-  letter-spacing: .02em;
-  background: linear-gradient(90deg,#a855f7,#8b5cf6,#6366f1,#3b82f6,#06b6d4,#3b82f6,#6366f1,#8b5cf6,#a855f7);
-  background-size: 300% auto;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  -webkit-text-fill-color: transparent;
-  animation: apx-dc-shim 7s linear infinite;
-}
-@keyframes apx-dc-shim { to { background-position: 300% center; } }
-@media (prefers-reduced-motion: reduce) { .apx-dc-txt { animation: none; background-position: 50% center; } }
-</style>
-
 # aipostex Lab Environment
 
 **A 6-VM Proxmox lab for testing aipostex against realistic shadow AI sprawl.**
@@ -89,3 +67,27 @@ bash lab-scripts/verify-lab.sh
 ```
 
 For the staged automation roadmap, see [Deployment Evolution](deployment/evolution.md).
+
+<div class="apx-dc" markdown="0">
+  <span class="apx-dc-txt">✦ As seen at DEF&nbsp;CON&nbsp;34 · Red&nbsp;Team&nbsp;Village ✦</span>
+</div>
+<style>
+.apx-dc { text-align: center; margin: 2.4rem 0 .4rem; }
+.apx-dc-txt {
+  display: inline-block;
+  font-weight: 700;
+  font-size: clamp(.72rem, 1.7vw, .95rem);
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  background: linear-gradient(90deg,#a855f7,#8b5cf6,#6366f1,#3b82f6,#06b6d4,#3b82f6,#6366f1,#8b5cf6,#a855f7);
+  background-size: 300% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  animation: apx-dc-shim 7s linear infinite;
+  opacity: .9;
+}
+@keyframes apx-dc-shim { to { background-position: 300% center; } }
+@media (prefers-reduced-motion: reduce) { .apx-dc-txt { animation: none; background-position: 50% center; } }
+</style>
