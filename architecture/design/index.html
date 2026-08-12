@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.5">
     
     
       
@@ -31,7 +31,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
@@ -1091,6 +1091,17 @@
     <span class="md-ellipsis">
       
         ailab-attack
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ailab-siem" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ailab-siem
       
     </span>
   </a>
@@ -5411,13 +5422,15 @@
 <h3 id="ailab-ml"><code>ailab-ml</code><a class="headerlink" href="#ailab-ml" title="Permanent link">&para;</a></h3>
 <p>The ML platform concentrates the higher-value shared services: ChromaDB, MLflow, LiteLLM, LiteLLM-authed, Ray, HF/serving mocks, W&amp;B, Kubeflow, and TF Serving. This is the control-plane-like box where Tier 2 workflows such as <code>pip-inject</code>, <code>cluster-info</code>, and <code>tamper-proof</code> make sense.</p>
 <h3 id="ailab-ds"><code>ailab-ds</code><a class="headerlink" href="#ailab-ds" title="Permanent link">&para;</a></h3>
-<p>The data science host shows tool fragmentation. It keeps the second Ollama, second Jupyter, Weaviate, Qdrant, and PostgreSQL/pgvector so the demo still tells the “multiple teams built this independently” story.</p>
+<p>The data science host shows tool fragmentation. It keeps the second Ollama, second Jupyter, Weaviate, Qdrant, PostgreSQL/pgvector, and a <strong>black-box RAG app</strong> (knowledge-base chat + document upload — the target for the <code>rag</code> module) so the demo still tells the “multiple teams built this independently” story.</p>
 <h3 id="ailab-app"><code>ailab-app</code><a class="headerlink" href="#ailab-app" title="Permanent link">&para;</a></h3>
-<p>The shared AI app host carries LangServe, Streamlit, three A2A agents, and the Post-Ex Oracle. Its value is discovery coverage, agent workflow validation, and narrative separation: app-facing surfaces no longer need to be crammed onto another team’s box.</p>
+<p>The shared AI app host carries LangServe, Streamlit, the HF TGI chain gateway, the A2A orchestrator agents, and a <strong>bespoke IT-helpdesk agent</strong> (a custom <code>/chat</code> app — the target for the <code>agent</code> module and behavioral model fingerprinting). Its value is discovery coverage, agent workflow validation, and narrative separation: app-facing surfaces no longer need to be crammed onto another team’s box.</p>
 <h3 id="ailab-k8s"><code>ailab-k8s</code><a class="headerlink" href="#ailab-k8s" title="Permanent link">&para;</a></h3>
 <p>The Kubernetes node runs a real single-node k3s pair on one VM: a deliberately weak cluster on <code>:6443</code> (anonymous RBAC) alongside a hardened control plane on <code>:6444</code>. It anchors the cluster-attack story — anonymous API reads, secret exposure, and RBAC misconfiguration — against a genuine kube-apiserver rather than a mock.</p>
 <h3 id="ailab-attack"><code>ailab-attack</code><a class="headerlink" href="#ailab-attack" title="Permanent link">&para;</a></h3>
 <p>The attack box remains the operator entry point with Tailscale, SSH shortcuts, <code>aipostex</code>, and local MCP fixtures, including the new stdio MCP fixture.</p>
+<h3 id="ailab-siem"><code>ailab-siem</code><a class="headerlink" href="#ailab-siem" title="Permanent link">&para;</a></h3>
+<p>A real <strong>Elastic Security</strong> detection stack (Elasticsearch <code>:9200</code> + Kibana <code>:5601</code>) with Beats (Filebeat + Auditbeat) shipping from every target host. Five detection rules fire real alerts — reverse shells, file-integrity/privesc, prompt injection, knowledge-base enumeration, and RAG ingestion — so operators can run the <strong>detect-and-evade</strong> loop and see exactly what a SOC observes. It is a <strong>persistent</strong> host: <code>reset-wave.sh</code> does not roll it back.</p>
 <h2 id="why-the-split-host-layout-helps">Why The Split-Host Layout Helps<a class="headerlink" href="#why-the-split-host-layout-helps" title="Permanent link">&para;</a></h2>
 <ul>
 <li>It creates a cleaner app-tier story for LangServe and Streamlit.</li>
@@ -5427,9 +5440,10 @@
 </ul>
 <h2 id="design-totals">Design Totals<a class="headerlink" href="#design-totals" title="Permanent link">&para;</a></h2>
 <ul>
-<li><strong>6 VMs total</strong></li>
+<li><strong>6-VM managed estate</strong> (5 target VMs + the attack box) — deployed, reset, and snapshotted together</li>
+<li><strong>+ a persistent Elastic detection host</strong> (<code>ailab-siem</code>), deliberately outside the reset-wave loop (7 hosts in all)</li>
 <li><strong>5 target VMs</strong></li>
-<li><strong>29 health-checked service endpoints</strong></li>
+<li><strong>62 <code>verify-lab.sh</code> checks</strong> across the estate and the detection host</li>
 <li><strong>170 planted sensitive findings</strong></li>
 </ul>
 <p>The service surface now includes app, agent, serving-framework, vector database, and post-exploitation validation surfaces while keeping fake planted values tracked in the scoring manifest.</p>
@@ -5520,7 +5534,7 @@
       <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "navigation.instant", "navigation.instant.progress", "search.suggest", "search.highlight", "content.code.copy", "content.tabs.link", "toc.integrate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
       
     
   </body>
