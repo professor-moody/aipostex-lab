@@ -16,7 +16,7 @@ Live demonstration script for the **6-VM mini** aipostex lab. Aligned with the `
 
 ## Preflight
 
-> **Narrator**: "Before we touch the tool, let's prove the lab is real. Six VMs, 29 health-checked service endpoints, 170 planted sensitive findings — all running natively, no containers."
+> **Narrator**: "Before we touch the tool, let's prove the lab is real. A six-VM estate watched by a real Elastic detection stack, 62 verification checks, 170 planted sensitive findings — all running natively, no containers."
 
 From the attack box:
 
@@ -507,10 +507,10 @@ bash lab-scripts/attack-box/verify-aipostex.sh --layer operator
 
 ### Key takeaways (for talk slides)
 
-1. **Shadow AI is everywhere** — 29 endpoints across the estate, none intentionally exposed
+1. **Shadow AI is everywhere** — a sprawling AI/ML surface across the estate, none intentionally exposed
 2. **Read-only discovery finds credentials** — system prompts, vector DB data, MCP configs
 3. **Bounded proofs demonstrate impact** — without destroying the environment
-4. **131 templates, 18 modules, one binary** — the "Nuclei for AI" approach
+4. **131 templates, 20 modules, one binary** — the "Nuclei for AI" approach
 5. **Defense is possible** — authentication, network segmentation, MCP config auditing
 
 ---

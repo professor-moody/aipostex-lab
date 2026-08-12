@@ -12,7 +12,7 @@ this infrastructure actually accumulates. Most of it is the real software — re
 server, a real agent framework, a real k3s cluster — with CPU stand-ins only where a GPU would otherwise be
 required.
 
-**29 service endpoints · 170 planted findings · 13 attack scenarios · 62 verification checks**
+**170 planted findings · 21 attack scenarios · 62 verification checks · real Elastic detection**
 
 📖 **Full documentation: [professor-moody.github.io/aipostex-lab](https://professor-moody.github.io/aipostex-lab/)**
 

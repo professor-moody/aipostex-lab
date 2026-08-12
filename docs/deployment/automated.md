@@ -24,10 +24,10 @@
 
 `verify-lab.sh` now checks:
 
-- 6 VM ping checks
-- 6 VM SSH checks
-- 29 service health checks
-- deep validation for seeded data and new app/mock surfaces
+- ping + SSH reachability across the 6-VM estate
+- service health for every seeded service plus the `ailab-siem` detection host
+- deep validation for seeded data and the app / model-agent surfaces
+- **62 checks total** (0 failed)
 
 That gives **62 total checks** when the full deep-validation path is included.
 

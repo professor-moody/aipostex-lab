@@ -1543,18 +1543,18 @@ run_operator_layer() {
 
     # ── vectordb search-sensitive ──
     if assert_artifact_ok "chromadb-search-sensitive" "$TMPDIR/chromadb-search-sensitive.json"; then
-        assert_jq "chromadb search-sensitive flags a real sensitive hit" \
-            '.findings[]? | select(.metadata.action == "search-sensitive" and (.metadata.capability_labels | tostring | test("sensitive")))' \
+        assert_jq "chromadb search-sensitive flags a real sensitive hit (impact/read-confirmed)" \
+            '.findings[]? | select(.metadata.action == "search-sensitive" and .metadata.stage == "impact" and .metadata.landed == "read-confirmed" and (.metadata.capability_labels | tostring | test("sensitive")))' \
             "$TMPDIR/chromadb-search-sensitive.json"
     fi
     if assert_artifact_ok "weaviate-search-sensitive" "$TMPDIR/weaviate-search-sensitive.json"; then
-        assert_jq "weaviate search-sensitive flags a real sensitive hit" \
-            '.findings[]? | select(.metadata.action == "search-sensitive" and (.metadata.capability_labels | tostring | test("sensitive")))' \
+        assert_jq "weaviate search-sensitive flags a real sensitive hit (impact/read-confirmed)" \
+            '.findings[]? | select(.metadata.action == "search-sensitive" and .metadata.stage == "impact" and .metadata.landed == "read-confirmed" and (.metadata.capability_labels | tostring | test("sensitive")))' \
             "$TMPDIR/weaviate-search-sensitive.json"
     fi
     if assert_artifact_ok "qdrant-search-sensitive" "$TMPDIR/qdrant-search-sensitive.json"; then
-        assert_jq "qdrant search-sensitive flags a real sensitive hit" \
-            '.findings[]? | select(.metadata.action == "search-sensitive" and (.metadata.capability_labels | tostring | test("sensitive")))' \
+        assert_jq "qdrant search-sensitive flags a real sensitive hit (impact/read-confirmed)" \
+            '.findings[]? | select(.metadata.action == "search-sensitive" and .metadata.stage == "impact" and .metadata.landed == "read-confirmed" and (.metadata.capability_labels | tostring | test("sensitive")))' \
             "$TMPDIR/qdrant-search-sensitive.json"
     fi
 
@@ -1984,8 +1984,9 @@ run_active_layer() {
 
     # ── vectordb inject ──
     if assert_artifact_ok "chromadb-inject" "$TMPDIR/chromadb-inject.json"; then
-        assert_jq "chromadb inject returns findings" '.findings[]?' "$TMPDIR/chromadb-inject.json"
-        assert_jq "chromadb inject includes stage/landed metadata" '.findings[]? | select(.metadata.stage != null)' "$TMPDIR/chromadb-inject.json"
+        assert_jq "chromadb inject lands as access/influenced" \
+            '.findings[]? | select(.metadata.action == "inject" and .metadata.stage == "access" and .metadata.landed == "influenced")' \
+            "$TMPDIR/chromadb-inject.json"
     fi
     if assert_artifact_ok "weaviate-inject" "$TMPDIR/weaviate-inject.json"; then
         assert_jq "weaviate inject lands as access/influenced" \
@@ -2042,7 +2043,12 @@ run_active_layer() {
 
     # ── triton infer ──
     if assert_artifact_ok "triton-infer" "$TMPDIR/triton-infer.json"; then
-        assert_jq "triton infer returns findings" '.findings[]?' "$TMPDIR/triton-infer.json"
+        # Bare-2xx proof: a 200 alone must NOT earn execution-confirmed. Triton infer runs the
+        # input-differential reality probe (mutated input must change output); execution-confirmed
+        # is only reachable against the input-dependent mock, never a canned/static responder.
+        assert_jq "triton infer earns execution-confirmed only via the input-differential probe (not a bare 2xx)" \
+            '.findings[]? | select(.metadata.action == "infer" and .metadata.inference_verified == true and .metadata.stage == "impact" and .metadata.landed == "execution-confirmed")' \
+            "$TMPDIR/triton-infer.json"
     fi
     if assert_artifact_ok "triton-model-load-verify" "$TMPDIR/triton-model-load-verify.json"; then
         assert_jq "triton model-load verifies post-load inference" \

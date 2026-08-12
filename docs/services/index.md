@@ -4,7 +4,7 @@ title: Services Overview
 
 # Services Overview
 
-The default verifier checks **29 service endpoints** (excludes opt-in and k8s deep checks) across the target and operator VMs. The matrix below also includes opt-in post-exploitation and auxiliary ports. Every service runs natively via systemd with intentionally weak or missing authentication.
+The default verifier runs **62 checks** (service health + seeded-data + deep validation, 0 failed) across the target VMs, the k8s node, and the `ailab-siem` detection host. The matrix below also includes opt-in post-exploitation and auxiliary ports that are not health-checked by default. Every service runs natively via systemd with intentionally weak or missing authentication.
 
 ---
 

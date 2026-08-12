@@ -48,16 +48,17 @@ self-serve version is [Start Here](../start.md); the CTF framing is
 ## 2. The estate — hosts, network, trust
 
 The lab is a Proxmox estate on an isolated bridge (`vmbr100`, `172.16.50.0/24`; host `.1` provides
-outbound NAT for provisioning). Six VMs:
+outbound NAT for provisioning). Six managed VMs plus a persistent `ailab-siem` detection host:
 
 | VM | ID | IP | Role | Headline exposure |
 |----|----|----|------|-------------------|
-| `ailab-dev` | 210 | .10 | Developer workstation | Ollama, Jupyter (no auth), **MCP RCE**, Gradio, Inspector |
-| `ailab-ml` | 220 | .20 | ML platform | **Ray (unauth)**, MLflow, LiteLLM, ChromaDB, inference/serving mocks |
-| `ailab-ds` | 230 | .30 | Data science | **MLflow auth gateway**, Ollama, Jupyter, Weaviate, Qdrant, pgvector |
-| `ailab-app` | 250 | .40 | Shared AI apps | **HF TGI gateway (real inference)**, LangServe, Streamlit, A2A agents, Oracle |
+| `ailab-dev` | 210 | .10 | Developer workstation | Ollama, Jupyter (no auth), **MCP RCE**, vuln MCP `:3002` (sandbox-escape/SSTI), Gradio, Inspector |
+| `ailab-ml` | 220 | .20 | ML platform | **Ray (unauth)**, MLflow, LiteLLM (`local-qwen` fingerprint target), ChromaDB, inference/serving mocks |
+| `ailab-ds` | 230 | .30 | Data science | **MLflow auth gateway**, Ollama, Jupyter, Weaviate, Qdrant, pgvector, **black-box RAG app `:8091`** |
+| `ailab-app` | 250 | .40 | Shared AI apps | **HF TGI gateway (real inference)**, LangServe, Streamlit, A2A agents, **bespoke helpdesk agent `:8110`** |
 | `ailab-k8s` | 260 | .50 | Kubernetes node | Docker/k3s **:6443 vuln** / **:6444 secure** — anon secret-read + sa-loot |
 | `ailab-attack` | 240 | .99 | Attack box | Runs `aipostex`; SSH; callback sink `:9000` |
+| `ailab-siem` | 270 | .60 | Detection (persistent) | **Elastic Security** — Elasticsearch `:9200`, Kibana `:5601`, 5 detection rules, Beats on every target |
 
 **The attack-box model.** The estate `/24` is reachable **only from the attack box** (`.99`). The
 operator SSHes to the box (Tailscale `<attack-box-ip>`) and drives every module from there; the demo

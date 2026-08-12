@@ -45,7 +45,7 @@ Runs base setup, provisioning, seeding, and verification across all 5 target VMs
 bash lab-scripts/verify-lab.sh
 ```
 
-Expected result: **29 passed, 0 failed, 0 warnings** for the service-health subset. The full `verify-lab.sh` run (VM ping/SSH, seeded-data, and deep validation) totals **62** checks.
+Expected result: **62 passed, 0 failed, 0 warnings** — `verify-lab.sh` covers VM ping/SSH, service health, seeded-data, and deep validation across the 6-VM estate and the `ailab-siem` detection host.
 
 ## Optional Ansible Path
 

@@ -6,8 +6,9 @@ Verifies that the lab is healthy before demos or tool validation.
 
 - Ping reachability to all 6 VMs
 - SSH access to all 6 VMs
-- 29 service health endpoints
-- deep validation of seeded data plus the new app/mock surfaces
+- service health for every seeded service plus the `ailab-siem` Elastic detection stack
+- deep validation of seeded data plus the app / model-agent surfaces
+- **62 checks total** (0 failed)
 
 Total: **62 checks** on the full validation path.
 

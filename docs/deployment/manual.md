@@ -81,9 +81,8 @@ bash lab-scripts/verify-lab.sh
 
 Expected state:
 
-- **6 VMs total / 5 targets**
-- **29 service health checks**
-- **62 total verification checks including deep validation**
+- **6-VM managed estate / 5 targets** (+ the persistent `ailab-siem` detection host)
+- **62 verification checks** — service health + seeded-data + deep validation (0 failed)
 
 For end-to-end tool validation from the attack box:
 
