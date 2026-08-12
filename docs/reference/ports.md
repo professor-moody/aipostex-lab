@@ -87,7 +87,7 @@ real MLflow registry for `aipostex.hook.url` model-version tags and delivers hoo
 | 9000 | Lab Listener | `lab-listener.service` |
 
 !!! note "Verification counts"
-    `verify-lab.sh` currently reports **62 passing checks** — service health across all 6 VMs
+    `verify-lab.sh` currently reports **62 passing checks** — service health across the 6-VM estate and the `ailab-siem` detection host
     (including the k8s pair), SSH and ping reachability for each, and deep validation checks for
     seeded data and post-exploitation fixtures.
 

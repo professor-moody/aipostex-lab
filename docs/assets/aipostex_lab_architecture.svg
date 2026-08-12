@@ -1,4 +1,4 @@
-<svg width="100%" viewBox="0 0 680 1120" xmlns="http://www.w3.org/2000/svg">
+<svg width="100%" viewBox="0 0 680 1276" xmlns="http://www.w3.org/2000/svg">
 <defs>
   <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
     <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -12,7 +12,7 @@
   .dash { fill: none; stroke: rgb(24,95,165); stroke-width: 0.5px; stroke-dasharray: 4px 3px; }
 </style>
 
-<text x="340" y="28" class="cm" fill="rgb(250,249,245)" font-size="14" font-weight="500">aipostex-lab — 6-VM Proxmox environment</text>
+<text x="340" y="28" class="cm" fill="rgb(250,249,245)" font-size="14" font-weight="500">aipostex-lab — 6-VM estate + Elastic detection</text>
 <text x="340" y="46" class="cm" fill="rgb(194,192,182)" font-size="12">172.16.50.0/24 isolated bridge (vmbr100)</text>
 
 <!-- Network bridge bar -->
@@ -20,10 +20,9 @@
 <text x="340" y="82" class="cm" fill="rgb(194,192,182)" font-size="12">vmbr100 — all native installs, no Docker, systemd services</text>
 
 <!-- ═══════════ VM 1: ailab-dev (.10) ═══════════ -->
-<rect x="40" y="100" width="295" height="260" rx="14" fill="rgb(8,80,65)" stroke="rgb(93,202,165)" stroke-width="0.5"/>
+<rect x="40" y="100" width="295" height="230" rx="14" fill="rgb(8,80,65)" stroke="rgb(93,202,165)" stroke-width="0.5"/>
 <text x="188" y="124" class="c" fill="rgb(159,225,203)" font-size="14" font-weight="500">ailab-dev (172.16.50.10)</text>
 <text x="188" y="142" class="c" fill="rgb(93,202,165)" font-size="12">Developer workstation</text>
-<!-- Services -->
 <rect x="56" y="158" width="120" height="28" rx="5" fill="rgb(8,80,65)" stroke="rgb(93,202,165)" stroke-width="0.5"/>
 <text x="116" y="172" class="c" fill="rgb(93,202,165)" font-size="12">Ollama :11434</text>
 <rect x="56" y="192" width="120" height="28" rx="5" fill="rgb(8,80,65)" stroke="rgb(93,202,165)" stroke-width="0.5"/>
@@ -34,21 +33,16 @@
 <text x="116" y="274" class="c" fill="rgb(93,202,165)" font-size="12">Gradio :7860</text>
 <rect x="56" y="294" width="120" height="28" rx="5" fill="rgb(8,80,65)" stroke="rgb(93,202,165)" stroke-width="0.5"/>
 <text x="116" y="308" class="c" fill="rgb(93,202,165)" font-size="12">Inspector :6274</text>
-<!-- Annotations -->
 <text x="200" y="178" fill="rgb(194,192,182)" font-size="12">2 custom models</text>
 <text x="200" y="196" fill="rgb(194,192,182)" font-size="12">w/ planted creds</text>
-<text x="200" y="222" fill="rgb(194,192,182)" font-size="12">35+ filesystem</text>
-<text x="200" y="240" fill="rgb(194,192,182)" font-size="12">artifacts planted</text>
-<text x="200" y="268" fill="rgb(194,192,182)" font-size="12">cmd-inject, SSRF</text>
-<text x="200" y="286" fill="rgb(194,192,182)" font-size="12">path-traversal</text>
-<text x="200" y="310" fill="rgb(194,192,182)" font-size="12">queue + file chain</text>
-<text x="200" y="338" fill="rgb(194,192,182)" font-size="12">predict + upload</text>
+<text x="200" y="240" fill="rgb(194,192,182)" font-size="12">35+ FS artifacts</text>
+<text x="200" y="274" fill="rgb(194,192,182)" font-size="12">cmd-inject, SSRF</text>
+<text x="200" y="308" fill="rgb(194,192,182)" font-size="12">MCP tool infect</text>
 
 <!-- ═══════════ VM 2: ailab-ml (.20) — 3-col chips ═══════════ -->
 <rect x="345" y="100" width="295" height="440" rx="14" fill="rgb(60,52,137)" stroke="rgb(175,169,236)" stroke-width="0.5"/>
 <text x="492" y="124" class="c" fill="rgb(206,203,246)" font-size="14" font-weight="500">ailab-ml (172.16.50.20)</text>
 <text x="492" y="142" class="c" fill="rgb(175,169,236)" font-size="12">ML platform server</text>
-<!-- 3-column chip layout: 85px wide, 5px gaps, start x=360, 450, 540 -->
 <!-- Row 1 -->
 <rect x="358" y="158" width="85" height="28" rx="5" fill="rgb(60,52,137)" stroke="rgb(175,169,236)" stroke-width="0.5"/>
 <text x="401" y="172" class="c" fill="rgb(175,169,236)" font-size="11">ChromaDB :8000</text>
@@ -87,35 +81,36 @@
 <text x="492" y="364" class="c" fill="rgb(194,192,182)" font-size="12">PII, creds, financials</text>
 <text x="492" y="384" class="c" fill="rgb(194,192,182)" font-size="12">3 experiments, 2 models</text>
 <text x="492" y="404" class="c" fill="rgb(194,192,182)" font-size="12">runs:/ artifact links</text>
-<text x="492" y="424" class="c" fill="rgb(194,192,182)" font-size="12">fake API keys in config</text>
+<text x="492" y="424" class="c" fill="rgb(194,192,182)" font-size="12">local-qwen fingerprint target</text>
 <text x="492" y="444" class="c" fill="rgb(194,192,182)" font-size="12">3 jobs, secrets in env</text>
 <text x="492" y="468" class="c" fill="rgb(194,192,182)" font-size="12">14 services · heaviest host</text>
 
 <!-- ═══════════ VM 3: ailab-ds (.30) ═══════════ -->
-<rect x="40" y="380" width="295" height="240" rx="14" fill="rgb(113,43,19)" stroke="rgb(240,153,123)" stroke-width="0.5"/>
-<text x="188" y="404" class="c" fill="rgb(245,196,179)" font-size="14" font-weight="500">ailab-ds (172.16.50.30)</text>
-<text x="188" y="422" class="c" fill="rgb(240,153,123)" font-size="12">Data science server</text>
-<rect x="56" y="438" width="120" height="28" rx="5" fill="rgb(113,43,19)" stroke="rgb(240,153,123)" stroke-width="0.5"/>
-<text x="116" y="452" class="c" fill="rgb(240,153,123)" font-size="12">Ollama :11434</text>
-<rect x="56" y="472" width="120" height="28" rx="5" fill="rgb(113,43,19)" stroke="rgb(240,153,123)" stroke-width="0.5"/>
-<text x="116" y="486" class="c" fill="rgb(240,153,123)" font-size="12">Jupyter :8889</text>
-<rect x="56" y="506" width="120" height="28" rx="5" fill="rgb(113,43,19)" stroke="rgb(240,153,123)" stroke-width="0.5"/>
-<text x="116" y="520" class="c" fill="rgb(240,153,123)" font-size="12">Weaviate :8080</text>
-<rect x="56" y="540" width="120" height="28" rx="5" fill="rgb(113,43,19)" stroke="rgb(240,153,123)" stroke-width="0.5"/>
-<text x="116" y="554" class="c" fill="rgb(240,153,123)" font-size="12">Qdrant :6333</text>
-<rect x="56" y="574" width="120" height="28" rx="5" fill="rgb(113,43,19)" stroke="rgb(240,153,123)" stroke-width="0.5"/>
-<text x="116" y="588" class="c" fill="rgb(240,153,123)" font-size="12">pgvector :5432</text>
+<rect x="40" y="350" width="295" height="270" rx="14" fill="rgb(113,43,19)" stroke="rgb(240,153,123)" stroke-width="0.5"/>
+<text x="188" y="374" class="c" fill="rgb(245,196,179)" font-size="14" font-weight="500">ailab-ds (172.16.50.30)</text>
+<text x="188" y="392" class="c" fill="rgb(240,153,123)" font-size="12">Data science server</text>
+<rect x="56" y="408" width="120" height="28" rx="5" fill="rgb(113,43,19)" stroke="rgb(240,153,123)" stroke-width="0.5"/>
+<text x="116" y="422" class="c" fill="rgb(240,153,123)" font-size="12">Ollama :11434</text>
+<rect x="56" y="442" width="120" height="28" rx="5" fill="rgb(113,43,19)" stroke="rgb(240,153,123)" stroke-width="0.5"/>
+<text x="116" y="456" class="c" fill="rgb(240,153,123)" font-size="12">Jupyter :8889</text>
+<rect x="56" y="476" width="120" height="28" rx="5" fill="rgb(113,43,19)" stroke="rgb(240,153,123)" stroke-width="0.5"/>
+<text x="116" y="490" class="c" fill="rgb(240,153,123)" font-size="12">Weaviate :8080</text>
+<rect x="56" y="510" width="120" height="28" rx="5" fill="rgb(113,43,19)" stroke="rgb(240,153,123)" stroke-width="0.5"/>
+<text x="116" y="524" class="c" fill="rgb(240,153,123)" font-size="12">Qdrant :6333</text>
+<rect x="56" y="544" width="120" height="28" rx="5" fill="rgb(113,43,19)" stroke="rgb(240,153,123)" stroke-width="0.5"/>
+<text x="116" y="558" class="c" fill="rgb(240,153,123)" font-size="12">pgvector :5432</text>
+<rect x="56" y="578" width="120" height="28" rx="5" fill="rgb(113,43,19)" stroke="rgb(240,153,123)" stroke-width="0.5"/>
+<text x="116" y="592" class="c" fill="rgb(240,153,123)" font-size="12">RAG app :8091</text>
 <!-- Annotations -->
-<text x="200" y="456" fill="rgb(194,192,182)" font-size="12">smollm2:135m</text>
-<text x="200" y="490" fill="rgb(194,192,182)" font-size="12">notebooks w/ keys</text>
-<text x="200" y="522" fill="rgb(194,192,182)" font-size="12">3 classes (2 + noise)</text>
-<text x="200" y="540" fill="rgb(194,192,182)" font-size="12">SSNs, salaries</text>
-<text x="200" y="558" fill="rgb(194,192,182)" font-size="12">3 collections (2 + noise)</text>
-<text x="200" y="576" fill="rgb(194,192,182)" font-size="12">SQL tables, PII</text>
-<text x="200" y="596" fill="rgb(194,192,182)" font-size="12">pentest data, pricing</text>
+<text x="200" y="422" fill="rgb(194,192,182)" font-size="12">smollm2:135m</text>
+<text x="200" y="456" fill="rgb(194,192,182)" font-size="12">notebooks w/ keys</text>
+<text x="200" y="490" fill="rgb(194,192,182)" font-size="12">3 classes (2 + noise)</text>
+<text x="200" y="524" fill="rgb(194,192,182)" font-size="12">SSNs, salaries</text>
+<text x="200" y="558" fill="rgb(194,192,182)" font-size="12">SQL tables, PII</text>
+<text x="200" y="592" fill="rgb(194,192,182)" font-size="12">black-box RAG target</text>
 
 <!-- ═══════════ VM 4: ailab-app (.40) ═══════════ -->
-<rect x="345" y="560" width="295" height="160" rx="14" fill="rgb(99,56,6)" stroke="rgb(239,159,39)" stroke-width="0.5"/>
+<rect x="345" y="560" width="295" height="180" rx="14" fill="rgb(99,56,6)" stroke="rgb(239,159,39)" stroke-width="0.5"/>
 <text x="492" y="584" class="c" fill="rgb(250,199,117)" font-size="14" font-weight="500">ailab-app (172.16.50.40)</text>
 <text x="492" y="602" class="c" fill="rgb(239,159,39)" font-size="12">Shared AI apps</text>
 <rect x="361" y="618" width="130" height="28" rx="5" fill="rgb(99,56,6)" stroke="rgb(239,159,39)" stroke-width="0.5"/>
@@ -123,11 +118,16 @@
 <rect x="497" y="618" width="130" height="28" rx="5" fill="rgb(99,56,6)" stroke="rgb(239,159,39)" stroke-width="0.5"/>
 <text x="562" y="632" class="c" fill="rgb(239,159,39)" font-size="12">Streamlit :8501</text>
 <rect x="361" y="652" width="130" height="28" rx="5" fill="rgb(99,56,6)" stroke="rgb(239,159,39)" stroke-width="0.5"/>
-<text x="426" y="666" class="c" fill="rgb(239,159,39)" font-size="12">A2A :8100</text>
-<text x="492" y="700" class="c" fill="rgb(194,192,182)" font-size="12">App-facing AI surfaces · 3 services</text>
+<text x="426" y="666" class="c" fill="rgb(239,159,39)" font-size="12">A2A :8100–8104</text>
+<rect x="497" y="652" width="130" height="28" rx="5" fill="rgb(99,56,6)" stroke="rgb(239,159,39)" stroke-width="0.5"/>
+<text x="562" y="666" class="c" fill="rgb(239,159,39)" font-size="12">Helpdesk :8110</text>
+<rect x="361" y="686" width="130" height="28" rx="5" fill="rgb(99,56,6)" stroke="rgb(239,159,39)" stroke-width="0.5"/>
+<text x="426" y="700" class="c" fill="rgb(239,159,39)" font-size="12">HF TGI Gw :8180</text>
+<text x="562" y="700" class="c" fill="rgb(194,192,182)" font-size="12">bespoke /chat agent</text>
+<text x="492" y="726" class="c" fill="rgb(194,192,182)" font-size="12">App-facing AI surfaces · 5 services</text>
 
 <!-- ═══════════ VM 5: ailab-attack (.99) ═══════════ -->
-<rect x="40" y="640" width="295" height="180" rx="14" fill="rgb(12,68,124)" stroke="rgb(133,183,235)" stroke-width="0.5"/>
+<rect x="40" y="640" width="295" height="170" rx="14" fill="rgb(12,68,124)" stroke="rgb(133,183,235)" stroke-width="0.5"/>
 <text x="188" y="664" class="c" fill="rgb(181,212,244)" font-size="14" font-weight="500">ailab-attack (172.16.50.99)</text>
 <text x="188" y="682" class="c" fill="rgb(133,183,235)" font-size="12">Attack box — Debian 12</text>
 <rect x="56" y="700" width="120" height="28" rx="5" fill="rgb(12,68,124)" stroke="rgb(133,183,235)" stroke-width="0.5"/>
@@ -140,51 +140,75 @@
 <text x="200" y="752" fill="rgb(194,192,182)" font-size="12">single static binary</text>
 <text x="200" y="786" fill="rgb(194,192,182)" font-size="12">remote access + recon</text>
 
+<!-- ═══════════ VM 6: ailab-k8s (.50) ═══════════ -->
+<rect x="345" y="760" width="295" height="130" rx="14" fill="rgb(11,74,80)" stroke="rgb(94,203,213)" stroke-width="0.5"/>
+<text x="492" y="784" class="c" fill="rgb(170,232,238)" font-size="14" font-weight="500">ailab-k8s (172.16.50.50)</text>
+<text x="492" y="802" class="c" fill="rgb(94,203,213)" font-size="12">Kubernetes node — k3s</text>
+<rect x="361" y="818" width="130" height="28" rx="5" fill="rgb(11,74,80)" stroke="rgb(94,203,213)" stroke-width="0.5"/>
+<text x="426" y="832" class="c" fill="rgb(94,203,213)" font-size="12">k3s vuln :6443</text>
+<rect x="497" y="818" width="130" height="28" rx="5" fill="rgb(11,74,80)" stroke="rgb(94,203,213)" stroke-width="0.5"/>
+<text x="562" y="832" class="c" fill="rgb(94,203,213)" font-size="12">k3s secure :6444</text>
+<text x="492" y="868" class="c" fill="rgb(194,192,182)" font-size="12">anon RBAC → secret-read / pod-exec</text>
+
+<!-- ═══════════ VM 7: ailab-siem (.60) ═══════════ -->
+<rect x="40" y="830" width="295" height="140" rx="14" fill="rgb(94,32,40)" stroke="rgb(238,130,140)" stroke-width="0.5"/>
+<text x="188" y="854" class="c" fill="rgb(246,190,195)" font-size="14" font-weight="500">ailab-siem (172.16.50.60)</text>
+<text x="188" y="872" class="c" fill="rgb(238,130,140)" font-size="12">Detection — Elastic Security</text>
+<rect x="56" y="888" width="120" height="28" rx="5" fill="rgb(94,32,40)" stroke="rgb(238,130,140)" stroke-width="0.5"/>
+<text x="116" y="902" class="c" fill="rgb(238,130,140)" font-size="12">Elasticsearch :9200</text>
+<rect x="56" y="922" width="120" height="28" rx="5" fill="rgb(94,32,40)" stroke="rgb(238,130,140)" stroke-width="0.5"/>
+<text x="116" y="936" class="c" fill="rgb(238,130,140)" font-size="12">Kibana :5601</text>
+<text x="200" y="902" fill="rgb(194,192,182)" font-size="12">5 detection rules</text>
+<text x="200" y="920" fill="rgb(194,192,182)" font-size="12">Beats on targets</text>
+<text x="200" y="938" fill="rgb(194,192,182)" font-size="12">persistent · not</text>
+<text x="200" y="956" fill="rgb(194,192,182)" font-size="12">reset-wave rolled</text>
+
 <!-- Attack arrows to targets -->
-<line x1="335" y1="710" x2="335" y2="580" class="dash" marker-end="url(#arrow)"/>
-<line x1="335" y1="710" x2="340" y2="540" class="dash" marker-end="url(#arrow)"/>
-<line x1="188" y1="640" x2="188" y2="360" class="dash" marker-end="url(#arrow)"/>
+<line x1="335" y1="720" x2="345" y2="660" class="dash" marker-end="url(#arrow)"/>
+<line x1="335" y1="700" x2="345" y2="540" class="dash" marker-end="url(#arrow)"/>
+<line x1="188" y1="640" x2="188" y2="330" class="dash" marker-end="url(#arrow)"/>
+<line x1="335" y1="800" x2="345" y2="820" class="dash" marker-end="url(#arrow)"/>
 
 <!-- ═══════════ Deployment pipeline ═══════════ -->
-<rect x="40" y="848" width="600" height="1" fill="rgb(222,220,209)" opacity="0.3"/>
-<text x="340" y="874" class="cm" fill="rgb(250,249,245)" font-size="14" font-weight="500">Deployment pipeline</text>
+<rect x="40" y="1000" width="600" height="1" fill="rgb(222,220,209)" opacity="0.3"/>
+<text x="340" y="1024" class="cm" fill="rgb(250,249,245)" font-size="14" font-weight="500">Deployment pipeline</text>
 
-<rect x="44" y="890" width="110" height="40" rx="6" fill="rgb(68,68,65)" stroke="rgb(180,178,169)" stroke-width="0.5"/>
-<text x="99" y="904" class="c" fill="rgb(180,178,169)" font-size="12">proxmox-setup</text>
-<text x="99" y="920" class="c" fill="rgb(180,178,169)" font-size="12">bridge + VMs</text>
-<line x1="154" y1="910" x2="170" y2="910" class="arr" marker-end="url(#arrow)"/>
-<rect x="172" y="890" width="110" height="40" rx="6" fill="rgb(68,68,65)" stroke="rgb(180,178,169)" stroke-width="0.5"/>
-<text x="227" y="904" class="c" fill="rgb(180,178,169)" font-size="12">base-setup</text>
-<text x="227" y="920" class="c" fill="rgb(180,178,169)" font-size="12">apt + packages</text>
-<line x1="282" y1="910" x2="298" y2="910" class="arr" marker-end="url(#arrow)"/>
-<rect x="300" y="890" width="110" height="40" rx="6" fill="rgb(68,68,65)" stroke="rgb(180,178,169)" stroke-width="0.5"/>
-<text x="355" y="904" class="c" fill="rgb(180,178,169)" font-size="12">provision</text>
-<text x="355" y="920" class="c" fill="rgb(180,178,169)" font-size="12">services + systemd</text>
-<line x1="410" y1="910" x2="426" y2="910" class="arr" marker-end="url(#arrow)"/>
-<rect x="428" y="890" width="80" height="40" rx="6" fill="rgb(68,68,65)" stroke="rgb(180,178,169)" stroke-width="0.5"/>
-<text x="468" y="904" class="c" fill="rgb(180,178,169)" font-size="12">seed data</text>
-<text x="468" y="920" class="c" fill="rgb(180,178,169)" font-size="12">170 findings</text>
-<line x1="508" y1="910" x2="524" y2="910" class="arr" marker-end="url(#arrow)"/>
-<rect x="526" y="890" width="110" height="40" rx="6" fill="rgb(8,80,65)" stroke="rgb(93,202,165)" stroke-width="0.5"/>
-<text x="581" y="904" class="c" fill="rgb(93,202,165)" font-size="12">verify-lab</text>
-<text x="581" y="920" class="c" fill="rgb(93,202,165)" font-size="12">29 checks</text>
+<rect x="44" y="1040" width="110" height="40" rx="6" fill="rgb(68,68,65)" stroke="rgb(180,178,169)" stroke-width="0.5"/>
+<text x="99" y="1054" class="c" fill="rgb(180,178,169)" font-size="12">proxmox-setup</text>
+<text x="99" y="1070" class="c" fill="rgb(180,178,169)" font-size="12">bridge + VMs</text>
+<line x1="154" y1="1060" x2="170" y2="1060" class="arr" marker-end="url(#arrow)"/>
+<rect x="172" y="1040" width="110" height="40" rx="6" fill="rgb(68,68,65)" stroke="rgb(180,178,169)" stroke-width="0.5"/>
+<text x="227" y="1054" class="c" fill="rgb(180,178,169)" font-size="12">base-setup</text>
+<text x="227" y="1070" class="c" fill="rgb(180,178,169)" font-size="12">apt + packages</text>
+<line x1="282" y1="1060" x2="298" y2="1060" class="arr" marker-end="url(#arrow)"/>
+<rect x="300" y="1040" width="110" height="40" rx="6" fill="rgb(68,68,65)" stroke="rgb(180,178,169)" stroke-width="0.5"/>
+<text x="355" y="1054" class="c" fill="rgb(180,178,169)" font-size="12">provision</text>
+<text x="355" y="1070" class="c" fill="rgb(180,178,169)" font-size="12">services + systemd</text>
+<line x1="410" y1="1060" x2="426" y2="1060" class="arr" marker-end="url(#arrow)"/>
+<rect x="428" y="1040" width="80" height="40" rx="6" fill="rgb(68,68,65)" stroke="rgb(180,178,169)" stroke-width="0.5"/>
+<text x="468" y="1054" class="c" fill="rgb(180,178,169)" font-size="12">seed data</text>
+<text x="468" y="1070" class="c" fill="rgb(180,178,169)" font-size="12">170 findings</text>
+<line x1="508" y1="1060" x2="524" y2="1060" class="arr" marker-end="url(#arrow)"/>
+<rect x="526" y="1040" width="110" height="40" rx="6" fill="rgb(8,80,65)" stroke="rgb(93,202,165)" stroke-width="0.5"/>
+<text x="581" y="1054" class="c" fill="rgb(93,202,165)" font-size="12">verify-lab</text>
+<text x="581" y="1070" class="c" fill="rgb(93,202,165)" font-size="12">62 checks</text>
 
 <!-- ═══════════ Scoring + Verification ═══════════ -->
-<rect x="40" y="958" width="600" height="1" fill="rgb(222,220,209)" opacity="0.3"/>
-<text x="340" y="984" class="cm" fill="rgb(250,249,245)" font-size="14" font-weight="500">Scoring + verification pipeline</text>
+<rect x="40" y="1104" width="600" height="1" fill="rgb(222,220,209)" opacity="0.3"/>
+<text x="340" y="1128" class="cm" fill="rgb(250,249,245)" font-size="14" font-weight="500">Scoring + verification pipeline</text>
 
 <!-- verify-aipostex.sh -->
-<rect x="44" y="1000" width="290" height="90" rx="10" fill="rgb(12,68,124)" stroke="rgb(133,183,235)" stroke-width="0.5"/>
-<text x="189" y="1018" class="c" fill="rgb(181,212,244)" font-size="14" font-weight="500">verify-aipostex.sh</text>
-<text x="189" y="1040" class="c" fill="rgb(133,183,235)" font-size="12">smoke → operator → active layers</text>
-<text x="189" y="1060" class="c" fill="rgb(194,192,182)" font-size="11">binary runs? → enum correct? → exploits prove?</text>
+<rect x="44" y="1144" width="290" height="90" rx="10" fill="rgb(12,68,124)" stroke="rgb(133,183,235)" stroke-width="0.5"/>
+<text x="189" y="1162" class="c" fill="rgb(181,212,244)" font-size="14" font-weight="500">verify-aipostex.sh</text>
+<text x="189" y="1184" class="c" fill="rgb(133,183,235)" font-size="12">smoke → operator → active layers</text>
+<text x="189" y="1204" class="c" fill="rgb(194,192,182)" font-size="11">binary runs? → enum correct? → exploits prove?</text>
 
 <!-- score.py -->
-<rect x="346" y="1000" width="290" height="90" rx="10" fill="rgb(60,52,137)" stroke="rgb(175,169,236)" stroke-width="0.5"/>
-<text x="491" y="1018" class="c" fill="rgb(206,203,246)" font-size="14" font-weight="500">score.py + manifest.json</text>
-<text x="491" y="1040" class="c" fill="rgb(175,169,236)" font-size="12">standard · strict · contract modes</text>
-<text x="491" y="1060" class="c" fill="rgb(194,192,182)" font-size="11">substring → host+source+FP → workflow+proof</text>
+<rect x="346" y="1144" width="290" height="90" rx="10" fill="rgb(60,52,137)" stroke="rgb(175,169,236)" stroke-width="0.5"/>
+<text x="491" y="1162" class="c" fill="rgb(206,203,246)" font-size="14" font-weight="500">score.py + manifest.json</text>
+<text x="491" y="1184" class="c" fill="rgb(175,169,236)" font-size="12">standard · strict · contract modes</text>
+<text x="491" y="1204" class="c" fill="rgb(194,192,182)" font-size="11">substring → host+source+FP → workflow+proof</text>
 
 <!-- Counts -->
-<text x="340" y="1108" class="cm" fill="rgb(194,192,182)" font-size="12">29 service checks · 6 VMs · 170 planted findings · 30-45 min deploy · 5 sec restore</text>
+<text x="340" y="1256" class="cm" fill="rgb(194,192,182)" font-size="12">62 checks · 6-VM estate + siem detection · 170 planted findings · 5 sec restore</text>
 </svg>

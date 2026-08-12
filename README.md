@@ -4,7 +4,8 @@
 
 A reproducible Proxmox lab for testing [aipostex](https://github.com/professor-moody/aipostex) against
 realistic shadow-AI sprawl: six VMs standing in for four teams that each deployed AI tooling without
-coordinated review, plus a Kubernetes node and an operator attack box.
+coordinated review, plus a Kubernetes node and an operator attack box — all watched by a persistent
+Elastic detection stack on a seventh, standalone host.
 
 Everything is installed natively with systemd rather than hidden in one container file, because that is how
 this infrastructure actually accumulates. Most of it is the real software — real MLflow, real Ray, a real MCP

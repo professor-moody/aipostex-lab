@@ -14,11 +14,11 @@ The ML platform concentrates the higher-value shared services: ChromaDB, MLflow,
 
 ### `ailab-ds`
 
-The data science host shows tool fragmentation. It keeps the second Ollama, second Jupyter, Weaviate, Qdrant, and PostgreSQL/pgvector so the demo still tells the “multiple teams built this independently” story.
+The data science host shows tool fragmentation. It keeps the second Ollama, second Jupyter, Weaviate, Qdrant, PostgreSQL/pgvector, and a **black-box RAG app** (knowledge-base chat + document upload — the target for the `rag` module) so the demo still tells the “multiple teams built this independently” story.
 
 ### `ailab-app`
 
-The shared AI app host carries LangServe, Streamlit, three A2A agents, and the Post-Ex Oracle. Its value is discovery coverage, agent workflow validation, and narrative separation: app-facing surfaces no longer need to be crammed onto another team’s box.
+The shared AI app host carries LangServe, Streamlit, the HF TGI chain gateway, the A2A orchestrator agents, and a **bespoke IT-helpdesk agent** (a custom `/chat` app — the target for the `agent` module and behavioral model fingerprinting). Its value is discovery coverage, agent workflow validation, and narrative separation: app-facing surfaces no longer need to be crammed onto another team’s box.
 
 ### `ailab-k8s`
 
@@ -27,6 +27,10 @@ The Kubernetes node runs a real single-node k3s pair on one VM: a deliberately w
 ### `ailab-attack`
 
 The attack box remains the operator entry point with Tailscale, SSH shortcuts, `aipostex`, and local MCP fixtures, including the new stdio MCP fixture.
+
+### `ailab-siem`
+
+A real **Elastic Security** detection stack (Elasticsearch `:9200` + Kibana `:5601`) with Beats (Filebeat + Auditbeat) shipping from every target host. Five detection rules fire real alerts — reverse shells, file-integrity/privesc, prompt injection, knowledge-base enumeration, and RAG ingestion — so operators can run the **detect-and-evade** loop and see exactly what a SOC observes. It is a **persistent** host: `reset-wave.sh` does not roll it back.
 
 ## Why The Split-Host Layout Helps
 
@@ -37,9 +41,10 @@ The attack box remains the operator entry point with Tailscale, SSH shortcuts, `
 
 ## Design Totals
 
-- **6 VMs total**
+- **6-VM managed estate** (5 target VMs + the attack box) — deployed, reset, and snapshotted together
+- **+ a persistent Elastic detection host** (`ailab-siem`), deliberately outside the reset-wave loop (7 hosts in all)
 - **5 target VMs**
-- **29 health-checked service endpoints**
+- **62 `verify-lab.sh` checks** across the estate and the detection host
 - **170 planted sensitive findings**
 
 The service surface now includes app, agent, serving-framework, vector database, and post-exploitation validation surfaces while keeping fake planted values tracked in the scoring manifest.
