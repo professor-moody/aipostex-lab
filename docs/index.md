@@ -6,7 +6,7 @@ title: aipostex Lab Environment
 
 **A 6-VM Proxmox lab for testing aipostex against realistic shadow AI sprawl.**
 
-The lab spans five target personas: developer workstation, ML platform, data science, shared AI apps, and a Kubernetes node. The current mini lab includes A2A protocol fixtures, a shared callback listener, a post-exploitation validation oracle, and a localhost-gated lateral movement target. Together these expand the service surface to **29 health-checked endpoints** and **170 planted sensitive findings**.
+The lab spans five target personas: developer workstation, ML platform, data science, shared AI apps, and a Kubernetes node. Beyond the infrastructure, it reaches the **model and agent layer** — a bespoke IT-helpdesk agent, a black-box RAG app, and behavioral model fingerprinting — and everything runs under a real **Elastic Security detection stack** so you can watch what a SOC sees while you work. The mini lab also includes A2A protocol fixtures, a shared callback listener, a post-exploitation validation oracle, and a localhost-gated lateral movement target, expanding the surface to **170 planted sensitive findings**.
 
 !!! tip "Just need to test the tool against one product?"
     The [Single-Service Sandbox](sandbox.md) spins up one **real** AI-infra product (ChromaDB, W&B,
@@ -19,11 +19,11 @@ The lab spans five target personas: developer workstation, ML platform, data sci
 
 | Metric | Count |
 |---|---|
-| Virtual machines | **6** (5 targets + 1 attack box) |
+| Managed VMs | **6** (5 targets + 1 attack box) |
+| Detection host | **ailab-siem** — persistent Elastic Security, outside reset-wave |
 | Target VMs | **5** |
-| Health-checked service endpoints | **29** |
 | Planted sensitive findings | **170** |
-| `verify-lab.sh` checks | **62** |
+| `verify-lab.sh` checks | **62** (across the estate + detection host) |
 
 ---
 
@@ -33,7 +33,11 @@ The lab spans five target personas: developer workstation, ML platform, data sci
 
 ### Network Discovery
 
-Scan `172.16.50.0/24` and fingerprint the exposed AI/ML surface including Ollama, Jupyter, MCP, Gradio, ChromaDB, MLflow, LiteLLM, Ray, Weaviate, Qdrant, LangServe, Streamlit, an auth-gated HF TGI gateway, HF TEI, vLLM, TorchServe, BentoML, Triton, W&B, Kubeflow, TF Serving, pgvector, three A2A protocol agents, and a Kubernetes node (`kube-apiserver` on `:6443`).
+Scan `172.16.50.0/24` and fingerprint the exposed AI/ML surface including Ollama, Jupyter, MCP, Gradio, ChromaDB, MLflow, LiteLLM, Ray, Weaviate, Qdrant, LangServe, Streamlit, an auth-gated HF TGI gateway, HF TEI, vLLM, TorchServe, BentoML, Triton, W&B, Kubeflow, TF Serving, pgvector, three A2A protocol agents, a Kubernetes node (`kube-apiserver` on `:6443`), a bespoke IT-helpdesk agent, and a black-box RAG app.
+
+### Model & Agent Layer
+
+Attack the model and agent-conversation layer, not just the infrastructure. Behaviorally **fingerprint** the model behind a masked gateway (contradiction de-masking that survives an identity-masking system prompt, with an honest `unknown` when it can't be de-masked); triage an agent's **guardrails** and drive **prompt injection** (direct input-filter bypass and verified *indirect* injection through a poisoned RAG document — retrieved *and* obeyed); and recover secrets past an **output filter** by reformatting. The bespoke helpdesk agent (`ailab-app:8110`) and black-box RAG app (`ailab-ds:8091`) are the targets for the `agent` and `rag` modules.
 
 ### A2A Protocol Testing
 
@@ -42,6 +46,10 @@ Three A2A agent fixtures on ailab-app (ports 8100–8102) exercise the full A2A 
 ### Post-Exploitation Validation
 
 A callback listener (ailab-attack:9000) confirms webhook callbacks fire. A Post-Ex Oracle (ailab-app:8765) validates credentials, persistence heartbeats, and execution sentinels. A localhost-only lateral target on ailab-dev requires prior RCE to reach.
+
+### Detect & Evade (Elastic Security)
+
+A real **Elastic Security** detection stack on `ailab-siem` (Elasticsearch `:9200` + Kibana `:5601`) with Beats shipping endpoint and application telemetry from every target host. Five detection rules fire real alerts — reverse shells, file-integrity/privesc, prompt injection, knowledge-base enumeration, and RAG ingestion — so you can run the full **enumerate → attack → detect → evade → confirm** loop and see exactly what a SOC observes. It is a **persistent** host, deliberately left out of the reset-wave loop.
 
 ### Tier 2 Workflow Validation
 
