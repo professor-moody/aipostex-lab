@@ -21,7 +21,7 @@
       
       
       <link rel="icon" href="assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.5">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
     
     
       
@@ -29,7 +29,7 @@
       
     
     
-      <link rel="stylesheet" href="assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="assets/stylesheets/main.ec1eaa64.min.css">
       
         
         <link rel="stylesheet" href="assets/stylesheets/palette.ab4e12ef.min.css">
@@ -741,6 +741,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#model-agent-layer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Model &amp; Agent Layer
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#a2a-protocol-testing" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -756,6 +767,17 @@
     <span class="md-ellipsis">
       
         Post-Exploitation Validation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#detect-evade-elastic-security" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Detect &amp; Evade (Elastic Security)
       
     </span>
   </a>
@@ -5389,7 +5411,7 @@
 
 <h1 id="aipostex-lab-environment">aipostex Lab Environment<a class="headerlink" href="#aipostex-lab-environment" title="Permanent link">&para;</a></h1>
 <p><strong>A 6-VM Proxmox lab for testing aipostex against realistic shadow AI sprawl.</strong></p>
-<p>The lab spans five target personas: developer workstation, ML platform, data science, shared AI apps, and a Kubernetes node. The current mini lab includes A2A protocol fixtures, a shared callback listener, a post-exploitation validation oracle, and a localhost-gated lateral movement target. Together these expand the service surface to <strong>29 health-checked endpoints</strong> and <strong>170 planted sensitive findings</strong>.</p>
+<p>The lab spans five target personas: developer workstation, ML platform, data science, shared AI apps, and a Kubernetes node. Beyond the infrastructure, it reaches the <strong>model and agent layer</strong> — a bespoke IT-helpdesk agent, a black-box RAG app, and behavioral model fingerprinting — and everything runs under a real <strong>Elastic Security detection stack</strong> so you can watch what a SOC sees while you work. The mini lab also includes A2A protocol fixtures, a shared callback listener, a post-exploitation validation oracle, and a localhost-gated lateral movement target, expanding the surface to <strong>170 planted sensitive findings</strong>.</p>
 <div class="admonition tip">
 <p class="admonition-title">Just need to test the tool against one product?</p>
 <p>The <a href="sandbox/">Single-Service Sandbox</a> spins up one <strong>real</strong> AI-infra product (ChromaDB, W&amp;B,
@@ -5407,16 +5429,16 @@ required. It's the fast realism dev loop.</p>
 </thead>
 <tbody>
 <tr>
-<td>Virtual machines</td>
+<td>Managed VMs</td>
 <td><strong>6</strong> (5 targets + 1 attack box)</td>
+</tr>
+<tr>
+<td>Detection host</td>
+<td><strong>ailab-siem</strong> — persistent Elastic Security, outside reset-wave</td>
 </tr>
 <tr>
 <td>Target VMs</td>
 <td><strong>5</strong></td>
-</tr>
-<tr>
-<td>Health-checked service endpoints</td>
-<td><strong>29</strong></td>
 </tr>
 <tr>
 <td>Planted sensitive findings</td>
@@ -5424,7 +5446,7 @@ required. It's the fast realism dev loop.</p>
 </tr>
 <tr>
 <td><code>verify-lab.sh</code> checks</td>
-<td><strong>62</strong></td>
+<td><strong>62</strong> (across the estate + detection host)</td>
 </tr>
 </tbody>
 </table>
@@ -5432,11 +5454,15 @@ required. It's the fast realism dev loop.</p>
 <h2 id="feature-highlights">Feature Highlights<a class="headerlink" href="#feature-highlights" title="Permanent link">&para;</a></h2>
 <p><img alt="Lab network topology" src="assets/aipostex_lab_network_topology.svg" /></p>
 <h3 id="network-discovery">Network Discovery<a class="headerlink" href="#network-discovery" title="Permanent link">&para;</a></h3>
-<p>Scan <code>172.16.50.0/24</code> and fingerprint the exposed AI/ML surface including Ollama, Jupyter, MCP, Gradio, ChromaDB, MLflow, LiteLLM, Ray, Weaviate, Qdrant, LangServe, Streamlit, an auth-gated HF TGI gateway, HF TEI, vLLM, TorchServe, BentoML, Triton, W&amp;B, Kubeflow, TF Serving, pgvector, three A2A protocol agents, and a Kubernetes node (<code>kube-apiserver</code> on <code>:6443</code>).</p>
+<p>Scan <code>172.16.50.0/24</code> and fingerprint the exposed AI/ML surface including Ollama, Jupyter, MCP, Gradio, ChromaDB, MLflow, LiteLLM, Ray, Weaviate, Qdrant, LangServe, Streamlit, an auth-gated HF TGI gateway, HF TEI, vLLM, TorchServe, BentoML, Triton, W&amp;B, Kubeflow, TF Serving, pgvector, three A2A protocol agents, a Kubernetes node (<code>kube-apiserver</code> on <code>:6443</code>), a bespoke IT-helpdesk agent, and a black-box RAG app.</p>
+<h3 id="model-agent-layer">Model &amp; Agent Layer<a class="headerlink" href="#model-agent-layer" title="Permanent link">&para;</a></h3>
+<p>Attack the model and agent-conversation layer, not just the infrastructure. Behaviorally <strong>fingerprint</strong> the model behind a masked gateway (contradiction de-masking that survives an identity-masking system prompt, with an honest <code>unknown</code> when it can't be de-masked); triage an agent's <strong>guardrails</strong> and drive <strong>prompt injection</strong> (direct input-filter bypass and verified <em>indirect</em> injection through a poisoned RAG document — retrieved <em>and</em> obeyed); and recover secrets past an <strong>output filter</strong> by reformatting. The bespoke helpdesk agent (<code>ailab-app:8110</code>) and black-box RAG app (<code>ailab-ds:8091</code>) are the targets for the <code>agent</code> and <code>rag</code> modules.</p>
 <h3 id="a2a-protocol-testing">A2A Protocol Testing<a class="headerlink" href="#a2a-protocol-testing" title="Permanent link">&para;</a></h3>
 <p>Three A2A agent fixtures on ailab-app (ports 8100–8102) exercise the full A2A attack chain: agent card enumeration, unauthenticated task injection, task history credential leak, streaming eavesdrop, push-notification hijack, and A2A-to-MCP cross-protocol pivoting.</p>
 <h3 id="post-exploitation-validation">Post-Exploitation Validation<a class="headerlink" href="#post-exploitation-validation" title="Permanent link">&para;</a></h3>
 <p>A callback listener (ailab-attack:9000) confirms webhook callbacks fire. A Post-Ex Oracle (ailab-app:8765) validates credentials, persistence heartbeats, and execution sentinels. A localhost-only lateral target on ailab-dev requires prior RCE to reach.</p>
+<h3 id="detect-evade-elastic-security">Detect &amp; Evade (Elastic Security)<a class="headerlink" href="#detect-evade-elastic-security" title="Permanent link">&para;</a></h3>
+<p>A real <strong>Elastic Security</strong> detection stack on <code>ailab-siem</code> (Elasticsearch <code>:9200</code> + Kibana <code>:5601</code>) with Beats shipping endpoint and application telemetry from every target host. Five detection rules fire real alerts — reverse shells, file-integrity/privesc, prompt injection, knowledge-base enumeration, and RAG ingestion — so you can run the full <strong>enumerate → attack → detect → evade → confirm</strong> loop and see exactly what a SOC observes. It is a <strong>persistent</strong> host, deliberately left out of the reset-wave loop.</p>
 <h3 id="tier-2-workflow-validation">Tier 2 Workflow Validation<a class="headerlink" href="#tier-2-workflow-validation" title="Permanent link">&para;</a></h3>
 <p>The lab includes verification coverage for bounded Tier 2 exploit workflows: Ollama exfiltration, Jupyter kernel abuse, Ray pip injection, MLflow tamper-proof paths, MCP stdio transport, and A2A push-notification hijack with callback confirmation.</p>
 <h3 id="deployment-evolution">Deployment Evolution<a class="headerlink" href="#deployment-evolution" title="Permanent link">&para;</a></h3>
@@ -5555,7 +5581,7 @@ required. It's the fast realism dev loop.</p>
       <script id="__config" type="application/json">{"annotate": null, "base": ".", "features": ["navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "navigation.instant", "navigation.instant.progress", "search.suggest", "search.highlight", "content.code.copy", "content.tabs.link", "toc.integrate"], "search": "assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="assets/javascripts/bundle.d7400e89.min.js"></script>
       
     
   </body>
