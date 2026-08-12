@@ -2906,6 +2906,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../services/app/agent-fleet/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Bespoke Single-Agent Fleet
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -4545,6 +4573,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../attack-scenarios/scenario-22/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    22: Advanced Prompt-Injection Tradecraft
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -5447,7 +5503,7 @@
 <td><code>172.16.50.40</code></td>
 <td>Ubuntu 24.04</td>
 <td>Shared AI apps</td>
-<td>8090, 8104, 8110, 8501, 8100-8103, 8180, 8765</td>
+<td>8090, 8104, 8110-8113, 8501, 8100-8103, 8180, 8765</td>
 </tr>
 <tr>
 <td><code>ailab-k8s</code></td>
@@ -5520,6 +5576,9 @@
 <li><code>8100</code>–<code>8102</code> A2A agents (scored mocks); <code>8103</code> A2A real agent (offensive target)</li>
 <li><code>8104</code> A2A orchestrator (unauthenticated agent registry — <code>a2a register</code> target)</li>
 <li><code>8110</code> Bespoke IT-helpdesk agent (custom <code>/chat</code> — target for the <code>agent</code> module)</li>
+<li><code>8111</code> Bespoke document-summarizer agent (<code>/summarize</code> + <code>/chat</code> — indirect injection; timestamp session IDs)</li>
+<li><code>8112</code> Bespoke code-review agent (<code>/chat</code> — CI-token in system prompt; <strong>sequential</strong> session IDs)</li>
+<li><code>8113</code> Bespoke browse agent (<code>/chat</code> + <code>/fetch</code> — SSRF-ish over-reach; short session IDs)</li>
 <li><code>8180</code> HF TGI gateway (real inference)</li>
 <li><code>8765</code> Post-Ex Oracle</li>
 </ul>
