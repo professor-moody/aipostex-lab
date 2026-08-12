@@ -1,0 +1,21 @@
+filebeat.inputs:
+- type: filestream
+  id: aipostex-app
+  enabled: true
+  paths: [ /var/log/aipostex/*.jsonl ]
+  # Namespace the app's JSON fields under ai.* so none collide with ECS field
+  # types. The apps emit a scalar "source" (e.g. "rag-app"); ECS maps source as an
+  # object, which Elasticsearch 400-rejects when placed at the document root, so
+  # the app events silently never land. Nesting under a non-ECS parent avoids it.
+  parsers: [ {ndjson: {target: "ai", add_error_key: true}} ]
+  fields: {event.dataset: aipostex.app}
+  fields_under_root: true
+filebeat.modules:
+- module: system
+  syslog: {enabled: true}
+  auth: {enabled: true}
+output.elasticsearch:
+  hosts: ["http://__SIEM_HOST__:9200"]
+  username: "elastic"
+  password: "__ELASTIC_PASSWORD__"
+processors: [ {add_host_metadata: ~} ]

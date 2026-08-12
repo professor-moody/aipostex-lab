@@ -11,6 +11,14 @@ QDRANT_VERSION="${QDRANT_VERSION:-1.13.2}"
 MLFLOW_GATEWAY_USER="${MLFLOW_GATEWAY_USER:-ray-pipeline}"
 MLFLOW_GATEWAY_PASSWORD="${MLFLOW_GATEWAY_PASSWORD:-MlflowRayChain!2026}"
 MLFLOW_UPSTREAM="${MLFLOW_UPSTREAM:-http://${LAB_SUBNET:-172.16.50}.20:5000}"
+# Black-box RAG app (:8091) — knowledge-base chat with document upload; real
+# generation via the OpenAI-compatible upstream (LiteLLM -> Ollama).
+RAG_UPSTREAM_URL="${RAG_UPSTREAM_URL:-http://${LAB_SUBNET:-172.16.50}.20:4000/v1/chat/completions}"
+RAG_UPSTREAM_MODEL="${RAG_UPSTREAM_MODEL:-local-smollm}"
+# Detection telemetry: the RAG app appends events to ${APP_EVENT_LOG_DIR}/rag.jsonl,
+# which Filebeat ships to the real Elastic detection stack (ailab-siem, .60). See
+# lab-scripts/siem/. The old ai-siem mock on :5601 has been retired.
+APP_EVENT_LOG_DIR="${APP_EVENT_LOG_DIR:-/var/log/aipostex}"
 
 echo "[*] Provisioning ailab-ds (data science server)..."
 echo "    Weaviate version: ${WEAVIATE_VERSION}"
@@ -255,6 +263,42 @@ systemctl enable mlflow-auth-gateway
 systemctl restart mlflow-auth-gateway
 wait_for_http_match "MLflow auth gateway" "mlflow-auth-gateway" "http://localhost:5000/health" "OK"
 
+# ── Black-box RAG app (:8091) ───────────────────────────────
+echo "[*] Preparing application event-log dir for Filebeat (${APP_EVENT_LOG_DIR})..."
+install -d -m 1777 "${APP_EVENT_LOG_DIR}"
+echo "[*] Installing black-box RAG app (:8091)..."
+sudo -u dsuser mkdir -p /home/dsuser/projects/rag-app
+if [ -f "$(dirname "$0")/rag-app-mock/server.py" ]; then
+    cp "$(dirname "$0")/rag-app-mock/server.py" /home/dsuser/projects/rag-app/server.py
+    chown dsuser:dsuser /home/dsuser/projects/rag-app/server.py
+fi
+
+cat > /etc/systemd/system/rag-app.service << EOF
+[Unit]
+Description=Black-box RAG App (aipostex-lab)
+After=network.target
+
+[Service]
+User=dsuser
+WorkingDirectory=/home/dsuser/projects/rag-app
+Environment="RAG_APP_PORT=8091"
+Environment="RAG_UPSTREAM_URL=${RAG_UPSTREAM_URL}"
+Environment="RAG_UPSTREAM_MODEL=${RAG_UPSTREAM_MODEL}"
+Environment="EVENT_LOG=${APP_EVENT_LOG_DIR}/rag.jsonl"
+Environment="PATH=/usr/local/bin:/usr/bin:/bin"
+ExecStart=/usr/bin/python3 server.py
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+systemctl daemon-reload
+systemctl enable rag-app
+systemctl restart rag-app
+wait_for_http_match "RAG app" "rag-app" "http://localhost:8091/health" "healthy"
+
 # ── Summary ─────────────────────────────────────────────────
 echo ""
 echo "[+] ailab-ds provisioning complete"
@@ -265,3 +309,4 @@ echo "      Weaviate  :8080   (systemd: weaviate.service)"
 echo "      Qdrant    :6333   (systemd: qdrant.service)"
 echo "      PostgreSQL:5432   (systemd: postgresql.service, pgvector enabled)"
 echo "      MLflow GW :5000   (systemd: mlflow-auth-gateway.service, Basic auth)"
+echo "      RAG app   :8091   (systemd: rag-app.service, black-box RAG)"

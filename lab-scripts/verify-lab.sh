@@ -16,6 +16,7 @@ ML_IP=$(inventory_host_ip "ailab-ml")
 DS_IP=$(inventory_host_ip "ailab-ds")
 APP_IP=$(inventory_host_ip "ailab-app")
 ATTACK_IP=$(inventory_host_ip "ailab-attack")
+SIEM_IP=$(inventory_host_ip "ailab-siem")
 
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -368,6 +369,27 @@ else
     echo -e "  ${RED}(failed to connect)${NC}"
 fi
 
+# Black-box RAG app
+echo ""
+echo "Black-box RAG app on ailab-ds:"
+rag_health=$(curl -sf --max-time 5 "http://${DS_IP}:8091/health" 2>/dev/null || echo "")
+if echo "$rag_health" | grep -qi "healthy"; then
+    echo -e "  ${GREEN}[✓]${NC} RAG app :8091 health check OK"
+    PASS=$((PASS + 1))
+    rag_sources=$(curl -sf --max-time 8 -X POST "http://${DS_IP}:8091/query" \
+        -H "Content-Type: application/json" -d '{"query":"list all server names"}' 2>/dev/null || echo "")
+    if echo "$rag_sources" | grep -qi "AD_Server_Inventory"; then
+        echo -e "  ${GREEN}[✓]${NC} RAG /query returns source citations from the seeded knowledge base"
+        PASS=$((PASS + 1))
+    else
+        echo -e "  ${YELLOW}[!]${NC} RAG /query did not return expected source citations"
+        WARN=$((WARN + 1))
+    fi
+else
+    echo -e "  ${YELLOW}[!]${NC} RAG app :8091 not responding"
+    WARN=$((WARN + 1))
+fi
+
 # MLflow registry
 echo ""
 echo "MLflow registry on ailab-ml:"
@@ -493,6 +515,64 @@ if echo "$pox_health" | grep -qi "healthy"; then
     fi
 else
     echo -e "  ${YELLOW}[!]${NC} Post-Ex Oracle :8765 not responding (opt-in service)"
+    WARN=$((WARN + 1))
+fi
+
+echo ""
+echo "Elastic detection stack on ailab-siem (${SIEM_IP}):"
+# Elasticsearch up? With security on, an unauthenticated request returns 401 'missing
+# authentication' — which still proves ES is reachable. Set ELASTIC_PASSWORD to also
+# verify cluster health, the loaded detection rules, and that Beats telemetry is landing.
+es_probe=$(curl -s --max-time 5 "http://${SIEM_IP}:9200" 2>/dev/null || echo "")
+if echo "$es_probe" | grep -qiE "missing authentication|cluster_name"; then
+    echo -e "  ${GREEN}[✓]${NC} Elasticsearch :9200 reachable"
+    PASS=$((PASS + 1))
+    if [ -n "${ELASTIC_PASSWORD:-}" ]; then
+        es_health=$(curl -sf --max-time 5 -u "elastic:${ELASTIC_PASSWORD}" "http://${SIEM_IP}:9200/_cluster/health" 2>/dev/null || echo "")
+        if echo "$es_health" | grep -qiE '"status":"(green|yellow)"'; then
+            echo -e "  ${GREEN}[✓]${NC} ES cluster health green/yellow"
+            PASS=$((PASS + 1))
+        else
+            echo -e "  ${YELLOW}[!]${NC} ES cluster health not green/yellow"
+            WARN=$((WARN + 1))
+        fi
+        rule_count=$(curl -sf --max-time 5 -u "elastic:${ELASTIC_PASSWORD}" -H "kbn-xsrf: true" \
+            "http://${SIEM_IP}:5601/api/detection_engine/rules/_find?filter=alert.attributes.tags:aipostex&per_page=1" 2>/dev/null \
+            | grep -oE '"total":[0-9]+' | head -1 | cut -d: -f2)
+        if [ "${rule_count:-0}" -ge 5 ]; then
+            echo -e "  ${GREEN}[✓]${NC} ${rule_count} aipostex detection rules loaded in Kibana"
+            PASS=$((PASS + 1))
+        else
+            echo -e "  ${YELLOW}[!]${NC} expected >=5 aipostex detection rules, found ${rule_count:-0}"
+            WARN=$((WARN + 1))
+        fi
+        app_docs=$(curl -sf --max-time 5 -u "elastic:${ELASTIC_PASSWORD}" \
+            "http://${SIEM_IP}:9200/filebeat-*/_count" -H "Content-Type: application/json" \
+            --data-binary '{"query":{"term":{"event.dataset":"aipostex.app"}}}' 2>/dev/null \
+            | grep -oE '"count":[0-9]+' | head -1 | cut -d: -f2)
+        if [ "${app_docs:-0}" -ge 1 ]; then
+            echo -e "  ${GREEN}[✓]${NC} Filebeat shipping app telemetry (event.dataset:aipostex.app = ${app_docs})"
+            PASS=$((PASS + 1))
+        else
+            echo -e "  ${YELLOW}[!]${NC} no aipostex.app events in Elasticsearch yet"
+            WARN=$((WARN + 1))
+        fi
+    else
+        echo -e "  ${CYAN}[i]${NC} set ELASTIC_PASSWORD to also verify cluster health, rules, and Beats telemetry"
+    fi
+else
+    echo -e "  ${YELLOW}[!]${NC} Elasticsearch :9200 on ${SIEM_IP} not responding"
+    WARN=$((WARN + 1))
+fi
+
+echo ""
+echo "Bespoke IT-helpdesk agent on ailab-app:"
+helpdesk_health=$(curl -sf --max-time 5 "http://${APP_IP}:8110/health" 2>/dev/null || echo "")
+if echo "$helpdesk_health" | grep -qi "healthy"; then
+    echo -e "  ${GREEN}[✓]${NC} Helpdesk agent :8110 health check OK"
+    PASS=$((PASS + 1))
+else
+    echo -e "  ${YELLOW}[!]${NC} Helpdesk agent :8110 not responding"
     WARN=$((WARN + 1))
 fi
 

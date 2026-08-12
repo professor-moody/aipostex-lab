@@ -200,6 +200,48 @@ systemctl restart acme-mcp
 wait_for_mcp_ready "ACME MCP server" "acme-mcp" "http://localhost:3000/mcp" 30
 echo "[+] MCP server installed (port 3000, real MCP SDK — /mcp Streamable HTTP)"
 
+# ── Vulnerable MCP server (:3002) — sandbox-escape + SSTI targets ────────────
+echo "[*] Setting up vulnerable MCP server (sandbox-escape + SSTI)..."
+VULN_MCP_DIR="/home/devuser/projects/internal-tools/mcp-vuln-server"
+sudo -u devuser mkdir -p "$VULN_MCP_DIR"
+install -d -o devuser -g devuser /data/documents 2>/dev/null || { mkdir -p /data/documents; chown devuser:devuser /data/documents; }
+if [ -f "$(dirname "$0")/mcp-vuln-server/server.py" ]; then
+    cp "$(dirname "$0")/mcp-vuln-server/server.py" \
+       "$(dirname "$0")/mcp-vuln-server/requirements.txt" \
+       "$VULN_MCP_DIR/"
+    chown -R devuser:devuser "$VULN_MCP_DIR"
+fi
+if [ ! -x "$VULN_MCP_DIR/.venv/bin/python" ]; then
+    sudo -u devuser python3 -m venv "$VULN_MCP_DIR/.venv"
+fi
+sudo -u devuser "$VULN_MCP_DIR/.venv/bin/pip" install -q --upgrade pip
+sudo -u devuser "$VULN_MCP_DIR/.venv/bin/pip" install -q -r "$VULN_MCP_DIR/requirements.txt"
+
+cat > /etc/systemd/system/acme-doc-tools.service << 'EOF'
+[Unit]
+Description=ACME Doc Tools MCP Server (vulnerable — sandbox-escape + SSTI)
+After=network.target
+
+[Service]
+User=devuser
+WorkingDirectory=/home/devuser/projects/internal-tools/mcp-vuln-server
+Environment="MCP_HOST=0.0.0.0"
+Environment="MCP_PORT=3002"
+Environment="MCP_DOC_DIR=/data/documents"
+ExecStart=/home/devuser/projects/internal-tools/mcp-vuln-server/.venv/bin/python server.py
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+systemctl daemon-reload
+systemctl enable acme-doc-tools
+systemctl restart acme-doc-tools
+wait_for_mcp_ready "ACME Doc Tools MCP" "acme-doc-tools" "http://localhost:3002/mcp" 30
+echo "[+] Vulnerable MCP server installed (port 3002, acme-doc-tools — read_document sandbox-escape + render_report SSTI)"
+
 # ── Gradio Lab App ──────────────────────────────────────────
 echo "[*] Installing Gradio lab app..."
 sudo -u devuser /usr/bin/python3 -m pip install --user --break-system-packages "gradio==5.49.1" 2>/dev/null

@@ -105,6 +105,7 @@ nav:
       - Ollama: services/dev/ollama.md
       - Jupyter: services/dev/jupyter.md
       - MCP Server: services/dev/mcp-server.md
+      - Vulnerable MCP Server: services/dev/mcp-vuln-server.md
       - Gradio: services/dev/gradio.md
       - MCP Inspector: services/dev/mcp-inspector.md
     - ailab-ml (ML Platform):
@@ -126,12 +127,17 @@ nav:
       - Jupyter: services/ds/jupyter.md
       - Weaviate: services/ds/weaviate.md
       - Qdrant: services/ds/qdrant.md
+      - Black-box RAG App: services/ds/rag-app.md
     - ailab-app (Shared AI Apps):
       - LangServe: services/app/langserve.md
       - Streamlit: services/app/streamlit.md
       - HF TGI Gateway: services/app/tgi-gateway.md
+      - A2A Orchestrator: services/app/a2a-orchestrator.md
+      - Bespoke IT-Helpdesk Agent: services/app/helpdesk-agent.md
     - ailab-k8s (Kubernetes Node):
       - Cluster (vuln + secure k3s): services/k8s/cluster.md
+    - ailab-siem (Detection):
+      - Elastic Detection Stack: services/siem/elastic.md
   - Attack Box:
     - Setup: attack-box/setup.md
     - MCP Config Fixtures: attack-box/mcp-fixtures.md
@@ -170,6 +176,23 @@ nav:
     - "11: MCP Tool Infection": attack-scenarios/scenario-11.md
     - "12: Multi-Vector Campaign": attack-scenarios/scenario-12.md
     - "13: Privesc → Model-Weight Theft": attack-scenarios/scenario-13.md
+    - "14: Bespoke Agent — Fingerprint/Enum/Extract": attack-scenarios/scenario-14.md
+    - "15: Black-box RAG — Citation Recon & Poisoning": attack-scenarios/scenario-15.md
+    - "16: Detect & Evade — Working Against Real Elastic": attack-scenarios/scenario-16.md
+    - "17: Rogue Agents & MCP Privilege Escalation": attack-scenarios/scenario-17.md
+    - "18: Agent Guardrail Triage → Prompt Injection": attack-scenarios/scenario-18.md
+    - "19: Embedding Endpoint Recon": attack-scenarios/scenario-19.md
+    - "20: Behavioral Model Fingerprinting": attack-scenarios/scenario-20.md
+    - "21: Full Agent-Layer Campaign": attack-scenarios/scenario-21.md
+  - Techniques:
+    - Overview: techniques/index.md
+    - Reconnaissance: techniques/reconnaissance.md
+    - Model Fingerprinting: techniques/model-fingerprinting.md
+    - Output-Filter Bypass: techniques/output-filter-bypass.md
+    - Prompt Injection: techniques/prompt-injection.md
+    - RAG Attacks: techniques/rag-attacks.md
+    - Detect & Evade: techniques/detect-and-evade.md
+    - Honest Grading: techniques/honest-grading.md
   - Single-Service Sandbox: sandbox.md
   - Reference:
     - Lab Field Guide: reference/field-manual.md

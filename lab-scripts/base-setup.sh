@@ -81,6 +81,20 @@ if ! grep -q nameserver /etc/resolv.conf 2>/dev/null; then
     echo "nameserver 8.8.8.8" >> /etc/resolv.conf
 fi
 
+# --- Elastic Beats: endpoint + application telemetry -> the ailab-siem detection stack.
+# Skipped on the SIEM host itself, when INSTALL_BEATS=0, or when no ELASTIC_PASSWORD is
+# provided. Non-fatal — Beats buffer and retry if the SIEM is not up yet.
+if [[ "${INSTALL_BEATS:-1}" == "1" && "${HOSTNAME}" != "ailab-siem" && -x "${SCRIPT_DIR}/siem/install-beats.sh" ]]; then
+    if [[ -n "${ELASTIC_PASSWORD:-}" ]]; then
+        SIEM_HOST="${SIEM_HOST:-$(inventory_host_ip ailab-siem)}"
+        echo "[*] $HOSTNAME: installing Elastic Beats (SIEM ${SIEM_HOST})"
+        SIEM_HOST="${SIEM_HOST}" ELASTIC_PASSWORD="${ELASTIC_PASSWORD}" \
+            bash "${SCRIPT_DIR}/siem/install-beats.sh" || echo "[!] Beats install failed (non-fatal)"
+    else
+        echo "[*] $HOSTNAME: skipping Beats (set ELASTIC_PASSWORD to ship telemetry to ailab-siem)"
+    fi
+fi
+
 echo "[+] $HOSTNAME: Base setup complete"
 echo "    Python: $(python3 --version)"
 echo "    pip: $(pip3 --version | cut -d' ' -f1-2)"

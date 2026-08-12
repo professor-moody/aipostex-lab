@@ -1529,27 +1529,33 @@ run_operator_layer() {
 
     # ── pagination ──
     if assert_artifact_ok "chromadb-extract" "$TMPDIR/chromadb-extract.json"; then
-        assert_jq "chromadb extract returns 50+ documents" \
-            '[.findings[]?] | length > 50' "$TMPDIR/chromadb-extract.json"
+        assert_jq "chromadb extract returns the full seeded collection (>140 documents)" \
+            '[.findings[]?] | length > 140' "$TMPDIR/chromadb-extract.json"
     fi
     if assert_artifact_ok "weaviate-extract" "$TMPDIR/weaviate-extract.json"; then
-        assert_jq "weaviate extract returns 100+ documents" \
-            '[.findings[]?] | length > 100' "$TMPDIR/weaviate-extract.json"
+        assert_jq "weaviate extract returns a full page of the seeded collection (>195 documents)" \
+            '[.findings[]?] | length > 195' "$TMPDIR/weaviate-extract.json"
     fi
     if assert_artifact_ok "qdrant-extract" "$TMPDIR/qdrant-extract.json"; then
-        assert_jq "qdrant extract returns 100+ points" \
-            '[.findings[]?] | length > 100' "$TMPDIR/qdrant-extract.json"
+        assert_jq "qdrant extract returns a full page of the seeded collection (>195 points)" \
+            '[.findings[]?] | length > 195' "$TMPDIR/qdrant-extract.json"
     fi
 
     # ── vectordb search-sensitive ──
     if assert_artifact_ok "chromadb-search-sensitive" "$TMPDIR/chromadb-search-sensitive.json"; then
-        assert_jq "chromadb search-sensitive returns findings" '.findings[]? | select(.metadata.action == "search-sensitive")' "$TMPDIR/chromadb-search-sensitive.json"
+        assert_jq "chromadb search-sensitive flags a real sensitive hit" \
+            '.findings[]? | select(.metadata.action == "search-sensitive" and (.metadata.capability_labels | tostring | test("sensitive")))' \
+            "$TMPDIR/chromadb-search-sensitive.json"
     fi
     if assert_artifact_ok "weaviate-search-sensitive" "$TMPDIR/weaviate-search-sensitive.json"; then
-        assert_jq "weaviate search-sensitive returns findings" '.findings[]? | select(.metadata.action == "search-sensitive")' "$TMPDIR/weaviate-search-sensitive.json"
+        assert_jq "weaviate search-sensitive flags a real sensitive hit" \
+            '.findings[]? | select(.metadata.action == "search-sensitive" and (.metadata.capability_labels | tostring | test("sensitive")))' \
+            "$TMPDIR/weaviate-search-sensitive.json"
     fi
     if assert_artifact_ok "qdrant-search-sensitive" "$TMPDIR/qdrant-search-sensitive.json"; then
-        assert_jq "qdrant search-sensitive returns findings" '.findings[]? | select(.metadata.action == "search-sensitive")' "$TMPDIR/qdrant-search-sensitive.json"
+        assert_jq "qdrant search-sensitive flags a real sensitive hit" \
+            '.findings[]? | select(.metadata.action == "search-sensitive" and (.metadata.capability_labels | tostring | test("sensitive")))' \
+            "$TMPDIR/qdrant-search-sensitive.json"
     fi
 
     # ── jupyter ──
@@ -1711,8 +1717,11 @@ run_active_layer() {
     if assert_artifact_ok "mlflow-hook" "$TMPDIR/mlflow-hook.json"; then
         assert_jq "mlflow hook returns findings" '.findings[]?' "$TMPDIR/mlflow-hook.json"
         assert_jq "mlflow hook confirms downstream callback" '.findings[]? | select(.metadata.callback_confirmed == true)' "$TMPDIR/mlflow-hook.json"
-        assert_jq "mlflow hook lands as takeover-capable, not execution-confirmed" \
+        assert_jq "mlflow hook lands as takeover-capable" \
             '.findings[]? | select(.metadata.stage == "own" and .metadata.landed == "takeover-capable")' \
+            "$TMPDIR/mlflow-hook.json"
+        assert_jq "mlflow hook does not claim execution-confirmed" \
+            '[.findings[]? | select(.metadata.landed == "execution-confirmed")] | length == 0' \
             "$TMPDIR/mlflow-hook.json"
     fi
     if assert_artifact_ok "mlflow-bulk-download" "$TMPDIR/mlflow-bulk-download.json"; then
@@ -1979,21 +1988,31 @@ run_active_layer() {
         assert_jq "chromadb inject includes stage/landed metadata" '.findings[]? | select(.metadata.stage != null)' "$TMPDIR/chromadb-inject.json"
     fi
     if assert_artifact_ok "weaviate-inject" "$TMPDIR/weaviate-inject.json"; then
-        assert_jq "weaviate inject returns findings" '.findings[]?' "$TMPDIR/weaviate-inject.json"
+        assert_jq "weaviate inject lands as access/influenced" \
+            '.findings[]? | select(.metadata.action == "inject" and .metadata.stage == "access" and .metadata.landed == "influenced")' \
+            "$TMPDIR/weaviate-inject.json"
     fi
     if assert_artifact_ok "qdrant-inject" "$TMPDIR/qdrant-inject.json"; then
-        assert_jq "qdrant inject returns findings" '.findings[]?' "$TMPDIR/qdrant-inject.json"
+        assert_jq "qdrant inject lands as access/influenced" \
+            '.findings[]? | select(.metadata.action == "inject" and .metadata.stage == "access" and .metadata.landed == "influenced")' \
+            "$TMPDIR/qdrant-inject.json"
     fi
 
     # ── vectordb metadata-inject ──
     if assert_artifact_ok "chromadb-meta-inject" "$TMPDIR/chromadb-meta-inject.json"; then
-        assert_jq "chromadb metadata-inject returns findings" '.findings[]?' "$TMPDIR/chromadb-meta-inject.json"
+        assert_jq "chromadb metadata-inject lands as impact/read-confirmed" \
+            '.findings[]? | select(.metadata.action == "metadata-inject" and .metadata.stage == "impact" and .metadata.landed == "read-confirmed")' \
+            "$TMPDIR/chromadb-meta-inject.json"
     fi
     if assert_artifact_ok "weaviate-meta-inject" "$TMPDIR/weaviate-meta-inject.json"; then
-        assert_jq "weaviate metadata-inject returns findings" '.findings[]?' "$TMPDIR/weaviate-meta-inject.json"
+        assert_jq "weaviate metadata-inject lands as impact/read-confirmed" \
+            '.findings[]? | select(.metadata.action == "metadata-inject" and .metadata.stage == "impact" and .metadata.landed == "read-confirmed")' \
+            "$TMPDIR/weaviate-meta-inject.json"
     fi
     if assert_artifact_ok "qdrant-meta-inject" "$TMPDIR/qdrant-meta-inject.json"; then
-        assert_jq "qdrant metadata-inject returns findings" '.findings[]?' "$TMPDIR/qdrant-meta-inject.json"
+        assert_jq "qdrant metadata-inject lands as impact/read-confirmed" \
+            '.findings[]? | select(.metadata.action == "metadata-inject" and .metadata.stage == "impact" and .metadata.landed == "read-confirmed")' \
+            "$TMPDIR/qdrant-meta-inject.json"
     fi
 
     # ── bentoml predict ──

@@ -70,7 +70,7 @@ Restart=always
 
 ## Config File
 
-The config at `/opt/litellm/config.yaml` defines five model backends:
+The config at `/opt/litellm/config.yaml` defines several model backends:
 
 | Model | Provider | Key / Credential |
 |---|---|---|
@@ -79,8 +79,9 @@ The config at `/opt/litellm/config.yaml` defines five model backends:
 | `azure-gpt-4` | Azure OpenAI | `FAKE-azure-openai-key-abcdef123456` |
 | `bedrock-claude` | AWS Bedrock | `AKIAFAKELITELLM12345` (access key) |
 | `local-smollm` | Ollama (ailab-dev) | No API key — points to `http://172.16.50.10:11434` |
+| `local-qwen` | Ollama (ailab-dev) | No API key — `qwen2.5:1.5b`, an un-masked model |
 
-The `local-smollm` model proxies to the Ollama instance on ailab-dev (`172.16.50.10:11434`), enabling live inference through LiteLLM's OpenAI-compatible API.
+The `local-smollm` and `local-qwen` models proxy to the Ollama instance on ailab-dev (`172.16.50.10:11434`), enabling live inference through LiteLLM's OpenAI-compatible API.
 
 ---
 
@@ -91,6 +92,7 @@ The `local-smollm` model proxies to the Ollama instance on ailab-dev (`172.16.50
 - **LiteLLM-specific probing** — The `openai-compat litellm-probe` subcommand checks three endpoints unique to LiteLLM proxies: `/health` (backend topology with model names and API base URLs), `/health/readiness` (version and DB status), and `/v1/model/info` (full model configs including `litellm_params` which may contain API keys). The `litellm-config-001-endpoint-exposure` vulnerability template also fires during `discover network`.
 - **Config file via filesystem scan** — The config file at `/opt/litellm/config.yaml` contains all API keys in plaintext, discoverable by any filesystem-level assessment.
 - **Live inference validation** — The `local-smollm` backend routes to Ollama on ailab-dev, enabling aipostex to verify live inference capability through the proxy.
+- **Behavioral model fingerprint** — `openai-compat fingerprint --model local-qwen` returns a positive family/vendor attribution (`qwen` / Alibaba), because `qwen2.5:1.5b` self-identifies and holds up under a false-vendor contradiction. The masked models (`local-smollm` → `smollm2:135m`, and the Ollama `acme-assistant`/`acme-support` personas) honestly resolve to `family=unknown` — the sub-1B models can't self-correct — so the pair demonstrates both the positive and the negative fingerprint outcome.
 - **Auth-sweep differentiation** — With both an open (`:4000`) and authenticated (`:4001`) instance, `auth-sweep` can demonstrate mixed-environment detection where some endpoints accept unauthenticated requests and others require keys.
 
 ---

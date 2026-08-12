@@ -13,6 +13,7 @@ Complete list of every endpoint in the lab.
 | 22 | SSH | `sshd.service` |
 | 11434 | Ollama | `ollama.service` |
 | 8888 | Jupyter Lab | `jupyter.service` |
+| 3002 | Vulnerable MCP server (sandbox-escape + SSTI targets) | `acme-doc-tools.service` |
 | 3000 | MCP Server (real MCP SDK — FastMCP, Streamable HTTP at `/mcp`) | `acme-mcp.service` |
 | 7860 | Gradio | `gradio-chat.service` |
 | 6274 | MCP Inspector | `mcp-inspector.service` |
@@ -52,6 +53,7 @@ real MLflow registry for `aipostex.hook.url` model-version tags and delivers hoo
 | 8080 | Weaviate | `weaviate.service` |
 | 6333 | Qdrant | `qdrant.service` |
 | 5432 | PostgreSQL/pgvector | `postgresql.service` |
+| 8091 | Black-box RAG app (knowledge-base chat + document upload) | `rag-app.service` |
 
 ## ailab-app — 172.16.50.40
 
@@ -59,6 +61,8 @@ real MLflow registry for `aipostex.hook.url` model-version tags and delivers hoo
 |---|---|---|
 | 22 | SSH | `sshd.service` |
 | 8090 | LangServe | `langserve.service` |
+| 8104 | A2A orchestrator (unauthenticated agent registry; `a2a register` target) | `a2a-orchestrator.service` |
+| 8110 | Bespoke IT-helpdesk agent (custom `/chat`; target for the `agent` module) | `helpdesk-agent.service` |
 | 8501 | Streamlit | `streamlit.service` |
 | 8100 | A2A Agent (basic) | `a2a-agent-basic.service` |
 | 8101 | A2A Agent (multiturn) | `a2a-agent-multiturn.service` |
@@ -86,3 +90,10 @@ real MLflow registry for `aipostex.hook.url` model-version tags and delivers hoo
     `verify-lab.sh` currently reports **62 passing checks** — service health across all 6 VMs
     (including the k8s pair), SSH and ping reachability for each, and deep validation checks for
     seeded data and post-exploitation fixtures.
+
+## ailab-siem — 172.16.50.60 (Detection — Elastic; persistent, not reset)
+
+| Port | Service | Systemd Unit |
+|---|---|---|
+| 9200 | Elasticsearch (security on, single-node) | `elasticsearch.service` |
+| 5601 | Kibana (Elastic Security / detection engine) | `kibana.service` |

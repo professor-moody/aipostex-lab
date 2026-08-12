@@ -127,8 +127,7 @@ class Handler(BaseHTTPRequestHandler):
     def do_POST(self):
         path = self.path.rstrip("/")
         length = int(self.headers.get("Content-Length", 0))
-        if length > 0:
-            self.rfile.read(length)
+        body = self.rfile.read(length) if length > 0 else b""
 
         if path == "/v2/repository/index":
             with MODEL_LOCK:
@@ -165,10 +164,19 @@ class Handler(BaseHTTPRequestHandler):
                 loaded = model_name in LOADED_MODELS
                 m = MODELS.get(model_name)
             if m and loaded:
+                # Input-dependent output: a real handler's forward pass varies with its
+                # input, so the tool's inference reality probe (mutated-input differential)
+                # can tell genuine handler execution from a canned fixture. This is a
+                # deterministic function of the request bytes, NOT real ML inference.
+                seed = sum(body) % 100000
                 outputs = []
                 for o in m["outputs"]:
                     shape = [1] + [max(1, s) for s in o["shape"][1:]]
-                    outputs.append({"name": o["name"], "datatype": o["datatype"], "shape": shape, "data": [0.5]})
+                    n = 1
+                    for s in shape:
+                        n *= s
+                    data = [round(((seed + i * 131) % 100000) / 100000.0, 6) for i in range(n)]
+                    outputs.append({"name": o["name"], "datatype": o["datatype"], "shape": shape, "data": data})
                 self._json({
                     "model_name": model_name,
                     "model_version": m["version"],

@@ -1,0 +1,27 @@
+auditbeat.modules:
+# Endpoint telemetry: process spawns (reverse shells / suspicious exec), sockets,
+# user/login events. This is what raises the reverse-shell process alerts.
+- module: system
+  datasets: [process, socket, user, login]
+  state.period: 12h
+# File Integrity Monitoring (inotify-based; no kernel-audit netlink dependency,
+# which does not deliver reliably inside these VMs). Watches the paths a
+# privilege-escalation walks through — dropping a binary into a PATH dir, editing
+# the passwd/shadow/sudoers identity files, planting cron or an SSH key.
+- module: file_integrity
+  paths:
+    - /usr/local/bin
+    - /usr/local/sbin
+    - /etc/passwd
+    - /etc/shadow
+    - /etc/sudoers
+    - /etc/sudoers.d
+    - /etc/cron.d
+    - /root/.ssh
+  recursive: true
+  scan_at_start: true
+output.elasticsearch:
+  hosts: ["http://__SIEM_HOST__:9200"]
+  username: "elastic"
+  password: "__ELASTIC_PASSWORD__"
+processors: [ {add_host_metadata: ~} ]

@@ -56,13 +56,14 @@ Environment="OLLAMA_HOST=0.0.0.0"
 
 ## Models
 
-Three models are present:
+Four models are present:
 
 | Model | Type | Notes |
 |---|---|---|
 | `smollm2:135m` | Base model | ~220MB, pulled from registry. Small enough to run on 2 vCPU. |
 | `acme-assistant` | Custom | Created from `smollm2:135m`. System prompt contains PostgreSQL creds, JWT tokens, Jira/SharePoint/Okta creds, AWS keys, Slack webhooks, PagerDuty API key. |
 | `acme-support` | Custom | Created from `smollm2:135m`. System prompt contains CRM API key, ticket system API key, manager override code, customer data bearer token. |
+| `qwen2.5:1.5b` | Base model | ~1GB, un-masked. Self-identifies as Qwen, so `aipostex openai-compat fingerprint` (via LiteLLM's `local-qwen`) returns a positive family/vendor attribution — the counterpoint to the masked models that resolve to `family=unknown`. |
 
 Both custom models were built from Modelfiles left on disk:
 

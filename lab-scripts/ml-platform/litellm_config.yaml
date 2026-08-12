@@ -4,6 +4,14 @@ model_list:
       model: ollama/smollm2:135m
       api_base: http://172.16.50.10:11434
 
+  # A small but capable, UN-masked model — self-identifies as Qwen, so aipostex
+  # `openai-compat fingerprint` returns a positive family/vendor attribution
+  # (vs the masked sub-1B models that honestly resolve to family=unknown).
+  - model_name: local-qwen
+    litellm_params:
+      model: ollama/qwen2.5:1.5b
+      api_base: http://172.16.50.10:11434
+
   - model_name: gpt-4
     litellm_params:
       model: openai/gpt-4

@@ -24,6 +24,13 @@ done
 echo "[*] Pulling base model smollm2:135m (~220MB)..."
 ollama pull smollm2:135m
 
+# A small but capable, UN-masked model: qwen2.5:1.5b self-identifies as Qwen, giving
+# aipostex `openai-compat fingerprint` a positive family/vendor attribution (the
+# masked sub-1B models honestly resolve to family=unknown). Exposed via LiteLLM as
+# `local-qwen`. ~1GB; fits the .10 RAM budget.
+echo "[*] Pulling qwen2.5:1.5b (un-masked fingerprint target, ~1GB)..."
+ollama pull qwen2.5:1.5b
+
 # ── Purge tool-created models from prior scan/demo runs ──────────────────────
 # aipostex `ollama create/poison/poison-verify` leave derived models behind; across
 # tactic rounds they accumulate (dozens of aipostex-review-*/*-redteam entries) and
@@ -31,7 +38,7 @@ ollama pull smollm2:135m
 # seed_mlflow.py's purge_tool_artifacts. Shared base blobs are ref-counted, so removing
 # a derived model never deletes smollm2's weights.
 echo "[*] Purging tool-created models (keeping the seeded set)..."
-_ollama_keep="smollm2:135m smollm2:135m:latest acme-assistant acme-assistant:latest acme-support acme-support:latest"
+_ollama_keep="smollm2:135m smollm2:135m:latest qwen2.5:1.5b qwen2.5:1.5b:latest acme-assistant acme-assistant:latest acme-support acme-support:latest"
 _purged=0
 for _m in $(ollama list 2>/dev/null | awk 'NR>1{print $1}'); do
     case " $_ollama_keep " in

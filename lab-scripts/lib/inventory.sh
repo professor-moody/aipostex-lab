@@ -53,6 +53,7 @@ inventory_host_ip() {
         ailab-app) echo "${LAB_SUBNET}.40" ;;
         ailab-k8s) echo "${LAB_SUBNET}.50" ;;
         ailab-attack) echo "${LAB_SUBNET}.99" ;;
+        ailab-siem) echo "${LAB_SUBNET}.60" ;;  # persistent detection host (Elastic); NOT in reset-wave
         *) return 1 ;;
     esac
 }
@@ -66,6 +67,7 @@ inventory_host_id() {
         ailab-app) base=250 ;;
         ailab-k8s) base=260 ;;
         ailab-attack) base=240 ;;
+        ailab-siem) base=270 ;;  # persistent detection host (Elastic); NOT in reset-wave
         *) return 1 ;;
     esac
     echo "$((base + VMID_STRIDE * GROUP_ID))"

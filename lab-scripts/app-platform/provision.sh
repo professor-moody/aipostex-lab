@@ -14,6 +14,15 @@ TGI_GATEWAY_TOKEN="${TGI_GATEWAY_TOKEN:-hf_FAKE_aBcDeFgHiJkLmNoPqRsTuVwXyZ123}"
 # Overridable; on upstream failure the gateway returns an honest 502, never a fake 200.
 TGI_UPSTREAM_URL="${TGI_UPSTREAM_URL:-http://${LAB_SUBNET:-172.16.50}.20:4000/v1/chat/completions}"
 TGI_UPSTREAM_MODEL="${TGI_UPSTREAM_MODEL:-local-smollm}"
+# Bespoke IT-helpdesk agent (:8110) — a custom /chat app with a credential-bearing
+# system prompt behind a weak, reformatting-bypassable output filter. Real inference
+# via the same OpenAI-compatible upstream (LiteLLM -> Ollama); honest 502 on failure.
+HELPDESK_UPSTREAM_URL="${HELPDESK_UPSTREAM_URL:-http://${LAB_SUBNET:-172.16.50}.20:4000/v1/chat/completions}"
+HELPDESK_UPSTREAM_MODEL="${HELPDESK_UPSTREAM_MODEL:-local-smollm}"
+# Detection telemetry: the AI apps append interaction events to /var/log/aipostex/*.jsonl,
+# which Filebeat ships to the real Elastic detection stack (ailab-siem, .60). See
+# lab-scripts/siem/. The old ai-siem mock on :5601 has been retired.
+APP_EVENT_LOG_DIR="${APP_EVENT_LOG_DIR:-/var/log/aipostex}"
 
 echo "[*] Provisioning ailab-app (shared AI apps)..."
 echo "    LangServe version:      ${LANGSERVE_VERSION}"
@@ -167,6 +176,92 @@ for i in $(seq 1 20); do
     if [ "$i" -eq 20 ]; then
         echo "[!] TGI gateway failed to start"
         journalctl -u tgi-gateway --no-pager -n 20
+    fi
+    sleep 2
+done
+
+# The ai-siem mock (:5601) has been retired in favour of the real Elastic detection
+# stack (ailab-siem, .60). The AI apps append interaction events to
+# ${APP_EVENT_LOG_DIR}/*.jsonl, which Filebeat ships to Elasticsearch; there is no
+# mock SIEM to POST to. Ensure the shared event-log dir exists before the apps start.
+echo "[*] Preparing application event-log dir for Filebeat (${APP_EVENT_LOG_DIR})..."
+install -d -m 1777 "${APP_EVENT_LOG_DIR}"
+
+echo "[*] Installing A2A orchestrator (:8104)..."
+sudo -u appuser mkdir -p /home/appuser/projects/a2a-orchestrator
+if [ -f "$(dirname "$0")/a2a-orchestrator/server.py" ]; then
+    cp "$(dirname "$0")/a2a-orchestrator/server.py" /home/appuser/projects/a2a-orchestrator/server.py
+    chown appuser:appuser /home/appuser/projects/a2a-orchestrator/server.py
+fi
+
+cat > /etc/systemd/system/a2a-orchestrator.service << EOF
+[Unit]
+Description=A2A Orchestrator with unauthenticated agent registry (aipostex-lab)
+After=network.target
+
+[Service]
+User=appuser
+WorkingDirectory=/home/appuser/projects/a2a-orchestrator
+Environment="A2A_ORCH_PORT=8104"
+Environment="PATH=/usr/local/bin:/usr/bin:/bin"
+ExecStart=/usr/bin/python3 server.py
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+systemctl daemon-reload
+systemctl enable a2a-orchestrator
+systemctl restart a2a-orchestrator
+for i in $(seq 1 15); do
+    curl -sf http://localhost:8104/health >/dev/null 2>&1 && { echo "[+] A2A orchestrator is ready"; break; }
+    [ "$i" -eq 15 ] && { echo "[!] A2A orchestrator failed to start"; journalctl -u a2a-orchestrator --no-pager -n 20; }
+    sleep 2
+done
+
+echo "[*] Installing bespoke IT-helpdesk agent (:8110)..."
+sudo -u appuser mkdir -p /home/appuser/projects/helpdesk-agent
+if [ -f "$(dirname "$0")/helpdesk-agent-mock/server.py" ]; then
+    cp "$(dirname "$0")/helpdesk-agent-mock/server.py" /home/appuser/projects/helpdesk-agent/server.py
+    chown appuser:appuser /home/appuser/projects/helpdesk-agent/server.py
+fi
+
+cat > /etc/systemd/system/helpdesk-agent.service << EOF
+[Unit]
+Description=Bespoke IT Helpdesk Agent (aipostex-lab)
+After=network.target
+
+[Service]
+User=appuser
+WorkingDirectory=/home/appuser/projects/helpdesk-agent
+Environment="HELPDESK_AGENT_PORT=8110"
+Environment="HELPDESK_UPSTREAM_URL=${HELPDESK_UPSTREAM_URL}"
+Environment="HELPDESK_UPSTREAM_MODEL=${HELPDESK_UPSTREAM_MODEL}"
+Environment="EVENT_LOG=${APP_EVENT_LOG_DIR}/helpdesk.jsonl"
+Environment="PATH=/usr/local/bin:/usr/bin:/bin"
+ExecStart=/usr/bin/python3 server.py
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+systemctl daemon-reload
+systemctl enable helpdesk-agent
+systemctl restart helpdesk-agent
+
+echo "[*] Waiting for helpdesk agent on :8110..."
+for i in $(seq 1 20); do
+    if curl -sf http://localhost:8110/health >/dev/null 2>&1; then
+        echo "[+] Helpdesk agent is ready"
+        break
+    fi
+    if [ "$i" -eq 20 ]; then
+        echo "[!] Helpdesk agent failed to start"
+        journalctl -u helpdesk-agent --no-pager -n 20
     fi
     sleep 2
 done
