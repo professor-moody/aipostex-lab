@@ -5387,28 +5387,6 @@
   
 
 
-<div class="apx-dc" markdown="0">
-  <span class="apx-dc-txt">✦ See you at DEF&nbsp;CON&nbsp;34 · Red&nbsp;Team&nbsp;Village ✦</span>
-</div>
-<style>
-.apx-dc { text-align: center; margin: .2rem 0 1.4rem; }
-.apx-dc-txt {
-  display: inline-block;
-  font-weight: 800;
-  font-size: clamp(1rem, 3.4vw, 1.7rem);
-  letter-spacing: .02em;
-  background: linear-gradient(90deg,#a855f7,#8b5cf6,#6366f1,#3b82f6,#06b6d4,#3b82f6,#6366f1,#8b5cf6,#a855f7);
-  background-size: 300% auto;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  -webkit-text-fill-color: transparent;
-  animation: apx-dc-shim 7s linear infinite;
-}
-@keyframes apx-dc-shim { to { background-position: 300% center; } }
-@media (prefers-reduced-motion: reduce) { .apx-dc-txt { animation: none; background-position: 50% center; } }
-</style>
-
 <h1 id="aipostex-lab-environment">aipostex Lab Environment<a class="headerlink" href="#aipostex-lab-environment" title="Permanent link">&para;</a></h1>
 <p><strong>A 6-VM Proxmox lab for testing aipostex against realistic shadow AI sprawl.</strong></p>
 <p>The lab spans five target personas: developer workstation, ML platform, data science, shared AI apps, and a Kubernetes node. The current mini lab includes A2A protocol fixtures, a shared callback listener, a post-exploitation validation oracle, and a localhost-gated lateral movement target. Together these expand the service surface to <strong>29 health-checked endpoints</strong> and <strong>170 planted sensitive findings</strong>.</p>
@@ -5473,6 +5451,29 @@ required. It's the fast realism dev loop.</p>
 </span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>bash<span class="w"> </span>lab-scripts/verify-lab.sh
 </span></code></pre></div>
 <p>For the staged automation roadmap, see <a href="deployment/evolution/">Deployment Evolution</a>.</p>
+<div class="apx-dc" markdown="0">
+  <span class="apx-dc-txt">✦ As seen at DEF&nbsp;CON&nbsp;34 · Red&nbsp;Team&nbsp;Village ✦</span>
+</div>
+<style>
+.apx-dc { text-align: center; margin: 2.4rem 0 .4rem; }
+.apx-dc-txt {
+  display: inline-block;
+  font-weight: 700;
+  font-size: clamp(.72rem, 1.7vw, .95rem);
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  background: linear-gradient(90deg,#a855f7,#8b5cf6,#6366f1,#3b82f6,#06b6d4,#3b82f6,#6366f1,#8b5cf6,#a855f7);
+  background-size: 300% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  animation: apx-dc-shim 7s linear infinite;
+  opacity: .9;
+}
+@keyframes apx-dc-shim { to { background-position: 300% center; } }
+@media (prefers-reduced-motion: reduce) { .apx-dc-txt { animation: none; background-position: 50% center; } }
+</style>
 
 
 

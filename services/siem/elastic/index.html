@@ -5392,8 +5392,8 @@ on boot.</p>
 </tbody>
 </table>
 <p>Lab posture: single-node, <strong>security enabled</strong> (required for the Detection Engine) but HTTP/transport
-TLS <strong>off</strong> (isolated subnet — auth over plain HTTP, no certs). Login: <code>elastic</code> /
-<code>_rw*oVdZSeBz5vksgFA-</code>.</p>
+TLS <strong>off</strong> (isolated subnet — auth over plain HTTP, no certs). Login: <code>elastic</code> (password
+set at install via <code>ELASTIC_PASSWORD</code>; see operator notes, not committed).</p>
 <h2 id="what-it-detects">What It Detects<a class="headerlink" href="#what-it-detects" title="Permanent link">&para;</a></h2>
 <ul>
 <li><strong>Endpoint (the tool's real impact):</strong> reverse shells and suspicious process spawns (Auditbeat
@@ -5404,13 +5404,14 @@ TLS <strong>off</strong> (isolated subnet — auth over plain HTTP, no certs). L
   rules.</li>
 </ul>
 <h2 id="using-it">Using It<a class="headerlink" href="#using-it" title="Permanent link">&para;</a></h2>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># Kibana (Elastic Security): http://172.16.50.60:5601  (elastic / _rw*oVdZSeBz5vksgFA-)</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="c1"># What&#39;s landing (from the attack box or proxmox):</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>curl<span class="w"> </span>-s<span class="w"> </span>-u<span class="w"> </span>elastic:_rw*oVdZSeBz5vksgFA-<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">  </span><span class="s1">&#39;http://172.16.50.60:9200/_cat/indices/auditbeat*,filebeat*?v&amp;h=index,docs.count&#39;</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="c1"># Detect/evade loop: run a tool action, then check Elastic for the alert it raised.</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># Kibana (Elastic Security): http://172.16.50.60:5601  (elastic / $ELASTIC_PW — see operator notes)</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="nv">ELASTIC_PW</span><span class="o">=</span><span class="s1">&#39;…&#39;</span><span class="w">   </span><span class="c1"># the elastic password set at install (operator notes)</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="c1"># What&#39;s landing (from the attack box or proxmox):</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>curl<span class="w"> </span>-s<span class="w"> </span>-u<span class="w"> </span><span class="s2">&quot;elastic:</span><span class="nv">$ELASTIC_PW</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">  </span><span class="s1">&#39;http://172.16.50.60:9200/_cat/indices/auditbeat*,filebeat*?v&amp;h=index,docs.count&#39;</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="c1"># Detect/evade loop: run a tool action, then check Elastic for the alert it raised.</span>
 </span></code></pre></div>
 <p>See <a href="../../../attack-scenarios/scenario-16/">Scenario 16</a> (detect &amp; evade, now against real Elastic).</p>
 
