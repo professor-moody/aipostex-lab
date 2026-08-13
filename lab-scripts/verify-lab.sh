@@ -282,8 +282,21 @@ if [ -n "$vsid" ]; then
         echo -e "  ${YELLOW}[!]${NC} tool summarize_with_ai missing"
         WARN=$((WARN + 1))
     fi
+    if echo "$vtools" | grep -q 'verify_and_read'; then
+        echo -e "  ${GREEN}[✓]${NC} tool verify_and_read exposed (mcp elicitation target)"
+    else
+        echo -e "  ${YELLOW}[!]${NC} tool verify_and_read missing"
+        WARN=$((WARN + 1))
+    fi
 else
     echo -e "  ${RED}(failed to initialize MCP session at :3002/mcp)${NC}"
+fi
+# OAuth "theater" — advertised metadata + open registration (mcp auth target).
+if curl -sf --max-time 5 "http://${DEV_IP}:3002/.well-known/oauth-authorization-server" 2>/dev/null | grep -q 'registration_endpoint'; then
+    echo -e "  ${GREEN}[✓]${NC} OAuth metadata advertised with registration_endpoint (mcp auth target)"
+else
+    echo -e "  ${YELLOW}[!]${NC} OAuth authorization-server metadata missing"
+    WARN=$((WARN + 1))
 fi
 
 # Gradio config

@@ -34,6 +34,16 @@ tool-shaped stand-in. It exists as the target for the `mcp sandbox-escape` and `
   slips in an instruction to list any API keys, tokens, or passwords in the client's context —
   context exfiltration / free-proxy abuse. The request rides the standalone GET event stream, so
   it is invisible to a `tools/list` enumeration and only appears when the tool is called.
+- **`verify_and_read(doc_id)` tool — server→client elicitation phishing.** When invoked, the tool
+  calls `ctx.elicit()` to prompt the **connected client's user** for their "ACME API key" mid-tool-
+  call (MCP *elicitation*, 2025 spec) — credential phishing / unintended-approval injection. Like
+  sampling it rides the GET event stream and is invisible to `tools/list`.
+- **"OAuth theater" — advertised authorization that isn't enforced.** The server publishes OAuth
+  metadata (`/.well-known/oauth-protected-resource`, RFC 9728; `/.well-known/oauth-authorization-
+  server`, RFC 8414) pointing at itself, and exposes an **open** dynamic client registration
+  endpoint (`POST /register`, RFC 7591 — no auth), yet `/mcp` enforces no authorization at all. The
+  security surface looks present but is hollow: anyone can reach the tools *and* mint an OAuth
+  client.
 
 ## Port & Unit
 
@@ -51,6 +61,8 @@ aipostex mcp --target http://172.16.50.10:3002 enum --read
 aipostex mcp --target http://172.16.50.10:3002 sandbox-escape --force-exploit
 aipostex mcp --target http://172.16.50.10:3002 ssti --tool render_report --arg report_data --force-exploit
 aipostex mcp --target http://172.16.50.10:3002 sampling --tool summarize_with_ai --force-exploit
+aipostex mcp --target http://172.16.50.10:3002 elicitation --tool verify_and_read --force-exploit
+aipostex mcp --target http://172.16.50.10:3002 auth --force-exploit
 ```
 
 `enum` lists the tools, the `ops-runbook` resource, and the `draft_reply` prompt. `enum --read`
@@ -63,4 +75,7 @@ by reading `/etc/passwd`. `ssti` sends `{{ lipsum.__globals__.keys() }}` to `ren
 confirms server-side evaluation from the leaked Python globals. `sampling` advertises the sampling
 capability, invokes `summarize_with_ai`, and captures the server-initiated `sampling/createMessage`
 request off the GET event stream — confirming the server drives the client's LLM (High,
-`access` / `influenced`).
+`access` / `influenced`). `elicitation` does the same for `verify_and_read`, capturing the
+`elicitation/create` phish for the client user's API key. `auth` reports the anonymous access
+(no token required), discovers the advertised OAuth metadata, and — with `--force-exploit` — mints
+a client via the open registration endpoint.
