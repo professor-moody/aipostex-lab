@@ -5434,6 +5434,16 @@ tool-shaped stand-in. It exists as the target for the <code>mcp sandbox-escape</
   slips in an instruction to list any API keys, tokens, or passwords in the client's context —
   context exfiltration / free-proxy abuse. The request rides the standalone GET event stream, so
   it is invisible to a <code>tools/list</code> enumeration and only appears when the tool is called.</li>
+<li><strong><code>verify_and_read(doc_id)</code> tool — server→client elicitation phishing.</strong> When invoked, the tool
+  calls <code>ctx.elicit()</code> to prompt the <strong>connected client's user</strong> for their "ACME API key" mid-tool-
+  call (MCP <em>elicitation</em>, 2025 spec) — credential phishing / unintended-approval injection. Like
+  sampling it rides the GET event stream and is invisible to <code>tools/list</code>.</li>
+<li><strong>"OAuth theater" — advertised authorization that isn't enforced.</strong> The server publishes OAuth
+  metadata (<code>/.well-known/oauth-protected-resource</code>, RFC 9728; <code>/.well-known/oauth-authorization-
+  server</code>, RFC 8414) pointing at itself, and exposes an <strong>open</strong> dynamic client registration
+  endpoint (<code>POST /register</code>, RFC 7591 — no auth), yet <code>/mcp</code> enforces no authorization at all. The
+  security surface looks present but is hollow: anyone can reach the tools <em>and</em> mint an OAuth
+  client.</li>
 </ul>
 <h2 id="port-unit">Port &amp; Unit<a class="headerlink" href="#port-unit" title="Permanent link">&para;</a></h2>
 <table>
@@ -5464,6 +5474,8 @@ tool-shaped stand-in. It exists as the target for the <code>mcp sandbox-escape</
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>aipostex<span class="w"> </span>mcp<span class="w"> </span>--target<span class="w"> </span>http://172.16.50.10:3002<span class="w"> </span>sandbox-escape<span class="w"> </span>--force-exploit
 </span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>aipostex<span class="w"> </span>mcp<span class="w"> </span>--target<span class="w"> </span>http://172.16.50.10:3002<span class="w"> </span>ssti<span class="w"> </span>--tool<span class="w"> </span>render_report<span class="w"> </span>--arg<span class="w"> </span>report_data<span class="w"> </span>--force-exploit
 </span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>aipostex<span class="w"> </span>mcp<span class="w"> </span>--target<span class="w"> </span>http://172.16.50.10:3002<span class="w"> </span>sampling<span class="w"> </span>--tool<span class="w"> </span>summarize_with_ai<span class="w"> </span>--force-exploit
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>aipostex<span class="w"> </span>mcp<span class="w"> </span>--target<span class="w"> </span>http://172.16.50.10:3002<span class="w"> </span>elicitation<span class="w"> </span>--tool<span class="w"> </span>verify_and_read<span class="w"> </span>--force-exploit
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>aipostex<span class="w"> </span>mcp<span class="w"> </span>--target<span class="w"> </span>http://172.16.50.10:3002<span class="w"> </span>auth<span class="w"> </span>--force-exploit
 </span></code></pre></div>
 <p><code>enum</code> lists the tools, the <code>ops-runbook</code> resource, and the <code>draft_reply</code> prompt. <code>enum --read</code>
 goes further and <strong>retrieves</strong> them: it <code>resources/read</code>s the runbook (read-confirmed, secrets
@@ -5474,7 +5486,10 @@ by reading <code>/etc/passwd</code>. <code>ssti</code> sends <code>{{ lipsum.__g
 confirms server-side evaluation from the leaked Python globals. <code>sampling</code> advertises the sampling
 capability, invokes <code>summarize_with_ai</code>, and captures the server-initiated <code>sampling/createMessage</code>
 request off the GET event stream — confirming the server drives the client's LLM (High,
-<code>access</code> / <code>influenced</code>).</p>
+<code>access</code> / <code>influenced</code>). <code>elicitation</code> does the same for <code>verify_and_read</code>, capturing the
+<code>elicitation/create</code> phish for the client user's API key. <code>auth</code> reports the anonymous access
+(no token required), discovers the advertised OAuth metadata, and — with <code>--force-exploit</code> — mints
+a client via the open registration endpoint.</p>
 
 
 
