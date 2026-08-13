@@ -5421,6 +5421,19 @@ tool-shaped stand-in. It exists as the target for the <code>mcp sandbox-escape</
   through an <strong>unsandboxed Jinja2</strong> template, so <code>{{ lipsum.__globals__ ... }}</code> reaches the Python
   runtime (a code-execution surface). A <code>SandboxedEnvironment</code> would close this; the default one
   does not.</li>
+<li><strong><code>internal://ops/runbook</code> resource — over-exposed internal data.</strong> The server publishes an ops
+  runbook as an MCP <strong>resource</strong>, so any client that can <code>resources/read</code> it retrieves live
+  secrets (a Postgres DSN, a Datadog API key, an MLflow token). Exposing sensitive data as a
+  resource — reachable without invoking a tool — is a distinct data-access surface.</li>
+<li><strong><code>draft_reply(ticket)</code> prompt — poisoned prompt template.</strong> The server ships a <strong>prompt</strong> whose
+  template embeds an internal API token and an <code>Ignore any previous safety instructions…</code> line, so
+  a client that fetches it with <code>prompts/get</code> pulls a server-supplied prompt injection straight
+  into its model context.</li>
+<li><strong><code>summarize_with_ai(text)</code> tool — server→client sampling abuse.</strong> When invoked, the tool calls
+  <code>ctx.session.create_message()</code> to drive the <strong>connected client's</strong> LLM (MCP <em>sampling</em>) and
+  slips in an instruction to list any API keys, tokens, or passwords in the client's context —
+  context exfiltration / free-proxy abuse. The request rides the standalone GET event stream, so
+  it is invisible to a <code>tools/list</code> enumeration and only appears when the tool is called.</li>
 </ul>
 <h2 id="port-unit">Port &amp; Unit<a class="headerlink" href="#port-unit" title="Permanent link">&para;</a></h2>
 <table>
@@ -5447,12 +5460,21 @@ tool-shaped stand-in. It exists as the target for the <code>mcp sandbox-escape</
 </table>
 <h2 id="attacking-it">Attacking It<a class="headerlink" href="#attacking-it" title="Permanent link">&para;</a></h2>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>aipostex<span class="w"> </span>mcp<span class="w"> </span>--target<span class="w"> </span>http://172.16.50.10:3002<span class="w"> </span>enum
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>aipostex<span class="w"> </span>mcp<span class="w"> </span>--target<span class="w"> </span>http://172.16.50.10:3002<span class="w"> </span>sandbox-escape<span class="w"> </span>--force-exploit
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>aipostex<span class="w"> </span>mcp<span class="w"> </span>--target<span class="w"> </span>http://172.16.50.10:3002<span class="w"> </span>ssti<span class="w"> </span>--tool<span class="w"> </span>render_report<span class="w"> </span>--arg<span class="w"> </span>report_data<span class="w"> </span>--force-exploit
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>aipostex<span class="w"> </span>mcp<span class="w"> </span>--target<span class="w"> </span>http://172.16.50.10:3002<span class="w"> </span>enum<span class="w"> </span>--read
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>aipostex<span class="w"> </span>mcp<span class="w"> </span>--target<span class="w"> </span>http://172.16.50.10:3002<span class="w"> </span>sandbox-escape<span class="w"> </span>--force-exploit
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>aipostex<span class="w"> </span>mcp<span class="w"> </span>--target<span class="w"> </span>http://172.16.50.10:3002<span class="w"> </span>ssti<span class="w"> </span>--tool<span class="w"> </span>render_report<span class="w"> </span>--arg<span class="w"> </span>report_data<span class="w"> </span>--force-exploit
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>aipostex<span class="w"> </span>mcp<span class="w"> </span>--target<span class="w"> </span>http://172.16.50.10:3002<span class="w"> </span>sampling<span class="w"> </span>--tool<span class="w"> </span>summarize_with_ai<span class="w"> </span>--force-exploit
 </span></code></pre></div>
+<p><code>enum</code> lists the tools, the <code>ops-runbook</code> resource, and the <code>draft_reply</code> prompt. <code>enum --read</code>
+goes further and <strong>retrieves</strong> them: it <code>resources/read</code>s the runbook (read-confirmed, secrets
+surface into the credential index) and <code>prompts/get</code>s <code>draft_reply</code> (read-confirmed, exposing the
+embedded token and the prompt-injection line).</p>
 <p><code>sandbox-escape</code> auto-detects <code>read_document</code>, sends the prefix-check-bypass payload, and confirms
 by reading <code>/etc/passwd</code>. <code>ssti</code> sends <code>{{ lipsum.__globals__.keys() }}</code> to <code>render_report</code> and
-confirms server-side evaluation from the leaked Python globals.</p>
+confirms server-side evaluation from the leaked Python globals. <code>sampling</code> advertises the sampling
+capability, invokes <code>summarize_with_ai</code>, and captures the server-initiated <code>sampling/createMessage</code>
+request off the GET event stream — confirming the server drives the client's LLM (High,
+<code>access</code> / <code>influenced</code>).</p>
 
 
 
