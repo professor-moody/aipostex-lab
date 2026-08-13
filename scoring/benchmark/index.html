@@ -10,13 +10,13 @@
       
       
       
-        <link rel="canonical" href="https://professor-moody.github.io/aipostex-lab/deployment/automated/">
+        <link rel="canonical" href="https://professor-moody.github.io/aipostex-lab/scoring/benchmark/">
       
       
-        <link rel="prev" href="../base-setup/">
+        <link rel="prev" href="../scoring/">
       
       
-        <link rel="next" href="../aws/">
+        <link rel="next" href="../manifest/">
       
       
         
@@ -27,7 +27,7 @@
     
     
       
-        <title>Automated Deployment - aipostex Lab</title>
+        <title>Precision Benchmark - aipostex Lab</title>
       
     
     
@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#automated-deployment" class="md-skip">
+        <a href="#precision-benchmark" class="md-skip">
           Skip to content
         </a>
       
@@ -112,7 +112,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Automated Deployment
+              Precision Benchmark
             
           </span>
         </div>
@@ -320,13 +320,11 @@
   
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
-        <a href="../deployment-matrix/" class="md-tabs__link">
+      <li class="md-tabs__item">
+        <a href="../../deployment/deployment-matrix/" class="md-tabs__link">
           
   
   
@@ -402,11 +400,13 @@
   
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="../../scoring/verify-lab/" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../verify-lab/" class="md-tabs__link">
           
   
   
@@ -1073,31 +1073,28 @@
       
   
   
-    
   
   
-  
     
     
     
     
-      
-        
-        
       
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" checked>
         
           
-          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
             
   
   
@@ -1115,7 +1112,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_6">
             <span class="md-nav__icon md-icon"></span>
             
@@ -1133,7 +1130,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../deployment-matrix/" class="md-nav__link">
+      <a href="../../deployment/deployment-matrix/" class="md-nav__link">
         
   
   
@@ -1161,7 +1158,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../proxmox-setup/" class="md-nav__link">
+      <a href="../../deployment/proxmox-setup/" class="md-nav__link">
         
   
   
@@ -1189,7 +1186,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../multi-estate/" class="md-nav__link">
+      <a href="../../deployment/multi-estate/" class="md-nav__link">
         
   
   
@@ -1217,7 +1214,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../enterprise-proxmox/" class="md-nav__link">
+      <a href="../../deployment/enterprise-proxmox/" class="md-nav__link">
         
   
   
@@ -1245,7 +1242,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../enterprise-readiness/" class="md-nav__link">
+      <a href="../../deployment/enterprise-readiness/" class="md-nav__link">
         
   
   
@@ -1273,7 +1270,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../base-setup/" class="md-nav__link">
+      <a href="../../deployment/base-setup/" class="md-nav__link">
         
   
   
@@ -1298,37 +1295,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Automated Deployment
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../deployment/automated/" class="md-nav__link">
         
   
   
@@ -1344,70 +1314,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#phases" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Phases
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#expected-service-distribution" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Expected Service Distribution
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#verification-targets" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Verification Targets
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#optional-ansible-wrapper" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Optional Ansible Wrapper
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1420,7 +1326,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../aws/" class="md-nav__link">
+      <a href="../../deployment/aws/" class="md-nav__link">
         
   
   
@@ -1448,7 +1354,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../aws-cost/" class="md-nav__link">
+      <a href="../../deployment/aws-cost/" class="md-nav__link">
         
   
   
@@ -1476,7 +1382,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../manual/" class="md-nav__link">
+      <a href="../../deployment/manual/" class="md-nav__link">
         
   
   
@@ -1504,7 +1410,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../evolution/" class="md-nav__link">
+      <a href="../../deployment/evolution/" class="md-nav__link">
         
   
   
@@ -1532,7 +1438,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../snapshots/" class="md-nav__link">
+      <a href="../../deployment/snapshots/" class="md-nav__link">
         
   
   
@@ -1560,7 +1466,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../hot-patch-single-mock/" class="md-nav__link">
+      <a href="../../deployment/hot-patch-single-mock/" class="md-nav__link">
         
   
   
@@ -1588,7 +1494,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../ludus/" class="md-nav__link">
+      <a href="../../deployment/ludus/" class="md-nav__link">
         
   
   
@@ -1616,7 +1522,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../segmentation/" class="md-nav__link">
+      <a href="../../deployment/segmentation/" class="md-nav__link">
         
   
   
@@ -1644,7 +1550,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../gpu-components/" class="md-nav__link">
+      <a href="../../deployment/gpu-components/" class="md-nav__link">
         
   
   
@@ -1672,7 +1578,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../connectivity/" class="md-nav__link">
+      <a href="../../deployment/connectivity/" class="md-nav__link">
         
   
   
@@ -3463,28 +3369,31 @@
       
   
   
+    
   
   
+  
     
     
     
     
+      
+        
+        
       
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10" checked>
         
           
-        
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_10" >
-        
-          
-          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="">
             
   
   
@@ -3502,7 +3411,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_10">
             <span class="md-nav__icon md-icon"></span>
             
@@ -3520,7 +3429,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../scoring/verify-lab/" class="md-nav__link">
+      <a href="../verify-lab/" class="md-nav__link">
         
   
   
@@ -3548,7 +3457,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../scoring/verify-aipostex/" class="md-nav__link">
+      <a href="../verify-aipostex/" class="md-nav__link">
         
   
   
@@ -3576,7 +3485,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../scoring/scoring/" class="md-nav__link">
+      <a href="../scoring/" class="md-nav__link">
         
   
   
@@ -3601,10 +3510,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../scoring/benchmark/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Precision Benchmark
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -3620,6 +3556,81 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#what-counts-as-a-claim" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What counts as a claim
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#two-kinds-of-verb" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Two kinds of verb
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#results" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Results
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-to-read-these-numbers-honestly" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How to read these numbers honestly
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#extending-it" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Extending it
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -3632,7 +3643,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../scoring/manifest/" class="md-nav__link">
+      <a href="../manifest/" class="md-nav__link">
         
   
   
@@ -3660,7 +3671,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../scoring/rrr/" class="md-nav__link">
+      <a href="../rrr/" class="md-nav__link">
         
   
   
@@ -5415,82 +5426,165 @@
   
 
 
-<h1 id="automated-deployment">Automated Deployment<a class="headerlink" href="#automated-deployment" title="Permanent link">&para;</a></h1>
-<p><code>deploy-all.sh</code> is the canonical deployment path. It takes the 5 target VMs from freshly cloned OS images to a fully provisioned lab in one command.</p>
-<h2 id="phases">Phases<a class="headerlink" href="#phases" title="Permanent link">&para;</a></h2>
+<h1 id="precision-benchmark">Precision Benchmark<a class="headerlink" href="#precision-benchmark" title="Permanent link">&para;</a></h1>
+<p><code>score.py</code> answers <em>"did the tool find the planted data?"</em> — coverage, which is a form of
+recall. It cannot answer the opposite question, because a coverage manifest has no negative
+side:</p>
+<blockquote>
+<p><strong>Does the tool claim success when there is nothing to find?</strong></p>
+</blockquote>
+<p>That is what this benchmark measures. Several lab services run as <strong>pairs</strong>: an exposed
+instance and a hardened twin that enforces authentication. The same verb runs against both.
+On the exposed instance a success claim is correct. On the hardened twin the identical claim
+is a <strong>false positive</strong> — authentication held, so the tool never got in.</p>
+<p>Run it with <code>lab-scripts/scoring/benchmark.py</code>.</p>
+<h2 id="what-counts-as-a-claim">What counts as a claim<a class="headerlink" href="#what-counts-as-a-claim" title="Permanent link">&para;</a></h2>
+<p>The unit of measurement is a <strong>success claim</strong>: any finding whose <code>landed</code> grade is above
+<code>reachable</code> — <code>read-confirmed</code>, <code>influenced</code>, <code>execution-confirmed</code>, or <code>takeover-capable</code>.
+Those grades assert the tool <em>achieved</em> something.</p>
+<p>Findings graded <code>recon</code> / <code>reachable</code> are observations about the target ("the port answered",
+"this model is listed"), not claims of access, and are never scored either way.</p>
 <table>
 <thead>
 <tr>
-<th>Phase</th>
-<th>What it does</th>
+<th></th>
+<th>Success claim present</th>
+<th>No success claim</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>1</td>
-<td>Base OS setup on <code>ailab-dev</code>, <code>ailab-ml</code>, <code>ailab-ds</code>, <code>ailab-app</code>, <code>ailab-k8s</code></td>
+<td><strong>Exposed instance</strong></td>
+<td>TP — real weakness, correctly claimed</td>
+<td>FN — real weakness, missed</td>
 </tr>
 <tr>
-<td>2</td>
-<td>Provision all role services via native systemd installs</td>
-</tr>
-<tr>
-<td>3</td>
-<td>Seed data on the applicable hosts</td>
-</tr>
-<tr>
-<td>4</td>
-<td>Run <code>verify-lab.sh</code></td>
+<td><strong>Hardened twin</strong></td>
+<td><strong>FP — claimed access it never got</strong></td>
+<td>TN — correct restraint</td>
 </tr>
 </tbody>
 </table>
-<h2 id="expected-service-distribution">Expected Service Distribution<a class="headerlink" href="#expected-service-distribution" title="Permanent link">&para;</a></h2>
-<table>
-<thead>
-<tr>
-<th>Host</th>
-<th>Expected running lab services</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>ailab-dev</code></td>
-<td>5</td>
-</tr>
-<tr>
-<td><code>ailab-ml</code></td>
-<td>14</td>
-</tr>
-<tr>
-<td><code>ailab-ds</code></td>
-<td>5</td>
-</tr>
-<tr>
-<td><code>ailab-app</code></td>
-<td>7</td>
-</tr>
-</tbody>
-</table>
-<h2 id="verification-targets">Verification Targets<a class="headerlink" href="#verification-targets" title="Permanent link">&para;</a></h2>
-<p><code>verify-lab.sh</code> now checks:</p>
+<h2 id="two-kinds-of-verb">Two kinds of verb<a class="headerlink" href="#two-kinds-of-verb" title="Permanent link">&para;</a></h2>
+<p>The distinction is load-bearing, and getting it wrong produces a benchmark that lies in the
+opposite direction — accusing the tool of misses it did not make.</p>
 <ul>
-<li>ping + SSH reachability across the 6-VM estate</li>
-<li>service health for every seeded service plus the <code>ailab-siem</code> detection host</li>
-<li>deep validation for seeded data and the app / model-agent surfaces</li>
-<li><strong>62 checks total</strong> (0 failed)</li>
+<li><strong>Access verbs</strong> (<code>k8s secret-read</code>, <code>mlflow runs</code>, <code>litellm config-extract</code>,
+  <code>a2a task-send</code>, <code>k8s rbac-probe</code>) succeed by reading or changing something, so on the
+  exposed side they <em>must</em> produce a claim. Silence there is a genuine false negative. Scored
+  on both sides.</li>
+<li><strong>Enumeration verbs</strong> (<code>k8s enum</code>, <code>litellm enum</code>, <code>mlflow experiments</code>) list what an open
+  service exposes. That is correctly graded <code>reachable</code>, so the exposed side has no claim to
+  make and silence is <em>not</em> a miss. Scored on the hardened side only — an enumeration verb
+  that claims access against an authenticated service is a false positive like any other.</li>
 </ul>
-<p>That gives <strong>62 total checks</strong> when the full deep-validation path is included.</p>
-<h2 id="optional-ansible-wrapper">Optional Ansible Wrapper<a class="headerlink" href="#optional-ansible-wrapper" title="Permanent link">&para;</a></h2>
-<p>If you want inventory-driven orchestration without changing the underlying role scripts:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>bash<span class="w"> </span>lab-scripts/deploy-ansible.sh<span class="w"> </span>--phase<span class="w"> </span>all
-</span></code></pre></div>
-<p>This remains optional. See <a href="../evolution/">Deployment Evolution</a>.</p>
+<p>Which verbs fall into which class was determined by running them and reading the grades they
+emit, not by assumption.</p>
+<h2 id="results">Results<a class="headerlink" href="#results" title="Permanent link">&para;</a></h2>
+<p>Latest run — aipostex <strong>v1.10.0</strong>, 8 cases across 4 modules:</p>
+<table>
+<thead>
+<tr>
+<th>TP</th>
+<th>FP</th>
+<th>FN</th>
+<th>TN</th>
+<th>Precision</th>
+<th>Recall</th>
+<th>FP rate on hardened</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>5</td>
+<td>0</td>
+<td>0</td>
+<td>8</td>
+<td>100.0%</td>
+<td>100.0%</td>
+<td>0.0%</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Module</th>
+<th>TP</th>
+<th>FP</th>
+<th>FN</th>
+<th>TN</th>
+<th>Exposed / hardened pair</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>k8s</td>
+<td>2</td>
+<td>0</td>
+<td>0</td>
+<td>3</td>
+<td>anon-open k3s <code>:6443</code> / 401-enforced k3s <code>:6444</code></td>
+</tr>
+<tr>
+<td>litellm</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>2</td>
+<td>open proxy <code>:4000</code> / key-enforced proxy <code>:4001</code></td>
+</tr>
+<tr>
+<td>mlflow</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>2</td>
+<td>open tracking server / Basic-auth gateway</td>
+</tr>
+<tr>
+<td>a2a</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>unauthenticated agent <code>:8100</code> / auth-enforcing agent <code>:8102</code></td>
+</tr>
+</tbody>
+</table>
+<p>Every access verb claimed correctly against the exposed instance and stayed silent against
+its hardened twin. Across <strong>8 hardened controls the tool made zero false access claims.</strong></p>
+<h2 id="how-to-read-these-numbers-honestly">How to read these numbers honestly<a class="headerlink" href="#how-to-read-these-numbers-honestly" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>The sample is small.</strong> Eight cases over four modules. A 100% figure on eight cases is
+  "nothing broken here", not a general accuracy claim.</li>
+<li><strong>Coverage is partial by construction.</strong> Only modules with a hardened twin can be measured
+  this way — 4 of the tool's ~20. These numbers describe those modules and are <em>not</em>
+  extrapolated to the rest.</li>
+<li><strong>A case counts a verb, not a finding.</strong> A verb emitting twenty correct claims counts once,
+  exactly like one emitting a single claim.</li>
+<li><strong>Recall here is narrow.</strong> It is measured against the paired access cases only.
+  <code>score.py</code> remains the broader coverage measure against the planted-data manifest.</li>
+</ul>
+<p>The benchmark is a <strong>regression gate</strong>, and its value is in the run where a number moves. The
+classification logic is unit-tested (<code>tests/test_benchmark.py</code>) precisely so a false positive
+would be caught rather than silently scored as a pass; <code>benchmark.py</code> exits non-zero if any
+FP appears.</p>
+<h2 id="extending-it">Extending it<a class="headerlink" href="#extending-it" title="Permanent link">&para;</a></h2>
+<p>Add a case to <code>CASES</code> in <code>lab-scripts/scoring/benchmark.py</code>. A case needs an exposed target, a
+hardened twin that genuinely enforces auth, and an honest <code>expect_claim_on_vulnerable</code> — set
+it by <em>running</em> the verb and reading the grades it emits, not by assuming what it should do.</p>
+<p>The most useful way to widen this benchmark is to add hardened twins for modules that lack
+one, since every new pair converts a module from unmeasurable to measured.</p>
 
 
 
 
 
 
+
+  
+  
 
 
 
