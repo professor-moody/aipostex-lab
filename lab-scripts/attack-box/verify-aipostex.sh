@@ -874,6 +874,20 @@ prepare_active_artifacts() {
         "$AIPOSTEX" mlflow --target "$TARGET_ML:5000" request POST /api/2.0/mlflow/experiments/search \
         --body '{"max_results": 1}' --force-exploit --format json
 
+    # MCP protocol surfaces on the vulnerable server (:3002). --tool keeps each probe
+    # to a single invocation; a bare run would probe every tool at ~8s apiece.
+    run_capture "mcp-roots" "$TMPDIR/mcp-roots.json" "$TMPDIR/mcp-roots.stderr" \
+        "$AIPOSTEX" mcp --target "$TARGET_DEV:3002" roots --tool index_workspace --force-exploit --format json
+
+    run_capture "mcp-complete" "$TMPDIR/mcp-complete.json" "$TMPDIR/mcp-complete.stderr" \
+        "$AIPOSTEX" mcp --target "$TARGET_DEV:3002" complete --format json
+
+    run_capture "mcp-logging" "$TMPDIR/mcp-logging.json" "$TMPDIR/mcp-logging.stderr" \
+        "$AIPOSTEX" mcp --target "$TARGET_DEV:3002" logging --tool lookup_ticket --force-exploit --format json
+
+    run_capture "mcp-subscribe" "$TMPDIR/mcp-subscribe.json" "$TMPDIR/mcp-subscribe.stderr" \
+        "$AIPOSTEX" mcp --target "$TARGET_DEV:3002" subscribe --uri "internal://ops/runbook" --force-exploit --format json
+
     run_capture "gradio-queue-probe" "$TMPDIR/gradio-queue-probe.json" "$TMPDIR/gradio-queue-probe.stderr" \
         "$AIPOSTEX" gradio --target "$TARGET_DEV:7860" queue-probe \
         --api-name predict_text --input-json '["lab-verify"]' --force-exploit --format json
@@ -1296,12 +1310,10 @@ run_operator_layer() {
     if assert_artifact_ok "mlflow-enum" "$TMPDIR/mlflow-enum.json"; then
         assert_jq "mlflow enum reports registry reachability" '.findings[]? | select(.metadata.registry_reachable == true)' "$TMPDIR/mlflow-enum.json"
     fi
-    if assert_artifact_ok "request-mlflow-search" "$TMPDIR/request-mlflow-search.json"; then
-        assert_jq "per-module request returns findings" '.findings[]?' "$TMPDIR/request-mlflow-search.json"
-        assert_jq "per-module request preserves module and response status" \
-            '.findings[]? | select(.metadata.module == "mlflow" and .metadata.action == "request" and .metadata.response_status == 200 and .metadata.stage == "impact" and .metadata.landed == "influenced" and .metadata.mutating == true)' \
-            "$TMPDIR/request-mlflow-search.json"
-    fi
+    # NOTE: the per-module `request` assertions live in run_active_layer — the POST
+    # is --force-exploit gated, so prepare_active_artifacts (not the read-only
+    # preparer this layer uses) produces the artifact, and the active layer runs
+    # after this one.
     if assert_artifact_ok "mlflow-experiments" "$TMPDIR/mlflow-experiments.json"; then
         assert_jq "mlflow experiments returns findings" '.findings[]?' "$TMPDIR/mlflow-experiments.json"
         assert_regex "mlflow experiments lists churn experiment" 'churn' "$TMPDIR/mlflow-experiments.json"
@@ -1709,6 +1721,46 @@ run_active_layer() {
         assert_jq "ray beacon lands as own/execution-confirmed" \
             '.findings[]? | select(.metadata.action == "beacon" and .metadata.stage == "own" and .metadata.landed == "execution-confirmed")' \
             "$TMPDIR/ray-beacon.json"
+    fi
+    # ── MCP protocol surfaces (:3002 vulnerable server) ──
+    if assert_artifact_ok "mcp-roots" "$TMPDIR/mcp-roots.json"; then
+        assert_jq "mcp roots captures a server-initiated roots/list" \
+            '.findings[]? | select(.metadata.action == "roots" and .metadata.tool == "index_workspace" and .metadata.stage == "access" and .metadata.landed == "influenced")' \
+            "$TMPDIR/mcp-roots.json"
+        assert_contains "mcp roots evidence carries the roots/list request" "roots/list" "$TMPDIR/mcp-roots.json"
+    fi
+    if assert_artifact_ok "mcp-complete" "$TMPDIR/mcp-complete.json"; then
+        assert_jq "mcp complete discloses values read-confirmed" \
+            '.findings[]? | select(.metadata.action == "complete" and .metadata.stage == "access" and .metadata.landed == "read-confirmed")' \
+            "$TMPDIR/mcp-complete.json"
+        assert_contains "mcp complete enumerates internal account ids" "acct-4021" "$TMPDIR/mcp-complete.json"
+        assert_contains "mcp complete enumerates internal ticket ids" "TCK-9001" "$TMPDIR/mcp-complete.json"
+    fi
+    if assert_artifact_ok "mcp-logging" "$TMPDIR/mcp-logging.json"; then
+        assert_jq "mcp logging records the accepted level change" \
+            '.findings[]? | select(.metadata.action == "logging" and .metadata.log_level == "debug" and .metadata.landed == "influenced")' \
+            "$TMPDIR/mcp-logging.json"
+        assert_jq "mcp logging captures a pushed log notification" \
+            '.findings[]? | select(.metadata.action == "logging" and .metadata.landed == "read-confirmed")' \
+            "$TMPDIR/mcp-logging.json"
+        assert_contains "mcp logging leaks the service token in evidence" "acme-svc-tok-5f2b91d4" "$TMPDIR/mcp-logging.json"
+    fi
+    if assert_artifact_ok "mcp-subscribe" "$TMPDIR/mcp-subscribe.json"; then
+        assert_jq "mcp subscribe records an accepted subscription" \
+            '.findings[]? | select(.metadata.action == "subscribe" and .metadata.stage == "access" and .metadata.landed == "influenced")' \
+            "$TMPDIR/mcp-subscribe.json"
+        assert_jq "mcp subscribe does not overclaim a pushed update" \
+            '[.findings[]? | select(.metadata.action == "subscribe" and .metadata.landed == "read-confirmed")] | length == 0' \
+            "$TMPDIR/mcp-subscribe.json"
+    fi
+
+    # Per-module `request`: the POST is --force-exploit gated, so its artifact comes
+    # from prepare_active_artifacts and must be asserted here, not in the operator layer.
+    if assert_artifact_ok "request-mlflow-search" "$TMPDIR/request-mlflow-search.json"; then
+        assert_jq "per-module request returns findings" '.findings[]?' "$TMPDIR/request-mlflow-search.json"
+        assert_jq "per-module request preserves module and response status" \
+            '.findings[]? | select(.metadata.module == "mlflow" and .metadata.action == "request" and .metadata.response_status == 200 and .metadata.stage == "impact" and .metadata.landed == "influenced" and .metadata.mutating == true)' \
+            "$TMPDIR/request-mlflow-search.json"
     fi
     if assert_artifact_ok "mlflow-tamper-proof" "$TMPDIR/mlflow-tamper-proof.json"; then
         assert_jq "mlflow tamper-proof returns findings" '.findings[]?' "$TMPDIR/mlflow-tamper-proof.json"

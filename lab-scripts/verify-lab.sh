@@ -288,6 +288,24 @@ if [ -n "$vsid" ]; then
         echo -e "  ${YELLOW}[!]${NC} tool verify_and_read missing"
         WARN=$((WARN + 1))
     fi
+    if echo "$vtools" | grep -q 'index_workspace' && echo "$vtools" | grep -q 'lookup_ticket'; then
+        echo -e "  ${GREEN}[✓]${NC} tools index_workspace + lookup_ticket exposed (mcp roots / logging targets)"
+    else
+        echo -e "  ${YELLOW}[!]${NC} tool index_workspace or lookup_ticket missing"
+        WARN=$((WARN + 1))
+    fi
+    # Resource template (resources/templates/list) — the mcp complete target.
+    vtmpl=$(curl -sf --max-time 6 -X POST "http://${DEV_IP}:3002/mcp" \
+        -H "Content-Type: application/json" -H "Accept: application/json, text/event-stream" \
+        -H "Mcp-Session-Id: $vsid" \
+        -d '{"jsonrpc":"2.0","id":6,"method":"resources/templates/list"}' 2>/dev/null \
+        | grep '^data:' | sed 's/^data: *//' | jq -r '.result.resourceTemplates[]?.uriTemplate' 2>/dev/null)
+    if echo "$vtmpl" | grep -q 'records://customers'; then
+        echo -e "  ${GREEN}[✓]${NC} resource template records://customers/{account_id} exposed (mcp complete target)"
+    else
+        echo -e "  ${YELLOW}[!]${NC} resource template records://customers missing"
+        WARN=$((WARN + 1))
+    fi
 else
     echo -e "  ${RED}(failed to initialize MCP session at :3002/mcp)${NC}"
 fi
