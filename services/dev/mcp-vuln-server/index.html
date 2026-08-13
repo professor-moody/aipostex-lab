@@ -5438,6 +5438,18 @@ tool-shaped stand-in. It exists as the target for the <code>mcp sandbox-escape</
   calls <code>ctx.elicit()</code> to prompt the <strong>connected client's user</strong> for their "ACME API key" mid-tool-
   call (MCP <em>elicitation</em>, 2025 spec) — credential phishing / unintended-approval injection. Like
   sampling it rides the GET event stream and is invisible to <code>tools/list</code>.</li>
+<li><strong><code>index_workspace()</code> tool — server→client roots harvesting.</strong> Calls
+  <code>ctx.session.list_roots()</code> to make the <strong>connected client</strong> disclose its local filesystem roots —
+  reconnaissance of the client machine, invisible to <code>tools/list</code>.</li>
+<li><strong>Completion-based enumeration.</strong> A <code>@mcp.completion()</code> handler completes <code>account_id</code> and
+  <code>ticket</code> arguments, disclosing internal identifiers (<code>acct-4021</code>, <code>TCK-9001</code>, …) that <strong>no</strong>
+  <code>resources/list</code> or <code>prompts/list</code> call exposes. The <code>records://customers/{account_id}</code> resource
+  <strong>template</strong> is likewise only visible through <code>resources/templates/list</code>.</li>
+<li><strong><code>lookup_ticket(ticket_id)</code> tool + open <code>logging/setLevel</code> — log harvesting.</strong> Any client can
+  raise the server's verbosity (handler registered on the SDK's low-level server, no auth), after
+  which the tool's debug log streams the backend URL and its <code>service_token</code> to that client.</li>
+<li><strong>Open <code>resources/subscribe</code> — standing push channel.</strong> Subscriptions are accepted from anyone
+  with no authorization check, giving durable notification access to internal resource data.</li>
 <li><strong>"OAuth theater" — advertised authorization that isn't enforced.</strong> The server publishes OAuth
   metadata (<code>/.well-known/oauth-protected-resource</code>, RFC 9728; <code>/.well-known/oauth-authorization-
   server</code>, RFC 8414) pointing at itself, and exposes an <strong>open</strong> dynamic client registration
@@ -5476,6 +5488,10 @@ tool-shaped stand-in. It exists as the target for the <code>mcp sandbox-escape</
 </span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>aipostex<span class="w"> </span>mcp<span class="w"> </span>--target<span class="w"> </span>http://172.16.50.10:3002<span class="w"> </span>sampling<span class="w"> </span>--tool<span class="w"> </span>summarize_with_ai<span class="w"> </span>--force-exploit
 </span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>aipostex<span class="w"> </span>mcp<span class="w"> </span>--target<span class="w"> </span>http://172.16.50.10:3002<span class="w"> </span>elicitation<span class="w"> </span>--tool<span class="w"> </span>verify_and_read<span class="w"> </span>--force-exploit
 </span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>aipostex<span class="w"> </span>mcp<span class="w"> </span>--target<span class="w"> </span>http://172.16.50.10:3002<span class="w"> </span>auth<span class="w"> </span>--force-exploit
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>aipostex<span class="w"> </span>mcp<span class="w"> </span>--target<span class="w"> </span>http://172.16.50.10:3002<span class="w"> </span>roots<span class="w"> </span>--tool<span class="w"> </span>index_workspace<span class="w"> </span>--force-exploit
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>aipostex<span class="w"> </span>mcp<span class="w"> </span>--target<span class="w"> </span>http://172.16.50.10:3002<span class="w"> </span><span class="nb">complete</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>aipostex<span class="w"> </span>mcp<span class="w"> </span>--target<span class="w"> </span>http://172.16.50.10:3002<span class="w"> </span>logging<span class="w"> </span>--tool<span class="w"> </span>lookup_ticket<span class="w"> </span>--force-exploit
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>aipostex<span class="w"> </span>mcp<span class="w"> </span>--target<span class="w"> </span>http://172.16.50.10:3002<span class="w"> </span>subscribe<span class="w"> </span>--force-exploit
 </span></code></pre></div>
 <p><code>enum</code> lists the tools, the <code>ops-runbook</code> resource, and the <code>draft_reply</code> prompt. <code>enum --read</code>
 goes further and <strong>retrieves</strong> them: it <code>resources/read</code>s the runbook (read-confirmed, secrets
@@ -5489,7 +5505,10 @@ request off the GET event stream — confirming the server drives the client's L
 <code>access</code> / <code>influenced</code>). <code>elicitation</code> does the same for <code>verify_and_read</code>, capturing the
 <code>elicitation/create</code> phish for the client user's API key. <code>auth</code> reports the anonymous access
 (no token required), discovers the advertised OAuth metadata, and — with <code>--force-exploit</code> — mints
-a client via the open registration endpoint.</p>
+a client via the open registration endpoint. <code>roots</code> captures the server-initiated <code>roots/list</code>
+from <code>index_workspace</code>; <code>complete</code> enumerates the internal ticket and account identifiers;
+<code>logging</code> raises the level and captures the debug line carrying the service token; <code>subscribe</code>
+establishes a push channel on the ops runbook.</p>
 
 
 
