@@ -8,9 +8,9 @@ title: VM Map
 
 | VM Name | VM ID | IP Address | OS | Role | Ports |
 |---|---|---|---|---|---|
-| `ailab-dev` | 210 | `172.16.50.10` | Ubuntu 24.04 | Developer workstation | 11434, 8888, 3000, 3002, 7860, 6274 |
+| `ailab-dev` | 210 | `172.16.50.10` | Ubuntu 24.04 | Developer workstation | 11434, 8888, 8890, 3000, 3002, 3003, 7860, 7861, 6274 |
 | `ailab-ml` | 220 | `172.16.50.20` | Ubuntu 24.04 | ML platform | 8000, 5000, 4000, 4001, 8265, 8181, 8182, 8081, 8082, 8500, 3333, 8444, 9000, 8501 |
-| `ailab-ds` | 230 | `172.16.50.30` | Ubuntu 24.04 | Data science | 11434, 8889, 8080, 6333, 5000, 5432, 8091 |
+| `ailab-ds` | 230 | `172.16.50.30` | Ubuntu 24.04 | Data science | 11434, 8889, 8080, 6333, 6335, 5000, 5432, 8091 |
 | `ailab-app` | 250 | `172.16.50.40` | Ubuntu 24.04 | Shared AI apps | 8090, 8104, 8110-8113, 8501, 8100-8103, 8180, 8765 |
 | `ailab-k8s` | 260 | `172.16.50.50` | Ubuntu 24.04 | Kubernetes node | 6443 (vuln), 6444 (secure) |
 | `ailab-attack` | 240 | `172.16.50.99` | Debian 12 | Attack box | SSH |
@@ -24,6 +24,9 @@ title: VM Map
 - `8888` Jupyter Lab
 - `3000` MCP Server
 - `3002` Vulnerable MCP server (sandbox-escape + SSTI targets)
+- `3003` MCP server, bearer-enforced (honesty control — not a target)
+- `8890` Jupyter Lab, token-enforced (honesty control — not a target)
+- `7861` Gradio, login-enforced (honesty control — not a target)
 - `7860` Gradio
 - `6274` MCP Inspector
 

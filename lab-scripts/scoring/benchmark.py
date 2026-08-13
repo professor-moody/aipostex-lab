@@ -110,8 +110,105 @@ CASES = [
         "hardened": {"target": "http://172.16.50.40:8102", "label": "auth-enforcing agent"},
         "expect_claim_on_vulnerable": True,
     },
+    {
+        "id": "jupyter-notebooks",
+        "module": "jupyter",
+        "verb": ["jupyter", "notebooks", "--mine-secrets"],
+        "vulnerable": {"target": "http://172.16.50.10:8888", "label": "token-less Jupyter"},
+        "hardened": {"target": "http://172.16.50.10:8890", "label": "token-enforced Jupyter"},
+        "expect_claim_on_vulnerable": True,
+    },
+    {
+        "id": "mcp-env-extract",
+        "module": "mcp",
+        "verb": ["mcp", "env-extract"],
+        "vulnerable": {"target": "http://172.16.50.10:3000", "label": "open MCP server"},
+        "hardened": {"target": "http://172.16.50.10:3003", "label": "bearer-enforced MCP server"},
+        "expect_claim_on_vulnerable": True,
+    },
+    {
+        "id": "ray-jobs",
+        "module": "ray",
+        "verb": ["ray", "jobs"],
+        "vulnerable": {"target": "http://172.16.50.20:8265", "label": "open Ray dashboard"},
+        # Ray ships no authentication of its own, so its control is the
+        # bearer-enforced MCP endpoint: a service that answers HTTP and refuses
+        # unauthenticated callers. It checks the same thing — that the module does
+        # not claim access against a host that rejected it.
+        "hardened": {"target": "http://172.16.50.10:3003", "label": "auth-enforcing HTTP endpoint"},
+        "expect_claim_on_vulnerable": True,
+    },
+    {
+        "id": "ollama-prompts",
+        "module": "ollama",
+        "verb": ["ollama", "prompts"],
+        "vulnerable": {"target": "http://172.16.50.10:11434", "label": "open Ollama"},
+        # As with Ray, Ollama has no native auth; the control is a service that
+        # refuses unauthenticated callers.
+        "hardened": {"target": "http://172.16.50.10:3003", "label": "auth-enforcing HTTP endpoint"},
+        "expect_claim_on_vulnerable": True,
+    },
+    {
+        "id": "mcp-enum",
+        "module": "mcp",
+        "verb": ["mcp", "enum"],
+        "vulnerable": {"target": "http://172.16.50.10:3000", "label": "open MCP server"},
+        "hardened": {"target": "http://172.16.50.10:3003", "label": "bearer-enforced MCP server"},
+        "expect_claim_on_vulnerable": False,
+    },
+    {
+        "id": "jupyter-kernels",
+        "module": "jupyter",
+        "verb": ["jupyter", "kernels"],
+        "vulnerable": {"target": "http://172.16.50.10:8888", "label": "token-less Jupyter"},
+        "hardened": {"target": "http://172.16.50.10:8890", "label": "token-enforced Jupyter"},
+        "expect_claim_on_vulnerable": False,
+    },
+    {
+        "id": "vectordb-search-sensitive",
+        "module": "vectordb",
+        "verb": ["vectordb", "--type", "qdrant", "search-sensitive"],
+        "vulnerable": {"target": "http://172.16.50.30:6333", "label": "open Qdrant"},
+        "hardened": {"target": "http://172.16.50.30:6335", "label": "API-key-enforced Qdrant"},
+        "expect_claim_on_vulnerable": True,
+    },
+    {
+        "id": "gradio-predict",
+        "module": "gradio",
+        "verb": ["gradio", "predict", "--api-name", "predict_text", "--input-json", '["benchmark probe"]'],
+        "vulnerable": {"target": "http://172.16.50.10:7860", "label": "open Gradio app"},
+        "hardened": {"target": "http://172.16.50.10:7861", "label": "login-enforced Gradio app"},
+        "expect_claim_on_vulnerable": True,
+    },
+    {
+        "id": "openai-compat-prompt-extract",
+        "module": "openai-compat",
+        "verb": ["openai-compat", "prompt-extract"],
+        "vulnerable": {"target": "http://172.16.50.20:8182", "label": "open OpenAI-compatible endpoint"},
+        # Both sides speak the OpenAI-compatible API; the hardened side is the
+        # key-enforced LiteLLM proxy, so this is a same-protocol pair even though
+        # the two are different products.
+        "hardened": {"target": "http://172.16.50.20:4001", "label": "key-enforced OpenAI-compatible proxy"},
+        "expect_claim_on_vulnerable": True,
+    },
     # ── enumeration verbs: hardened side scored; exposed side must stay at
     #    `reachable`, which is the honest grade for "the service answered" ──
+    {
+        "id": "vectordb-enum",
+        "module": "vectordb",
+        "verb": ["vectordb", "--type", "qdrant", "enum"],
+        "vulnerable": {"target": "http://172.16.50.30:6333", "label": "open Qdrant"},
+        "hardened": {"target": "http://172.16.50.30:6335", "label": "API-key-enforced Qdrant"},
+        "expect_claim_on_vulnerable": False,
+    },
+    {
+        "id": "gradio-enum",
+        "module": "gradio",
+        "verb": ["gradio", "enum"],
+        "vulnerable": {"target": "http://172.16.50.10:7860", "label": "open Gradio app"},
+        "hardened": {"target": "http://172.16.50.10:7861", "label": "login-enforced Gradio app"},
+        "expect_claim_on_vulnerable": False,
+    },
     {
         "id": "k8s-enum",
         "module": "k8s",

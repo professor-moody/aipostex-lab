@@ -50,11 +50,11 @@ emit, not by assumption.
 
 ## Results
 
-Latest run — aipostex **v1.10.0**, 8 cases across 4 modules:
+Latest run — aipostex **v1.10.0**, 19 cases across 11 modules:
 
 | TP | FP | FN | TN | Precision | Recall | FP rate on hardened |
 |---|---|---|---|---|---|---|
-| 5 | 0 | 0 | 8 | 100.0% | 100.0% | 0.0% |
+| 12 | 0 | 0 | 19 | 100.0% | 100.0% | 0.0% |
 
 | Module | TP | FP | FN | TN | Exposed / hardened pair |
 |---|---|---|---|---|---|
@@ -62,16 +62,52 @@ Latest run — aipostex **v1.10.0**, 8 cases across 4 modules:
 | litellm | 1 | 0 | 0 | 2 | open proxy `:4000` / key-enforced proxy `:4001` |
 | mlflow | 1 | 0 | 0 | 2 | open tracking server / Basic-auth gateway |
 | a2a | 1 | 0 | 0 | 1 | unauthenticated agent `:8100` / auth-enforcing agent `:8102` |
+| jupyter | 1 | 0 | 0 | 2 | token-less Jupyter `:8888` / token-enforced Jupyter `:8890` |
+| mcp | 1 | 0 | 0 | 2 | open MCP server `:3000` / bearer-enforced MCP `:3003` |
+| ray | 1 | 0 | 0 | 1 | open Ray dashboard `:8265` / auth-enforcing endpoint |
+| ollama | 1 | 0 | 0 | 1 | open Ollama `:11434` / auth-enforcing endpoint |
+| vectordb | 1 | 0 | 0 | 2 | open Qdrant `:6333` / API-key-enforced Qdrant `:6335` |
+| gradio | 1 | 0 | 0 | 2 | open Gradio `:7860` / login-enforced Gradio `:7861` |
+| openai-compat | 1 | 0 | 0 | 1 | open OpenAI-compatible `:8182` / key-enforced proxy `:4001` |
 
 Every access verb claimed correctly against the exposed instance and stayed silent against
-its hardened twin. Across **8 hardened controls the tool made zero false access claims.**
+its hardened twin. Across **19 hardened controls the tool made zero false access claims.**
+
+### About the Ray and Ollama controls
+
+Ray's dashboard and Ollama's API ship with no authentication at all, so neither has a
+"hardened twin" in the sense the other pairs do. Their control is instead a service that
+answers HTTP and refuses unauthenticated callers — the bearer-enforced MCP endpoint. That
+tests the property the benchmark cares about (does the module claim access against a host
+that rejected it?) but it is a weaker pairing than the others, where the twin runs the same
+product with its own auth turned on. Read those two rows accordingly.
+
+## The controls
+
+Four controls exist purely so this benchmark has a negative side. They are **not targets**,
+and each uses the real product's own mechanism rather than a proxy in front:
+
+| Control | Port | Mechanism | Refuses with |
+|---|---|---|---|
+| `jupyter-secure.service` | `8890` | JupyterLab's own token protection, switched back on | `403` |
+| `acme-mcp-secure.service` | `3003` | The MCP SDK stack + bearer middleware, per the MCP authorization spec | `401` + `WWW-Authenticate` |
+| `gradio-secure.service` | `7861` | Gradio's own `auth=` login | `401` |
+| `qdrant-secure.service` | `6335` | Qdrant's own `service.api_key` | `401` |
+
+The `openai-compat` pair needed no new service: the key-enforced LiteLLM proxy on `:4001`
+already refuses unauthenticated callers and speaks the same OpenAI-compatible API as the
+exposed side.
+
+`verify-lab.sh` asserts both still refuse unauthenticated callers, and counts a failure if
+either stops. A control that quietly stopped enforcing would make this benchmark report a
+clean run it had not earned.
 
 ## How to read these numbers honestly
 
-- **The sample is small.** Eight cases over four modules. A 100% figure on eight cases is
-  "nothing broken here", not a general accuracy claim.
-- **Coverage is partial by construction.** Only modules with a hardened twin can be measured
-  this way — 4 of the tool's ~20. These numbers describe those modules and are *not*
+- **The sample is small.** Nineteen cases over eleven modules. A 100% figure on nineteen
+  cases is "nothing broken here", not a general accuracy claim.
+- **Coverage is partial by construction.** Only modules with a hardened control can be measured
+  this way — 11 of the tool's ~20. These numbers describe those modules and are *not*
   extrapolated to the rest.
 - **A case counts a verb, not a finding.** A verb emitting twenty correct claims counts once,
   exactly like one emitting a single claim.

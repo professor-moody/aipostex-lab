@@ -108,6 +108,7 @@ nav:
       - Vulnerable MCP Server: services/dev/mcp-vuln-server.md
       - Gradio: services/dev/gradio.md
       - MCP Inspector: services/dev/mcp-inspector.md
+      - Honesty Controls (benchmark): services/dev/honesty-controls.md
     - ailab-ml (ML Platform):
       - ChromaDB: services/ml/chromadb.md
       - HF TGI Mock: services/ml/hf-tgi.md

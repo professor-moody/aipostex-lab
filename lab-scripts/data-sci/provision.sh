@@ -191,6 +191,43 @@ service:
   grpc_port: 6334
 YAML
 
+# ── Qdrant (API-key enforced) — honesty control, NOT a target ────────────────
+# A second Qdrant instance with Qdrant's own service.api_key set, so requests
+# without the api-key header are refused. It exists so the precision benchmark
+# can check that aipostex claims nothing against a vector database it never got
+# into. Separate storage so it shares nothing with the open instance.
+mkdir -p /opt/qdrant-secure/storage /opt/qdrant-secure/snapshots
+cat > /opt/qdrant-secure/config.yaml << 'YAML'
+storage:
+  storage_path: /opt/qdrant-secure/storage
+  snapshots_path: /opt/qdrant-secure/snapshots
+service:
+  host: 0.0.0.0
+  http_port: 6335
+  grpc_port: 6336
+  api_key: acme-qdrant-4b8e21fa
+YAML
+
+cat > /etc/systemd/system/qdrant-secure.service << 'EOF'
+[Unit]
+Description=Qdrant (API-key enforced honesty control)
+After=network.target
+
+[Service]
+WorkingDirectory=/opt/qdrant-secure
+ExecStart=/usr/local/bin/qdrant --config-path /opt/qdrant-secure/config.yaml
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+systemctl daemon-reload
+systemctl enable qdrant-secure
+systemctl restart qdrant-secure
+echo "[+] Qdrant honesty control installed (port 6335, API key REQUIRED)"
+
 cat > /etc/systemd/system/qdrant.service << 'EOF'
 [Unit]
 Description=Qdrant Vector Database

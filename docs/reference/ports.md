@@ -14,6 +14,9 @@ Complete list of every endpoint in the lab.
 | 11434 | Ollama | `ollama.service` |
 | 8888 | Jupyter Lab | `jupyter.service` |
 | 3002 | Vulnerable MCP server (sandbox-escape + SSTI targets) | `acme-doc-tools.service` |
+| 3003 | MCP server — **bearer-enforced** (401 honesty control, not a target) | `acme-mcp-secure.service` |
+| 8890 | Jupyter Lab — **token-enforced** (403 honesty control, not a target) | `jupyter-secure.service` |
+| 7861 | Gradio — **login-enforced** (401 honesty control, not a target) | `gradio-secure.service` |
 | 3000 | MCP Server (real MCP SDK — FastMCP, Streamable HTTP at `/mcp`) | `acme-mcp.service` |
 | 7860 | Gradio | `gradio-chat.service` |
 | 6274 | MCP Inspector | `mcp-inspector.service` |
@@ -52,6 +55,7 @@ real MLflow registry for `aipostex.hook.url` model-version tags and delivers hoo
 | 5000 | MLflow auth gateway (Basic-gated — credential-chain hop 2) | `mlflow-auth-gateway.service` |
 | 8080 | Weaviate | `weaviate.service` |
 | 6333 | Qdrant | `qdrant.service` |
+| 6335 | Qdrant — **API-key enforced** (401 honesty control, not a target) | `qdrant-secure.service` |
 | 5432 | PostgreSQL/pgvector | `postgresql.service` |
 | 8091 | Black-box RAG app (knowledge-base chat + document upload) | `rag-app.service` |
 

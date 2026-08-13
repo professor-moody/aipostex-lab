@@ -71,7 +71,7 @@ AIPOSTEX=""
 
 usage() {
     cat <<'EOF'
-Usage: bash verify-aipostex.sh [--layer preflight|smoke|operator|active|contract|sessions|destructive|all]
+Usage: bash verify-aipostex.sh [--layer preflight|smoke|operator|active|contract|sessions|benchmark|destructive|all]
 EOF
 }
 
@@ -104,7 +104,7 @@ parse_args() {
     done
 
     case "$LAYER" in
-        preflight|smoke|operator|active|post-ex|sessions|contract|destructive|all) ;;
+        preflight|smoke|operator|active|post-ex|sessions|contract|benchmark|destructive|all) ;;
         *)
             echo "[!] Invalid layer: $LAYER" >&2
             usage >&2
@@ -2645,6 +2645,72 @@ run_contract_layer() {
 # DESTRUCTIVE — snapshot-gated mutation tests
 # ══════════════════════════════════════════════════════════════
 
+# run_benchmark_layer — measure precision against the hardened controls.
+#
+# The rest of this script asks whether a verb behaves correctly against a service
+# built to be exploitable. This asks the inverse: does the tool claim success
+# against services that refused it? Without this, the benchmark only ever runs when
+# somebody remembers to type it, and a regression in restraint could ship unnoticed.
+#
+# The assertions are deliberately three-sided. Checking only "no false positives"
+# would pass vacuously if every case errored — a dead lab produces no claims at all,
+# which looks identical to perfect restraint. So a real true-positive count and the
+# absence of misses are required too.
+run_benchmark_layer() {
+    section "benchmark"
+
+    local bench="${SCRIPT_DIR}/../scoring/benchmark.py"
+    if [[ ! -f "$bench" ]]; then
+        fail "benchmark.py not found at $bench"
+        return
+    fi
+    if ! command -v python3 >/dev/null 2>&1; then
+        skip "python3 unavailable; precision benchmark not run"
+        return
+    fi
+
+    local report="$TMPDIR/benchmark.json"
+    python3 "$bench" --binary "$AIPOSTEX" \
+        --output-dir "$TMPDIR/benchmark-runs" \
+        --json "$report" >"$TMPDIR/benchmark.stdout" 2>"$TMPDIR/benchmark.stderr" || true
+
+    if [[ ! -s "$report" ]]; then
+        fail "precision benchmark produced no report — $(head -2 "$TMPDIR/benchmark.stderr" | tr '\n' ' ')"
+        return
+    fi
+
+    local tp fp fn tn
+    tp=$(jq -r '.aggregate.overall.tp // 0' "$report")
+    fp=$(jq -r '.aggregate.overall.fp // 0' "$report")
+    fn=$(jq -r '.aggregate.overall.fn // 0' "$report")
+    tn=$(jq -r '.aggregate.overall.tn // 0' "$report")
+    echo "  benchmark: TP=$tp FP=$fp FN=$fn TN=$tn"
+
+    # The finding this layer exists to catch: a claim of access against a service
+    # that enforced authentication.
+    if [[ "$fp" -eq 0 ]]; then
+        pass "no false access claims against the hardened controls (FP=0 over $tn control run(s))"
+    else
+        fail "precision benchmark recorded $fp false positive(s) — the tool claimed access it did not get"
+        jq -r '.results[] | select(.fp == 1) | "        FP: \(.command) against \(.hardened.label)"' "$report" 2>/dev/null || true
+    fi
+
+    # Guard against a vacuous pass: if the lab were down, every case would produce
+    # no claims and FP would be 0 for the wrong reason.
+    if [[ "$tp" -gt 0 ]]; then
+        pass "benchmark exercised real weaknesses (TP=$tp)"
+    else
+        fail "precision benchmark recorded no true positives — the run is not evidence of anything"
+    fi
+
+    if [[ "$fn" -eq 0 ]]; then
+        pass "no missed weaknesses on the paired access cases (FN=0)"
+    else
+        fail "precision benchmark recorded $fn false negative(s) — a real weakness went unclaimed"
+        jq -r '.results[] | select(.fn == 1) | "        FN: \(.command) against \(.vulnerable.label)"' "$report" 2>/dev/null || true
+    fi
+}
+
 run_destructive_layer() {
     section "destructive (snapshot-gated)"
 
@@ -2895,6 +2961,9 @@ main() {
     # output, so it must not precede the explicit-format layers above.
     if [[ "$LAYER" == "sessions" || "$LAYER" == "all" ]]; then
         run_sessions_layer
+    fi
+    if [[ "$LAYER" == "benchmark" || "$LAYER" == "all" ]]; then
+        run_benchmark_layer
     fi
     if [[ "$LAYER" == "destructive" ]]; then
         run_destructive_layer

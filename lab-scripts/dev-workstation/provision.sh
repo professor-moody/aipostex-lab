@@ -153,6 +153,45 @@ systemctl restart jupyter
 wait_for_http_match "Jupyter" "jupyter" "http://localhost:8888/api" "version"
 echo "[+] Jupyter installed (port 8888, no auth)"
 
+# ── Jupyter (token-enforced) — honesty control, NOT a target ─────────────────
+# The same real JupyterLab with its default protection switched back on: a token
+# is required, so an unauthenticated request is refused. It exists so the
+# precision benchmark can check that aipostex claims nothing against a Jupyter
+# server it never got into. The token is a seeded lab credential.
+sudo -u devuser mkdir -p /home/devuser/.jupyter-secure /home/devuser/approved-notebooks
+cat > /home/devuser/.jupyter/jupyter_lab_secure_config.py << 'PYEOF'
+c.ServerApp.token = 'acme-jupyter-9d41f77b'
+c.IdentityProvider.token = 'acme-jupyter-9d41f77b'
+c.ServerApp.ip = '0.0.0.0'
+c.ServerApp.port = 8890
+c.ServerApp.open_browser = False
+c.ServerApp.root_dir = '/home/devuser/approved-notebooks'
+PYEOF
+chown devuser:devuser /home/devuser/.jupyter/jupyter_lab_secure_config.py
+chown -R devuser:devuser /home/devuser/approved-notebooks
+
+cat > /etc/systemd/system/jupyter-secure.service << 'EOF'
+[Unit]
+Description=Jupyter Lab (token-enforced honesty control)
+After=network.target
+
+[Service]
+User=devuser
+WorkingDirectory=/home/devuser
+ExecStart=/home/devuser/.local/bin/jupyter lab --config=/home/devuser/.jupyter/jupyter_lab_secure_config.py
+Restart=always
+RestartSec=5
+Environment="PATH=/home/devuser/.local/bin:/usr/local/bin:/usr/bin:/bin"
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+systemctl daemon-reload
+systemctl enable jupyter-secure
+systemctl restart jupyter-secure
+echo "[+] Jupyter honesty control installed (port 8890, token REQUIRED)"
+
 # ── MCP Server (real MCP SDK / FastMCP, Streamable HTTP) ─────
 # The lab's MCP target is a genuine MCP-SDK server (not a hand-written mock), so
 # aipostex is exercised against true SDK behaviour: /mcp endpoint discovery, the
@@ -241,6 +280,79 @@ systemctl enable acme-doc-tools
 systemctl restart acme-doc-tools
 wait_for_mcp_ready "ACME Doc Tools MCP" "acme-doc-tools" "http://localhost:3002/mcp" 30
 echo "[+] Vulnerable MCP server installed (port 3002, acme-doc-tools — read_document sandbox-escape + render_report SSTI)"
+
+# ── Gradio (login-enforced) — honesty control, NOT a target ─────────────────
+# The same Gradio framework as the open app on :7860, with its own auth= login
+# turned on, so API routes answer 401 without a session. It exists so the
+# precision benchmark can check that aipostex claims nothing against an app that
+# refused it.
+SECURE_GRADIO_DIR="/home/devuser/projects/gradio-secure"
+sudo -u devuser mkdir -p "$SECURE_GRADIO_DIR"
+if [ -f "$(dirname "$0")/gradio-secure/app.py" ]; then
+    cp "$(dirname "$0")/gradio-secure/app.py" "$SECURE_GRADIO_DIR/app.py"
+    chown devuser:devuser "$SECURE_GRADIO_DIR/app.py"
+fi
+cat > /etc/systemd/system/gradio-secure.service << 'EOF'
+[Unit]
+Description=Gradio app (login-enforced honesty control)
+After=network.target
+
+[Service]
+User=devuser
+WorkingDirectory=/home/devuser/projects/gradio-secure
+Environment="GRADIO_PORT=7861"
+Environment="GRADIO_USER=mluser"
+Environment="GRADIO_PASSWORD=acme-gradio-6c19d3ba"
+Environment="PATH=/home/devuser/.local/bin:/usr/local/bin:/usr/bin:/bin"
+ExecStart=/usr/bin/python3 app.py
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+systemctl daemon-reload
+systemctl enable gradio-secure
+systemctl restart gradio-secure
+echo "[+] Gradio honesty control installed (port 7861, login REQUIRED)"
+
+# ── MCP server (bearer-enforced) — honesty control, NOT a target ─────────────
+# The same real MCP SDK stack as :3000 and :3002, with the ASGI app wrapped in
+# bearer-token middleware so an unauthenticated request gets a 401 and a
+# WWW-Authenticate challenge, as the MCP authorization spec expects of a
+# protected resource. It exists so the precision benchmark can check that
+# aipostex claims nothing against an MCP server that refused it.
+SECURE_MCP_DIR="/home/devuser/projects/internal-tools/mcp-secure-server"
+sudo -u devuser mkdir -p "$SECURE_MCP_DIR"
+if [ -f "$(dirname "$0")/mcp-secure-server/server.py" ]; then
+    cp "$(dirname "$0")/mcp-secure-server/server.py" "$SECURE_MCP_DIR/server.py"
+    chown devuser:devuser "$SECURE_MCP_DIR/server.py"
+fi
+# Reuse the vulnerable server's virtualenv: same SDK, same interpreter.
+cat > /etc/systemd/system/acme-mcp-secure.service << 'EOF'
+[Unit]
+Description=ACME Secure Tools MCP Server (bearer-enforced honesty control)
+After=network.target
+
+[Service]
+User=devuser
+WorkingDirectory=/home/devuser/projects/internal-tools/mcp-secure-server
+Environment="MCP_HOST=0.0.0.0"
+Environment="MCP_PORT=3003"
+Environment="MCP_BEARER_TOKEN=acme-mcp-prod-7f3a91c4"
+ExecStart=/home/devuser/projects/internal-tools/mcp-vuln-server/.venv/bin/python server.py
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+systemctl daemon-reload
+systemctl enable acme-mcp-secure
+systemctl restart acme-mcp-secure
+echo "[+] MCP honesty control installed (port 3003, acme-mcp-secure — bearer REQUIRED)"
 
 # ── Gradio Lab App ──────────────────────────────────────────
 echo "[*] Installing Gradio lab app..."

@@ -266,30 +266,35 @@ if [ -n "$vsid" ]; then
         | grep '^data:' | sed 's/^data: *//' | jq -r '.result.tools[]?.name' 2>/dev/null)
     if echo "$vres" | grep -q 'internal://ops/runbook'; then
         echo -e "  ${GREEN}[✓]${NC} resource internal://ops/runbook exposed (mcp enum --read target)"
+        PASS=$((PASS + 1))
     else
         echo -e "  ${YELLOW}[!]${NC} resource internal://ops/runbook missing"
         WARN=$((WARN + 1))
     fi
     if echo "$vprompt" | grep -q 'draft_reply'; then
         echo -e "  ${GREEN}[✓]${NC} prompt draft_reply exposed (mcp enum --read target)"
+        PASS=$((PASS + 1))
     else
         echo -e "  ${YELLOW}[!]${NC} prompt draft_reply missing"
         WARN=$((WARN + 1))
     fi
     if echo "$vtools" | grep -q 'summarize_with_ai'; then
         echo -e "  ${GREEN}[✓]${NC} tool summarize_with_ai exposed (mcp sampling target)"
+        PASS=$((PASS + 1))
     else
         echo -e "  ${YELLOW}[!]${NC} tool summarize_with_ai missing"
         WARN=$((WARN + 1))
     fi
     if echo "$vtools" | grep -q 'verify_and_read'; then
         echo -e "  ${GREEN}[✓]${NC} tool verify_and_read exposed (mcp elicitation target)"
+        PASS=$((PASS + 1))
     else
         echo -e "  ${YELLOW}[!]${NC} tool verify_and_read missing"
         WARN=$((WARN + 1))
     fi
     if echo "$vtools" | grep -q 'index_workspace' && echo "$vtools" | grep -q 'lookup_ticket'; then
         echo -e "  ${GREEN}[✓]${NC} tools index_workspace + lookup_ticket exposed (mcp roots / logging targets)"
+        PASS=$((PASS + 1))
     else
         echo -e "  ${YELLOW}[!]${NC} tool index_workspace or lookup_ticket missing"
         WARN=$((WARN + 1))
@@ -302,6 +307,7 @@ if [ -n "$vsid" ]; then
         | grep '^data:' | sed 's/^data: *//' | jq -r '.result.resourceTemplates[]?.uriTemplate' 2>/dev/null)
     if echo "$vtmpl" | grep -q 'records://customers'; then
         echo -e "  ${GREEN}[✓]${NC} resource template records://customers/{account_id} exposed (mcp complete target)"
+        PASS=$((PASS + 1))
     else
         echo -e "  ${YELLOW}[!]${NC} resource template records://customers missing"
         WARN=$((WARN + 1))
@@ -309,9 +315,51 @@ if [ -n "$vsid" ]; then
 else
     echo -e "  ${RED}(failed to initialize MCP session at :3002/mcp)${NC}"
 fi
+# Honesty controls: services that MUST refuse an unauthenticated caller. The
+# precision benchmark scores a claim against these as a false positive, so a
+# control that silently stops enforcing would make the benchmark report a clean
+# run it did not earn. Assert the refusal directly.
+echo ""
+echo "Honesty controls (must reject unauthenticated callers):"
+ctl_code=$(curl -s -o /dev/null -w "%{http_code}" --max-time 6 -X POST "http://${DEV_IP}:3003/mcp" \
+    -H "Content-Type: application/json" -H "Accept: application/json, text/event-stream" \
+    -d '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-11-25","capabilities":{},"clientInfo":{"name":"verify","version":"1"}}}' 2>/dev/null)
+if [ "$ctl_code" = "401" ]; then
+    echo -e "  ${GREEN}[✓]${NC} MCP control :3003 refuses unauthenticated initialize (401)"
+    PASS=$((PASS + 1))
+else
+    echo -e "  ${RED}[✗]${NC} MCP control :3003 returned $ctl_code, expected 401 — the benchmark's negative side is compromised"
+    FAIL=$((FAIL + 1))
+fi
+jup_code=$(curl -s -o /dev/null -w "%{http_code}" --max-time 6 "http://${DEV_IP}:8890/api/kernels" 2>/dev/null)
+if [ "$jup_code" = "403" ] || [ "$jup_code" = "401" ]; then
+    echo -e "  ${GREEN}[✓]${NC} Jupyter control :8890 refuses token-less API access ($jup_code)"
+    PASS=$((PASS + 1))
+else
+    echo -e "  ${RED}[✗]${NC} Jupyter control :8890 returned $jup_code, expected 401/403 — the benchmark's negative side is compromised"
+    FAIL=$((FAIL + 1))
+fi
+grd_code=$(curl -s -o /dev/null -w "%{http_code}" --max-time 8 "http://${DEV_IP}:7861/config" 2>/dev/null)
+if [ "$grd_code" = "401" ] || [ "$grd_code" = "403" ]; then
+    echo -e "  ${GREEN}[✓]${NC} Gradio control :7861 refuses unauthenticated config read ($grd_code)"
+    PASS=$((PASS + 1))
+else
+    echo -e "  ${RED}[✗]${NC} Gradio control :7861 returned $grd_code, expected 401/403 — the benchmark's negative side is compromised"
+    FAIL=$((FAIL + 1))
+fi
+qdr_code=$(curl -s -o /dev/null -w "%{http_code}" --max-time 6 "http://${DS_IP}:6335/collections" 2>/dev/null)
+if [ "$qdr_code" = "401" ] || [ "$qdr_code" = "403" ]; then
+    echo -e "  ${GREEN}[✓]${NC} Qdrant control :6335 refuses key-less access ($qdr_code)"
+    PASS=$((PASS + 1))
+else
+    echo -e "  ${RED}[✗]${NC} Qdrant control :6335 returned $qdr_code, expected 401/403 — the benchmark's negative side is compromised"
+    FAIL=$((FAIL + 1))
+fi
+
 # OAuth "theater" — advertised metadata + open registration (mcp auth target).
 if curl -sf --max-time 5 "http://${DEV_IP}:3002/.well-known/oauth-authorization-server" 2>/dev/null | grep -q 'registration_endpoint'; then
     echo -e "  ${GREEN}[✓]${NC} OAuth metadata advertised with registration_endpoint (mcp auth target)"
+    PASS=$((PASS + 1))
 else
     echo -e "  ${YELLOW}[!]${NC} OAuth authorization-server metadata missing"
     WARN=$((WARN + 1))
