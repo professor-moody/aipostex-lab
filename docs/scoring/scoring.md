@@ -2,6 +2,11 @@
 
 Validates aipostex output against the lab's planted data manifest — the answer key of all 170 sensitive findings seeded across the target VMs. It also tracks strict service inventory coverage across 12 strict-required services on `ailab-app`, `ailab-ml`, and `ailab-ds`: 5 `detection-only` services and 7 additional `exploitable` services. Measures what the tool found, what it missed, whether it flagged noise as sensitive, and optionally whether the operator workflow contract is still intact.
 
+This measures **coverage** — what the tool found of what was planted. For the opposite
+question, *does the tool claim success when there is nothing to find?*, see the
+[Precision Benchmark](benchmark.md), which runs verbs against hardened twins of exposed
+services and counts false positives.
+
 For live workshop waves, the default human-readable report is intentionally non-spoiler: it shows coverage, missed counts, categories, service inventory, false positives, and contract status without dumping exact missed secret values. Use `--verbose` only when you intentionally want the after-action/take-home answer-key view.
 
 ---

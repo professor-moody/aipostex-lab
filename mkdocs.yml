@@ -155,6 +155,7 @@ nav:
     - verify-lab.sh: scoring/verify-lab.md
     - verify-aipostex.sh: scoring/verify-aipostex.md
     - Scoring System: scoring/scoring.md
+    - Precision Benchmark: scoring/benchmark.md
     - Manifest Schema: scoring/manifest.md
     - RRR Honesty Matrix: scoring/rrr.md
   - Demo Walkthrough: demo/walkthrough.md
