@@ -1910,6 +1910,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../services/dev/honesty-controls/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Honesty Controls (benchmark)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3599,6 +3627,34 @@
     <span class="md-ellipsis">
       
         Results
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Results">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#about-the-ray-and-ollama-controls" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        About the Ray and Ollama controls
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-controls" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The controls
       
     </span>
   </a>
@@ -5481,7 +5537,7 @@ opposite direction — accusing the tool of misses it did not make.</p>
 <p>Which verbs fall into which class was determined by running them and reading the grades they
 emit, not by assumption.</p>
 <h2 id="results">Results<a class="headerlink" href="#results" title="Permanent link">&para;</a></h2>
-<p>Latest run — aipostex <strong>v1.10.0</strong>, 8 cases across 4 modules:</p>
+<p>Latest run — aipostex <strong>v1.10.0</strong>, 19 cases across 11 modules:</p>
 <table>
 <thead>
 <tr>
@@ -5496,10 +5552,10 @@ emit, not by assumption.</p>
 </thead>
 <tbody>
 <tr>
-<td>5</td>
+<td>12</td>
 <td>0</td>
 <td>0</td>
-<td>8</td>
+<td>19</td>
 <td>100.0%</td>
 <td>100.0%</td>
 <td>0.0%</td>
@@ -5550,16 +5606,124 @@ emit, not by assumption.</p>
 <td>1</td>
 <td>unauthenticated agent <code>:8100</code> / auth-enforcing agent <code>:8102</code></td>
 </tr>
+<tr>
+<td>jupyter</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>2</td>
+<td>token-less Jupyter <code>:8888</code> / token-enforced Jupyter <code>:8890</code></td>
+</tr>
+<tr>
+<td>mcp</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>2</td>
+<td>open MCP server <code>:3000</code> / bearer-enforced MCP <code>:3003</code></td>
+</tr>
+<tr>
+<td>ray</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>open Ray dashboard <code>:8265</code> / auth-enforcing endpoint</td>
+</tr>
+<tr>
+<td>ollama</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>open Ollama <code>:11434</code> / auth-enforcing endpoint</td>
+</tr>
+<tr>
+<td>vectordb</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>2</td>
+<td>open Qdrant <code>:6333</code> / API-key-enforced Qdrant <code>:6335</code></td>
+</tr>
+<tr>
+<td>gradio</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>2</td>
+<td>open Gradio <code>:7860</code> / login-enforced Gradio <code>:7861</code></td>
+</tr>
+<tr>
+<td>openai-compat</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>open OpenAI-compatible <code>:8182</code> / key-enforced proxy <code>:4001</code></td>
+</tr>
 </tbody>
 </table>
 <p>Every access verb claimed correctly against the exposed instance and stayed silent against
-its hardened twin. Across <strong>8 hardened controls the tool made zero false access claims.</strong></p>
+its hardened twin. Across <strong>19 hardened controls the tool made zero false access claims.</strong></p>
+<h3 id="about-the-ray-and-ollama-controls">About the Ray and Ollama controls<a class="headerlink" href="#about-the-ray-and-ollama-controls" title="Permanent link">&para;</a></h3>
+<p>Ray's dashboard and Ollama's API ship with no authentication at all, so neither has a
+"hardened twin" in the sense the other pairs do. Their control is instead a service that
+answers HTTP and refuses unauthenticated callers — the bearer-enforced MCP endpoint. That
+tests the property the benchmark cares about (does the module claim access against a host
+that rejected it?) but it is a weaker pairing than the others, where the twin runs the same
+product with its own auth turned on. Read those two rows accordingly.</p>
+<h2 id="the-controls">The controls<a class="headerlink" href="#the-controls" title="Permanent link">&para;</a></h2>
+<p>Four controls exist purely so this benchmark has a negative side. They are <strong>not targets</strong>,
+and each uses the real product's own mechanism rather than a proxy in front:</p>
+<table>
+<thead>
+<tr>
+<th>Control</th>
+<th>Port</th>
+<th>Mechanism</th>
+<th>Refuses with</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>jupyter-secure.service</code></td>
+<td><code>8890</code></td>
+<td>JupyterLab's own token protection, switched back on</td>
+<td><code>403</code></td>
+</tr>
+<tr>
+<td><code>acme-mcp-secure.service</code></td>
+<td><code>3003</code></td>
+<td>The MCP SDK stack + bearer middleware, per the MCP authorization spec</td>
+<td><code>401</code> + <code>WWW-Authenticate</code></td>
+</tr>
+<tr>
+<td><code>gradio-secure.service</code></td>
+<td><code>7861</code></td>
+<td>Gradio's own <code>auth=</code> login</td>
+<td><code>401</code></td>
+</tr>
+<tr>
+<td><code>qdrant-secure.service</code></td>
+<td><code>6335</code></td>
+<td>Qdrant's own <code>service.api_key</code></td>
+<td><code>401</code></td>
+</tr>
+</tbody>
+</table>
+<p>The <code>openai-compat</code> pair needed no new service: the key-enforced LiteLLM proxy on <code>:4001</code>
+already refuses unauthenticated callers and speaks the same OpenAI-compatible API as the
+exposed side.</p>
+<p><code>verify-lab.sh</code> asserts both still refuse unauthenticated callers, and counts a failure if
+either stops. A control that quietly stopped enforcing would make this benchmark report a
+clean run it had not earned.</p>
 <h2 id="how-to-read-these-numbers-honestly">How to read these numbers honestly<a class="headerlink" href="#how-to-read-these-numbers-honestly" title="Permanent link">&para;</a></h2>
 <ul>
-<li><strong>The sample is small.</strong> Eight cases over four modules. A 100% figure on eight cases is
-  "nothing broken here", not a general accuracy claim.</li>
-<li><strong>Coverage is partial by construction.</strong> Only modules with a hardened twin can be measured
-  this way — 4 of the tool's ~20. These numbers describe those modules and are <em>not</em>
+<li><strong>The sample is small.</strong> Nineteen cases over eleven modules. A 100% figure on nineteen
+  cases is "nothing broken here", not a general accuracy claim.</li>
+<li><strong>Coverage is partial by construction.</strong> Only modules with a hardened control can be measured
+  this way — 11 of the tool's ~20. These numbers describe those modules and are <em>not</em>
   extrapolated to the rest.</li>
 <li><strong>A case counts a verb, not a finding.</strong> A verb emitting twenty correct claims counts once,
   exactly like one emitting a single claim.</li>

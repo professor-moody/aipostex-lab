@@ -1910,6 +1910,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../services/dev/honesty-controls/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Honesty Controls (benchmark)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -5481,6 +5509,21 @@
 <td><code>acme-doc-tools.service</code></td>
 </tr>
 <tr>
+<td>3003</td>
+<td>MCP server — <strong>bearer-enforced</strong> (401 honesty control, not a target)</td>
+<td><code>acme-mcp-secure.service</code></td>
+</tr>
+<tr>
+<td>8890</td>
+<td>Jupyter Lab — <strong>token-enforced</strong> (403 honesty control, not a target)</td>
+<td><code>jupyter-secure.service</code></td>
+</tr>
+<tr>
+<td>7861</td>
+<td>Gradio — <strong>login-enforced</strong> (401 honesty control, not a target)</td>
+<td><code>gradio-secure.service</code></td>
+</tr>
+<tr>
 <td>3000</td>
 <td>MCP Server (real MCP SDK — FastMCP, Streamable HTTP at <code>/mcp</code>)</td>
 <td><code>acme-mcp.service</code></td>
@@ -5630,6 +5673,11 @@ real MLflow registry for <code>aipostex.hook.url</code> model-version tags and d
 <td>6333</td>
 <td>Qdrant</td>
 <td><code>qdrant.service</code></td>
+</tr>
+<tr>
+<td>6335</td>
+<td>Qdrant — <strong>API-key enforced</strong> (401 honesty control, not a target)</td>
+<td><code>qdrant-secure.service</code></td>
 </tr>
 <tr>
 <td>5432</td>

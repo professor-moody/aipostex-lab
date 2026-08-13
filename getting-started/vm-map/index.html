@@ -2076,6 +2076,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../services/dev/honesty-controls/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Honesty Controls (benchmark)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -5507,7 +5535,7 @@
 <td><code>172.16.50.10</code></td>
 <td>Ubuntu 24.04</td>
 <td>Developer workstation</td>
-<td>11434, 8888, 3000, 3002, 7860, 6274</td>
+<td>11434, 8888, 8890, 3000, 3002, 3003, 7860, 7861, 6274</td>
 </tr>
 <tr>
 <td><code>ailab-ml</code></td>
@@ -5523,7 +5551,7 @@
 <td><code>172.16.50.30</code></td>
 <td>Ubuntu 24.04</td>
 <td>Data science</td>
-<td>11434, 8889, 8080, 6333, 5000, 5432, 8091</td>
+<td>11434, 8889, 8080, 6333, 6335, 5000, 5432, 8091</td>
 </tr>
 <tr>
 <td><code>ailab-app</code></td>
@@ -5566,6 +5594,9 @@
 <li><code>8888</code> Jupyter Lab</li>
 <li><code>3000</code> MCP Server</li>
 <li><code>3002</code> Vulnerable MCP server (sandbox-escape + SSTI targets)</li>
+<li><code>3003</code> MCP server, bearer-enforced (honesty control — not a target)</li>
+<li><code>8890</code> Jupyter Lab, token-enforced (honesty control — not a target)</li>
+<li><code>7861</code> Gradio, login-enforced (honesty control — not a target)</li>
 <li><code>7860</code> Gradio</li>
 <li><code>6274</code> MCP Inspector</li>
 </ul>
