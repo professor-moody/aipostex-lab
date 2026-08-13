@@ -233,6 +233,59 @@ else
     echo -e "  ${RED}(failed to initialize MCP session at :3000/mcp)${NC}"
 fi
 
+# Vulnerable MCP server (:3002, acme-doc-tools) — beyond its sandbox-escape/SSTI
+# tools it exposes an over-shared resource and a poisoned prompt template, the
+# targets for `mcp enum --read`. Same FastMCP handshake; assert both are listed.
+echo ""
+echo "MCP resource + prompt on ailab-dev (:3002 acme-doc-tools):"
+vmcp_hdr=$(mktemp)
+curl -sf --max-time 6 -D "$vmcp_hdr" -o /dev/null -X POST "http://${DEV_IP}:3002/mcp" \
+    -H "Content-Type: application/json" -H "Accept: application/json, text/event-stream" \
+    -d '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-11-25","capabilities":{},"clientInfo":{"name":"verify-lab","version":"1.0"}}}' 2>/dev/null || true
+vsid=$(grep -i '^Mcp-Session-Id:' "$vmcp_hdr" 2>/dev/null | tr -d '\r' | awk '{print $2}')
+rm -f "$vmcp_hdr"
+if [ -n "$vsid" ]; then
+    curl -sf --max-time 6 -X POST "http://${DEV_IP}:3002/mcp" \
+        -H "Content-Type: application/json" -H "Accept: application/json, text/event-stream" \
+        -H "Mcp-Session-Id: $vsid" \
+        -d '{"jsonrpc":"2.0","id":2,"method":"notifications/initialized"}' >/dev/null 2>&1 || true
+    vres=$(curl -sf --max-time 6 -X POST "http://${DEV_IP}:3002/mcp" \
+        -H "Content-Type: application/json" -H "Accept: application/json, text/event-stream" \
+        -H "Mcp-Session-Id: $vsid" \
+        -d '{"jsonrpc":"2.0","id":3,"method":"resources/list"}' 2>/dev/null \
+        | grep '^data:' | sed 's/^data: *//' | jq -r '.result.resources[]?.uri' 2>/dev/null)
+    vprompt=$(curl -sf --max-time 6 -X POST "http://${DEV_IP}:3002/mcp" \
+        -H "Content-Type: application/json" -H "Accept: application/json, text/event-stream" \
+        -H "Mcp-Session-Id: $vsid" \
+        -d '{"jsonrpc":"2.0","id":4,"method":"prompts/list"}' 2>/dev/null \
+        | grep '^data:' | sed 's/^data: *//' | jq -r '.result.prompts[]?.name' 2>/dev/null)
+    vtools=$(curl -sf --max-time 6 -X POST "http://${DEV_IP}:3002/mcp" \
+        -H "Content-Type: application/json" -H "Accept: application/json, text/event-stream" \
+        -H "Mcp-Session-Id: $vsid" \
+        -d '{"jsonrpc":"2.0","id":5,"method":"tools/list"}' 2>/dev/null \
+        | grep '^data:' | sed 's/^data: *//' | jq -r '.result.tools[]?.name' 2>/dev/null)
+    if echo "$vres" | grep -q 'internal://ops/runbook'; then
+        echo -e "  ${GREEN}[✓]${NC} resource internal://ops/runbook exposed (mcp enum --read target)"
+    else
+        echo -e "  ${YELLOW}[!]${NC} resource internal://ops/runbook missing"
+        WARN=$((WARN + 1))
+    fi
+    if echo "$vprompt" | grep -q 'draft_reply'; then
+        echo -e "  ${GREEN}[✓]${NC} prompt draft_reply exposed (mcp enum --read target)"
+    else
+        echo -e "  ${YELLOW}[!]${NC} prompt draft_reply missing"
+        WARN=$((WARN + 1))
+    fi
+    if echo "$vtools" | grep -q 'summarize_with_ai'; then
+        echo -e "  ${GREEN}[✓]${NC} tool summarize_with_ai exposed (mcp sampling target)"
+    else
+        echo -e "  ${YELLOW}[!]${NC} tool summarize_with_ai missing"
+        WARN=$((WARN + 1))
+    fi
+else
+    echo -e "  ${RED}(failed to initialize MCP session at :3002/mcp)${NC}"
+fi
+
 # Gradio config
 echo ""
 echo "Gradio routes on ailab-dev:"
