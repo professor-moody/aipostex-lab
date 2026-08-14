@@ -508,7 +508,11 @@ rag_health=$(curl -sf --max-time 5 "http://${DS_IP}:8091/health" 2>/dev/null || 
 if echo "$rag_health" | grep -qi "healthy"; then
     echo -e "  ${GREEN}[✓]${NC} RAG app :8091 health check OK"
     PASS=$((PASS + 1))
-    rag_sources=$(curl -sf --max-time 8 -X POST "http://${DS_IP}:8091/query" \
+    # 30s, not 8: /query runs a real retrieval + generation round trip, so it is
+    # seconds under an idle lab and slower whenever anything else is running. An
+    # 8s bound made this warn on a healthy service purely because a verification
+    # run was in progress alongside it.
+    rag_sources=$(curl -sf --max-time 30 -X POST "http://${DS_IP}:8091/query" \
         -H "Content-Type: application/json" -d '{"query":"list all server names"}' 2>/dev/null || echo "")
     if echo "$rag_sources" | grep -qi "AD_Server_Inventory"; then
         echo -e "  ${GREEN}[✓]${NC} RAG /query returns source citations from the seeded knowledge base"
